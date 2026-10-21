@@ -6,17 +6,18 @@ import java.util.List;
 
 import adventure.Actor;
 import adventure.Item;
+import adventure.Container;
 
 public abstract class Verb implements Action {
     
     protected enum Context {
-        WORN, HELD, HERE, PORTALS;
+        WORN, HELD, FLOOR, PORTALS;
         
         public List<Item> items(Actor actor) {
             return switch (this) {
             case WORN -> actor.getItemsWorn();
             case HELD -> actor.getItemsInHand();
-            case HERE -> actor.getCurrentLocation().getItems();
+            case FLOOR -> actor.getCurrentLocation().getItems();
             case PORTALS -> actor.getCurrentLocation().portalItems();
             default ->
                 new ArrayList<Item>();
@@ -44,35 +45,81 @@ public abstract class Verb implements Action {
                 "applyWith not supported for " + this.getClass());
     }
 
+    /**
+     * Perform a one argument verb.  The argument is resolved and should
+     * resolve to exactly one item.  If not the outcome is either NOT_FOUND
+     * or NOT_UNIQUE. 
+     * 
+     * @param actor
+     * @param word the word denoting the argument
+     * @param contexts resolve word in these contexts
+     * @return the VerbResult that gives the outcome, etcetera.
+     */
     protected VerbResult applyHere(Actor actor, String word, 
             Context ... contexts) {
         List<Item> items = resolve(word, actor, contexts);
-        if (items.isEmpty()) {
-            return new VerbResult(VerbResult.Outcome.NOT_FOUND, word);
-        } else if (items.size() > 1) {
-            return new VerbResult(VerbResult.Outcome.NOT_UNIQUE, word, items);
+        VerbResult res = checkUnique(word, items);
+        if (res != null) {
+            return res;
         } else {
             return apply(actor, items.get(0));
         }
     }
 
+    /**
+     * Perform a two argument verb.  The arguments are resolved and should
+     * resolve to exactly one item.  If not the outcome is either NOT_FOUND
+     * or NOT_UNIQUE. 
+     * 
+     * If fromContainer is false, word is resolved in the given contexts and
+     * word2 in Context.HELD.  If fromContainer is false, word2 is resolved in 
+     * the given contexts to give a container and word is resolved in the container.
+     * 
+     * @param actor
+     * @param word the first argument word
+     * @param word2 the second argument word
+     * @param fromContainer determines resolution logic
+     * @param resolve word or word2 in these contexts
+     * @return the VerbResult that gives the outcome, etcetera.
+     */
     protected VerbResult applyHereWith(Actor actor, String word, String word2,
-            Context ... contexts) {
-        List<Item> items = resolve(word, actor, contexts);
+            boolean fromContainer, Context ... contexts) {
+        List<Item> items = null;
+        List<Item> item2s = null;
+        VerbResult res;
+        if (fromContainer) {
+            item2s = resolve(word2, actor, contexts);
+            res = checkUnique(word2, item2s);
+            if (res == null) {
+                items = resolve(word, actor, item2s);
+                res = checkUnique(word, items);
+            }
+        } else {
+            items = resolve(word, actor, contexts);
+            res = checkUnique(word, items);
+            if (res == null) {
+                item2s = resolve(word2, actor, Context.HELD);
+                res = checkUnique(word2, item2s);
+            }
+        }
+        if (res != null) {
+            return res;
+        } else {
+            return applyWith(actor, items.get(0), item2s.get(0));
+        }
+    }
+
+    private VerbResult checkUnique(String word, List<Item> items) {
         if (items.isEmpty()) {
             return new VerbResult(VerbResult.Outcome.NOT_FOUND, word);
         } else if (items.size() > 1) {
             return new VerbResult(VerbResult.Outcome.NOT_UNIQUE, word, items);
+        } else {
+            return null;
         }
-        List<Item> item2s = resolve(word2, actor, Context.HELD);
-        if (item2s.isEmpty()) {
-            return new VerbResult(VerbResult.Outcome.NOT_FOUND, word2);
-        } else if (item2s.size() > 1) {
-            return new VerbResult(VerbResult.Outcome.NOT_UNIQUE, word2, item2s);
-        }
-        return applyWith(actor, items.get(0), item2s.get(0));
     }
     
+
     /**
      * Resolve an item designator.  This is either an item abbreviation
      * or an abbreviation and a numeric ordinal separated by a '#' character.
@@ -93,6 +140,18 @@ public abstract class Verb implements Action {
         List<List<Item>> lists = Arrays.stream(contexts)
                 .map((c) -> c.items(actor))
                 .toList();
+        return doResolve(word, lists);
+    }
+
+    public static List<Item> resolve(String word, Actor actor, List<Item> list) {
+        List<List<Item>> lists = list.stream()
+                .filter((item) -> item instanceof Container)
+                .map((item) -> ((Container) item).getContents())
+                .toList();
+        return doResolve(word, lists);
+    }
+
+    private static List<Item> doResolve(String word, List<List<Item>> lists) {
         String[] parts = word.split("#", 2);
         List<Item> filtered = lists.stream()
                 .flatMap((l) -> l.stream())
@@ -127,8 +186,8 @@ public abstract class Verb implements Action {
         }
     }
     
-    protected void performOnItemWith(Actor actor, String[] args, 
-            String preposition, Context ...contexts) {
+    protected void performOnItemWith(Actor actor, String[] args,
+            boolean fromContainer, String preposition, Context ...contexts) {
         if (args.length == 0) {
             System.out.println("What do you want to " + verb + "?");
         } else {
@@ -148,17 +207,19 @@ public abstract class Verb implements Action {
                 label2 = args[1];
             }
             if (label2 != null) {
-                VerbResult res = applyHereWith(actor, label, label2, contexts);
+                VerbResult res = applyHereWith(
+                        actor, label, label2, fromContainer, contexts);
                 processVerbResult(res);
             }
         }
     }
-
+    
     private void processVerbResult(VerbResult res) {
         Item item = res.getItem();
+        Item item2 = res.getItem2();
         switch (res.getOutcome()) {
         case SUCCESS:
-            onSuccess(item); 
+            onSuccess(item, item2); 
             break;
         case NOT_FOUND:
             System.out.println("You do not see " + res.getWord());
@@ -202,5 +263,5 @@ public abstract class Verb implements Action {
         return participle;
     }
 
-    protected abstract void onSuccess(Item item);
+    protected abstract void onSuccess(Item item, Item item2);
 }

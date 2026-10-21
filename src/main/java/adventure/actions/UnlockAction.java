@@ -12,11 +12,11 @@ public class UnlockAction extends Verb {
 
     @Override
     public void perform(Actor actor, String[] args) {
-        performOnItemWith(actor, args, "with", Context.HERE, Context.PORTALS);
+        performOnItemWith(actor, args, false, "with", Context.FLOOR, Context.PORTALS);
     }
     
     @Override
-    protected void onSuccess(Item item) {
+    protected void onSuccess(Item item, Item item2) {
         System.out.println("You " + getParticiple() + " " + item.getName());
         item.trigger(Event.UNLOCKED);
     }

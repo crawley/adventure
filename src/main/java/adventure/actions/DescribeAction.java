@@ -18,7 +18,7 @@ public class DescribeAction implements Action {
         } else {
             String word = args[0];
             List<Item> items = Verb.resolve(
-                    word, actor, Context.HERE, Context.PORTALS, 
+                    word, actor, Context.FLOOR, Context.PORTALS, 
                     Context.HELD, Context.WORN);
             if (items.isEmpty()) {
                 System.out.println("Cannot see a " + word);

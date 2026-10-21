@@ -14,13 +14,13 @@ public class PutAction extends Verb {
 
     @Override
     public void perform(Actor actor, String[] args) {
-        performOnItemWith(actor, args, "into", Context.HELD);
+        performOnItemWith(actor, args, false, "into", Context.HELD);
     }
     
     @Override
-    protected void onSuccess(Item item) {
+    protected void onSuccess(Item item, Item item2) {
         System.out.println("You " + getParticiple() + " " 
-                + item.getName() + " into the container");
+                + item.getName() + " into " + item2.getName());
         item.trigger(Event.ADDED);
     }
     
@@ -29,7 +29,7 @@ public class PutAction extends Verb {
         if (container instanceof Container) {
             ((Container) container).addItem(item);
             actor.getItemsInHand().remove(item);
-            return new VerbResult(Outcome.SUCCESS, item);
+            return new VerbResult(Outcome.SUCCESS, item, container);
         } else {
             return new VerbResult(Outcome.NOT_POSSIBLE, container,
                     "is not a container");

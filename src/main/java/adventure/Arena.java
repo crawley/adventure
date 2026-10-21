@@ -165,6 +165,14 @@ public class Arena {
                 getString(itemData, "abbrev"), 
                 getString(itemData, "description"), 
                 flags, triggers);
+        if ("CONTAINER".equals(getString(itemData, "kind"))
+                && itemData.get("contents") != null) {
+            List<Object> contents = (List<Object>) itemData.get("contents");
+            for (Object content: contents) {
+                Item contentItem = parseItem(content);
+                ((Container) item).addItem(contentItem);
+            }
+        }
         return item;
     }
 

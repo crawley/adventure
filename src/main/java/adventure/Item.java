@@ -15,7 +15,7 @@ public class Item extends Entity {
     
     public static final long TAKEABLE = 0x1L;
     public static final long MOVEABLE = 0x2L;
-    public static final long CONTAINABLE = 0x4L;
+    public static final long EDIBLE = 0x4L;
     public static final long WEARABLE = 0x8L;
     public static final long WIELDABLE = 0x10L;
     public static final long HIDDEN = 0x20L;
@@ -33,6 +33,7 @@ public class Item extends Entity {
             put("MOVEABLE", MOVEABLE);
             put("WEARABLE", WEARABLE);
             put("WIELDABLE", WIELDABLE);
+            put("EDIBLE", EDIBLE);
             put("OPENABLE", OPENABLE);
             put("OPEN", OPEN);
             put("LOCKABLE", LOCKABLE);
@@ -77,8 +78,8 @@ public class Item extends Entity {
         return (flags & MOVEABLE) != 0;
     }
     
-    public boolean isContainable() {
-        return (flags & CONTAINABLE) != 0;
+    public boolean isEdible() {
+        return (flags & EDIBLE) != 0;
     }
 
     public boolean isWearable() {

@@ -66,6 +66,11 @@ items:
     description: This is a nondescript grey canvas knapsack.
     location: porch
     flags: WEARABLE MOVEABLE TAKEABLE
+    contents:
+      - label: sandwich
+        name: a vegemite sandwich
+        description: The sandwich looks fresh
+        flags: EDIBLE
   
   - label: fireplace
     name: a fireplace

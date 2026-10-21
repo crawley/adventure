@@ -12,7 +12,7 @@ public class TakeAction extends Verb {
 
 	@Override
 	public void perform(Actor actor, String[] args) {
-	    performOnItem(actor, args, Context.HERE);
+	    performOnItem(actor, args, Context.FLOOR);
 	}
 	
 	@Override
@@ -26,7 +26,7 @@ public class TakeAction extends Verb {
     }
     
     @Override
-    protected void onSuccess(Item item) {
+    protected void onSuccess(Item item, Item item2) {
         System.out.println("You " + getParticiple() + " " + item.getName());
         item.trigger(Event.TAKEN);
     }
