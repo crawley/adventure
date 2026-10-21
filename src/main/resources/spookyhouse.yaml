@@ -1,0 +1,146 @@
+---
+start: porch
+
+locations: 
+  - label: path
+    name: front path
+    description: You are on the front path of the Spooky House.
+
+  - label: porch
+    name: the front porch
+    description: |
+      You are on the front porch of the Spooky House facing the front door.
+
+  - label: hallway
+    kind: ROOM
+    name: the hallway
+    description: |
+      You are in the entrance hallway. 
+      There are 3 doors in addition to the front door.
+
+  - label: dining
+    kind: ROOM
+    name: the dining room
+    description: |
+      You are in a room with a large window.  
+      In the center of the room is a dining table with 6 chairs.
+
+  - label: sitting
+    kind: ROOM
+    name: the sitting room
+    description: |
+      You are in a room with a large window.  
+      In front of a fireplace there is a sofa and 2 armchairs.
+
+exits:
+  - from: path
+    to: porch
+    forwards: n
+    backwards: s
+
+  - from: porch
+    to: hallway
+    portal:
+      label: frontdoor
+      name: the front door
+      abbrev: door
+      description: The front door is an ornate oak door.
+      flags: OPENABLE LOCKABLE
+    forwards: i
+    backwards: o
+
+  - from: hallway
+    to: dining
+    forwards: e
+    backwards: w
+
+  - from: hallway
+    to: sitting
+    forwards: w
+    backwards: e
+    
+items:
+  - label: knapsack
+    kind: CONTAINER
+    name: your knapsack
+    description: This is a nondescript grey canvas knapsack.
+    location: porch
+    flags: WEARABLE MOVEABLE TAKEABLE
+  
+  - label: fireplace
+    name: a fireplace
+    description: | 
+      This is a large fireplace.
+      The fireplace contains cold ashes from the last fire.
+    location: sitting
+    flags: 
+        
+  - label: sofa
+    name: a sofa
+    description: This is a sofa upholstered in white fabric.
+    location: sitting
+    flags: MOVEABLE
+        
+  - label: doormat
+    name: a doormat
+    abbrev: mat
+    description: This is an old doormat with the words 'Not Welcome' on it.
+    location: porch
+    flags: MOVEABLE 
+    triggers:
+      - events: MOVED SEARCHED
+        target: doorkey
+        verb: REVEAL
+        message: Under the doormat you see a key
+              
+  - label: doorkey
+    name: a shiny key
+    abbrev: key
+    location: porch
+    flags: HIDDEN TAKEABLE
+    
+  - label: chest
+    kind: CONTAINER
+    name: a chest
+    description: This is a large iron-bound wooden chest. 
+    location: sitting
+    flags: OPENABLE LOCKABLE LOCKED
+    associations:
+      - association: HAS_KEY
+        item: chestkey
+    
+  - label: chestkey
+    name: a rusty iron key
+    abbrev: key
+    location: sitting
+    flags: TAKEABLE
+    
+  - label: chair1
+    name: an armchair
+    abbrev: armchair
+    description: | 
+        The armchair is upholstered in white fabric.
+        There is a red stain on the left arm.
+    location: sitting
+    flags: MOVEABLE 
+    triggers:
+      - events: MOVED SEARCHED
+        message: |
+          There is a lot of dust under the armchair.
+          Written in the dust are the words "Clean Me".
+
+  - label: chair2
+    name: an armchair
+    abbrev: armchair
+    description: The armchair is upholstered in white fabric.
+    location: sitting
+    flags: MOVEABLE 
+    
+associations:
+  - relation: HAS_KEY
+    item1: frontdoor
+    item2: doorkey
+    
+  - relation: HAS_KEY
+    item1: chest
+    item2: chestkey
