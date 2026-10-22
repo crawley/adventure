@@ -12,7 +12,6 @@ public class LookAction implements Action {
 	@Override
 	public void perform(Actor actor, String[] args) {
 	    Location here = actor.getCurrentLocation();
-		System.out.println("You are in " + here.getName());
 		if (here.getDescription() == null) {
 		    System.out.println("You are in " + here.getName());
 		} else {
