@@ -251,4 +251,8 @@ public class Item extends Entity {
             throw new EntityException("Entity with label '" + label + "' is not an item");
         }
     }
+
+    public void destroy() {
+        allEntities.remove(this.getLabel());
+    }
 }

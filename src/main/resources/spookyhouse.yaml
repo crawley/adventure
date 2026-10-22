@@ -71,6 +71,9 @@ items:
         name: a vegemite sandwich
         description: The sandwich looks fresh
         flags: EDIBLE
+        triggers:
+          - events: CONSUMED
+            message: Nom nom nom
   
   - label: fireplace
     name: a fireplace

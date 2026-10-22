@@ -7,7 +7,7 @@ public class Trigger {
     public enum Event {
         MOVED, SEARCHED, OPENED, CLOSED, DROPPED, 
         WORN, UNWORN, TAKEN, LOCKED, UNLOCKED, 
-        ADDED, REMOVED
+        ADDED, REMOVED, CONSUMED
     }
     
     public enum Verb {

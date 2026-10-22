@@ -92,5 +92,14 @@ public class Actor {
     public boolean handsFull() {
         return itemsInHand.size() >= NOS_HANDS;
     }
+
+    public VerbResult eatItem(Item item) {
+        if (item.isEdible()) {
+            itemsInHand.remove(item);
+            return new VerbResult(Outcome.SUCCESS, item);
+        } else {
+            return new VerbResult(Outcome.NOT_APPLICABLE, item);
+        }
+    }
     
 }

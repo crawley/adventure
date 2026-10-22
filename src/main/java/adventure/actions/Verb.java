@@ -238,7 +238,7 @@ public abstract class Verb implements Action {
             break;
         case NOT_APPLICABLE:
             System.out.println(item.getName() + 
-                    " is not something that can be " + participle);
+                    " is not something that you can " + verb);
             break;
         case NOT_POSSIBLE:
             System.out.println("You failed to " + verb + " " + 
