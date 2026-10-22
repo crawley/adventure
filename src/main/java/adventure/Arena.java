@@ -37,8 +37,10 @@ public class Arena {
 		if (locations.get(label) != null) {
 			throw new ArenaSyntaxException("location '" + label + "' already exists");
 		}
-		Location location = new Location(label, name, description, 
-		        (abbrev != null) ? abbrev : label);
+		Location location = new Location(
+		        label, name,  
+		        ((abbrev != null) ? abbrev : label),
+		        description);
 		locations.put(label, location);
 	}
 

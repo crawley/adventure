@@ -16,6 +16,7 @@ public class Actions {
         actions = new TreeMap<>();
         aliases = new TreeMap<>();
         actions.put("where", new WhereAction());
+        actions.put("look", new LookAction());
         actions.put("describe", new DescribeAction());
         actions.put("take", new TakeAction());
         actions.put("drop", new DropAction());

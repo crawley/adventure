@@ -1,7 +1,5 @@
 package adventure.actions;
 
-import java.util.List;
-
 import adventure.Actor;
 import adventure.Exit;
 import adventure.Item;
@@ -13,18 +11,6 @@ public class WhereAction implements Action {
 	public void perform(Actor actor, String[] args) {
 	    Location here = actor.getCurrentLocation();
 		System.out.println("You are in " + here.getName());
-		List<Item> items = here.getItems();
-		boolean firstItem = true;
-		for (Item item: items) {
-		    if (!item.isHidden()) {
-		        if (firstItem) {
-		            System.out.println("You can see the following things: ");
-		            firstItem = false;
-		        }
-		        System.out.println(
-		                "  " + item.getAbbrev() + ": " + item.getName());
-		    }
-		}
 		System.out.println("You can go in the following directions: ");
 		for (Exit exit: here.getExits()) {
 			System.out.print("  " + exit.getDirection().getName());
@@ -42,6 +28,6 @@ public class WhereAction implements Action {
 
     @Override
     public String describe() {
-        return "Describe your current location.";
+        return "Print navigation info for the current location.";
     }
 }
