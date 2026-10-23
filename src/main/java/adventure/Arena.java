@@ -16,7 +16,7 @@ import adventure.actions.Trigger.Verb;
 
 public class Arena {
 	
-    private Map<String, Location> locations;
+    private Map<String, Location> allLocations;
     private Associations associations;
 	private String startLabel;
 	
@@ -27,41 +27,31 @@ public class Arena {
 	}
 	
 	public Arena (String startLabel) {
-		this.locations = new HashMap<>();
+		this.allLocations = new HashMap<>();
 		this.associations = new Associations();
 		this.startLabel = startLabel;
 		instance = this;
 	}
 	
-	public void addLocation(String label, String name, String abbrev, String description) {
-		if (locations.get(label) != null) {
-			throw new ArenaSyntaxException("location '" + label + "' already exists");
-		}
-		Location location = new Location(
-		        label, name,  
-		        ((abbrev != null) ? abbrev : label),
-		        description);
-		locations.put(label, location);
-	}
-
-	public void addExit(String fromLabel, String toLabel, Item portal, Direction direction) {
-		Location fromLoc = locations.get(fromLabel);
+	public void addExit(String fromLabel, String toLabel, Item portal, Direction direction,
+	        String description) {
+		Location fromLoc = allLocations.get(fromLabel);
 		if (fromLoc == null) {
 			throw new ArenaSyntaxException("location '" + fromLabel + "' not found");
 		}
-		Location toLoc = locations.get(toLabel);
+		Location toLoc = allLocations.get(toLabel);
         if (toLoc == null) {
 			throw new ArenaSyntaxException("location '" + toLabel + "' not found");
 		}
         
-        Exit exit = new Exit(direction, portal, toLoc);
+        Exit exit = new Exit(direction, portal, toLoc, description);
         fromLoc.addExit(exit);
 	}
 	
 	public void addExit(String from, String to, Item portal,
-	        Direction forward, Direction back) {
-		addExit(from, to, portal, forward);
-		addExit(to, from, portal, back);
+	        Direction forward, Direction back, String description) {
+		addExit(from, to, portal, forward, description);
+		addExit(to, from, portal, back, description);
 	}
 	
 	public Item addItem(String kind, String location, String label, String name, String abbrev, 
@@ -74,7 +64,7 @@ public class Arena {
 	            new Item(label, name, abbrev, description, flags, triggers);
 	    if (location != null) {
 	        // A portal 'item' doesn't have a (single) location ...
-	        Location loc = locations.get(location);
+	        Location loc = allLocations.get(location);
 	        if (loc == null) {
 	            throw new ArenaSyntaxException("location '" + location + "' not found");
 	        }
@@ -84,7 +74,7 @@ public class Arena {
 	}
 	
 	public Location getStart() {
-		Location start = locations.get(startLabel);
+		Location start = allLocations.get(startLabel);
 		if (start == null) {
 			throw new ArenaSyntaxException("start location '" + startLabel + "' not found");
 		}
@@ -104,9 +94,31 @@ public class Arena {
 		
 		List<Object> locations = (List<Object>) loaded.get("locations");
 		for (Object data: locations) {
-			Map<String, String> locData = (Map<String, String>) data;
-			arena.addLocation(locData.get("label"), locData.get("name"), 
-			        locData.get("abbrev"), locData.get("description"));
+			Map<String, Object> locData = (Map<String, Object>) data;
+			String label = getString(locData, "label");
+			String name = getString(locData, "name");
+            String abbrev = getString(locData, "abbrev");
+            String description = getString(locData, "description");
+            String kind = getString(locData, "kind");
+	        if (arena.allLocations.get(label) != null) {
+	            throw new ArenaSyntaxException("location '" + label + "' already exists");
+	        }
+	        Location location;
+	        if ("ROOM".equals(kind)) {
+	            List<Wall> walls = new ArrayList<>();
+	            List<Map<String, String>> wallData = 
+	                    (List<Map<String, String>>) locData.get("walls");
+	            if (wallData != null) {
+	                for (Map<String, String> wall: wallData) {
+	                    walls.add(new Wall(Direction.valueOf(wall.get("direction")),
+	                            wall.get("name"), wall.get("description")));
+	                }
+	            }
+			    location = new Room(label, name, abbrev, description, walls);
+			} else {
+			    location = new Location(label, name, abbrev, description);
+			}
+	        arena.allLocations.put(label, location);
 		}
 		
         List<Object> exits = (List<Object>) loaded.get("exits");
@@ -117,11 +129,13 @@ public class Arena {
 				arena.addExit(getString(exitData, "from"), getString(exitData, "to"), 
 						portal,
 						Direction.valueOf(getString(exitData, "forwards")),
-						Direction.valueOf(getString(exitData, "backwards")));
+						Direction.valueOf(getString(exitData, "backwards")),
+						getString(exitData, "description"));
 			} else {
 				arena.addExit(getString(exitData, "from"), getString(exitData, "to"), 
 					    portal, 
-					    Direction.valueOf(getString(exitData, "forwards")));
+					    Direction.valueOf(getString(exitData, "forwards")),
+                        getString(exitData, "description"));
 			}
 		}
 		

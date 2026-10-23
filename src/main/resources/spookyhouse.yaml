@@ -3,10 +3,12 @@ start: porch
 
 locations: 
   - label: path
+    kind: OUTSIDE
     name: front path
     description: You are on the front path of the Spooky House.
 
   - label: porch
+    kind: OUTSIDE
     name: the front porch
     description: |
       You are on the front porch of the Spooky House facing the front door.
@@ -31,6 +33,19 @@ locations:
     description: |
       You are in a room with a large window.  
       In front of a fireplace there is a sofa and 2 armchairs.
+    walls:
+      - direction: e
+        name: east wall
+        description: a wall
+      - direction: w
+        name: west wall
+        description: a wall with a fireplace
+      - direction: s
+        name: south wall
+        description: a wall with a window
+      - direction: n
+        name: north wall
+        description: a blank wall
 
 exits:
   - from: path

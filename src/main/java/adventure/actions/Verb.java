@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import adventure.Actor;
-import adventure.Item;
 import adventure.Container;
+import adventure.Item;
 
 public abstract class Verb implements Action {
     
