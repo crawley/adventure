@@ -1,21 +1,14 @@
 package adventure;
 
-public class Exit {
-    private final Direction direction;
+public class Exit extends Vista {
     private final Item portal;
     private final Location to;
-    private final String description;
 
     public Exit(Direction direction, Item portal, Location to,
             String description) {
-        this.direction = direction;
+        super(direction, description);
         this.portal = portal;
         this.to = to;
-        this.description = description;
-    }
-
-    public Direction getDirection() {
-        return direction;
     }
 
     public Item getPortal() {
@@ -24,9 +17,5 @@ public class Exit {
 
     public Location getTo() {
         return to;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

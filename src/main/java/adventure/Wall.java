@@ -1,26 +1,22 @@
 package adventure;
 
-public class Wall {
-    private final Direction direction;
+import java.util.List;
+
+public class Wall extends Vista {
     private final String name;
-    private final String description;
+    private final List<Item> itemsOnWall;
     
     public Wall(Direction direction, String name, String description) {
-        super();
-        this.direction = direction;
+        super(direction, description);
         this.name = name;
-        this.description = description;
-    }
-
-    public Direction getDirection() {
-        return direction;
+        this.itemsOnWall = new ItemList("on-wall-" + name + "-" + direction);
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDescription() {
-        return description;
+    public List<Item> getItemsOnWall() {
+        return itemsOnWall;
     }
 }

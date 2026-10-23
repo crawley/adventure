@@ -1,6 +1,5 @@
 package adventure.actions;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +8,7 @@ import adventure.Direction;
 import adventure.Exit;
 import adventure.Item;
 import adventure.Location;
-import adventure.Room;
+import adventure.Vista;
 import adventure.Wall;
 
 public class LookAction implements Action {
@@ -34,42 +33,74 @@ public class LookAction implements Action {
 		                "  " + item.getAbbrev() + ": " + item.getName());
 		    }
 		}
-		List<Wall> walls = (here instanceof Room) ? ((Room) here).getWalls() : Collections.emptyList();
-		List<Exit> exits = (here.getExits() != null) ? here.getExits() : Collections.emptyList();
+		List<Vista> vistas = here.getVistas();
 		for (Direction direction: Direction.values()) {
-		    Optional<Wall> optWall = walls.stream()
+		    Optional<Vista> optVista = vistas.stream()
 		            .filter((w) -> w.getDirection().equals(direction))
 		            .findFirst();
-		    Optional<Exit> optExit = exits.stream()
-                    .filter((w) -> w.getDirection().equals(direction))
-                    .findFirst();
-		    if (optWall.isPresent() || optExit.isPresent()) {
+		    if (optVista.isPresent()) {
 		        System.out.print("In the " + direction.getName() + " direction you see ");
-		        if (optWall.isPresent()) {
-		            String desc = optWall.get().getDescription();
-		            System.out.print((desc == null) ? "a wall" : desc);
-		            if (optExit.isPresent()) {
-		                System.out.print(" with ");
-		            }
+		        Vista vista = optVista.get();
+		        if (vista instanceof Exit) {
+		            describeExit((Exit) vista);
+		        } else if (vista instanceof Wall) {
+		            describeWall((Wall) vista);
+		        } else {
+		            describeVista(vista);
 		        }
-		        if (optExit.isPresent()) {
-                    Exit exit = optExit.get();
-                    String desc = exit.getDescription();
-                    Item portal = exit.getPortal();
-                    if (desc != null) {
-                        System.out.print(desc);
-                    } else if (portal != null) {
-                        System.out.print(portal.getName());
-                    } else if (here instanceof Room) {
-                        System.out.print("an exit");
-                    } else {
-                        System.out.print(exit.getTo().getName());
-                    }
-                }
-		        System.out.println();
 		    }
 		}
 	}
+
+    private void describeVista(Vista vista) {
+        String desc = vista.getDescription();
+        if (desc == null) {
+            desc = "an endless vista";
+        }
+        System.out.println(desc);
+    }
+
+    private void describeWall(Wall wall) {
+        String desc = wall.getDescription();
+        if (desc == null) {
+            desc = wall.getName();
+        } if (desc == null) {
+            desc = "a wall";
+        } 
+        System.out.print(desc);
+        List<Item> items = wall.getItemsOnWall();
+        if (!items.isEmpty()) {
+            System.out.println(". On the wall are the following:");
+            for (Item item: items) {
+                System.out.println("   " + item.getAbbrev() 
+                + ": " + item.getName());
+            }
+        } else {
+            System.out.println();
+        }
+    }
+
+    private void describeExit(Exit exit) {
+        String desc = exit.getDescription();
+        Item portal = exit.getPortal();
+        if (desc == null) {
+            if (portal != null) {
+                if (portal.getDescription() != null) {
+                    desc = portal.getDescription();
+                } else {
+                    desc = portal.getName();
+                }
+            } else {
+                desc = exit.getTo().getName();
+            }
+        }
+        System.out.print(desc);
+        if (portal != null && portal.isOpenable()) {
+            System.out.print(". The " + portal.getAbbrev() 
+                    + (portal.isOpen() ? " is open" : " is closed"));
+        }
+        System.out.println();
+    }
 
     @Override
     public String describe() {

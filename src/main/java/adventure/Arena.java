@@ -45,10 +45,10 @@ public class Arena {
 		}
         
         Exit exit = new Exit(direction, portal, toLoc, description);
-        fromLoc.addExit(exit);
+        fromLoc.addVista(exit);
 	}
-	
-	public void addExit(String from, String to, Item portal,
+    
+    public void addExit(String from, String to, Item portal,
 	        Direction forward, Direction back, String description) {
 		addExit(from, to, portal, forward, description);
 		addExit(to, from, portal, back, description);
@@ -99,25 +99,30 @@ public class Arena {
 			String name = getString(locData, "name");
             String abbrev = getString(locData, "abbrev");
             String description = getString(locData, "description");
-            String kind = getString(locData, "kind");
 	        if (arena.allLocations.get(label) != null) {
 	            throw new ArenaSyntaxException("location '" + label + "' already exists");
 	        }
-	        Location location;
-	        if ("ROOM".equals(kind)) {
-	            List<Wall> walls = new ArrayList<>();
-	            List<Map<String, String>> wallData = 
-	                    (List<Map<String, String>>) locData.get("walls");
-	            if (wallData != null) {
-	                for (Map<String, String> wall: wallData) {
-	                    walls.add(new Wall(Direction.valueOf(wall.get("direction")),
-	                            wall.get("name"), wall.get("description")));
-	                }
+	        Location location = new Location(label, name, abbrev, description);
+	        
+	        List<Map<String, String>> wallData = 
+	                (List<Map<String, String>>) locData.get("walls");
+	        if (wallData != null) {
+	            for (Map<String, String> wall: wallData) {
+	                location.addVista(
+	                        new Wall(Direction.valueOf(wall.get("direction")),
+	                                wall.get("name"), wall.get("description")));
 	            }
-			    location = new Room(label, name, abbrev, description, walls);
-			} else {
-			    location = new Location(label, name, abbrev, description);
-			}
+	        }
+
+	        List<Map<String, String>> vistaData = 
+	                (List<Map<String, String>>) locData.get("vistas");
+	        if (vistaData != null) {
+	            for (Map<String, String> vista: vistaData) {
+	                location.addVista(
+	                        new Vista(Direction.valueOf(vista.get("direction")),
+	                                vista.get("description")));
+	            }
+	        }
 	        arena.allLocations.put(label, location);
 		}
 		
@@ -138,7 +143,7 @@ public class Arena {
                         getString(exitData, "description"));
 			}
 		}
-		
+				
 	    arena.parseItems(loaded);
 	    
 	    List<Object> associationData = (List<Object>) loaded.get("associations");
