@@ -34,24 +34,27 @@ public class LookAction implements Action {
 		                "  " + item.getAbbrev() + ": " + item.getName());
 		    }
 		}
-		List<Vista> vistas = here.getVistas();
+		List<Vista> allVistas = here.getVistas();
 		Direction[] directions = new Direction[] {
 		        Direction.n, Direction.ne, Direction.e, Direction.se, 
 		        Direction.s, Direction.sw, Direction.w, Direction.nw, 
 		        Direction.a, Direction.b}; 
 		for (Direction direction: directions) {
-		    Optional<Vista> optVista = vistas.stream()
+		    List<Vista> vistas = allVistas.stream()
 		            .filter((w) -> w.mainDirection().equals(direction))
-		            .findFirst();
-		    if (optVista.isPresent()) {
+		            .toList();
+		    if (!vistas.isEmpty()) {
 		        System.out.print(describeDirection(direction) + " you see ");
-		        Vista vista = optVista.get();
-		        if (vista instanceof Exit) {
-		            describeExit((Exit) vista);
-		        } else if (vista instanceof Wall) {
-		            describeWall((Wall) vista);
-		        } else {
-		            describeVista(vista);
+		        Wall wall = null;
+		        for (Vista vista: vistas) {
+		            if (vista instanceof Exit) {
+		                describeExit((Exit) vista, wall);
+		            } else if (vista instanceof Wall) {
+		                wall = (Wall) vista;
+		                describeWall(wall);
+		            } else {
+		                describeVista(vista);
+		            }
 		        }
 		    }
 		}
@@ -93,18 +96,31 @@ public class LookAction implements Action {
         }
     }
 
-    private void describeExit(Exit exit) {
-        String desc = exit.getDescription();
+    private void describeExit(Exit exit, Wall wall) {
+        String desc;
         Item portal = exit.getPortal();
-        if (desc == null) {
+        if (wall != null) {
+            System.out.print("In the wall there is ");
             if (portal != null) {
-                if (portal.getDescription() != null) {
-                    desc = portal.getDescription();
-                } else {
-                    desc = portal.getName();
-                }
+                desc = "a " + portal.getAbbrev();
             } else {
-                desc = exit.getTo().getName();
+                desc = "an exit";
+            }
+            if (portal == null || !portal.isOpenable() || portal.isOpen()) {
+                desc += " to " + exit.getTo().getName();
+            }
+        } else {
+            desc = exit.getDescription();
+            if (desc == null) {
+                if (portal != null) {
+                    if (portal.getDescription() != null) {
+                        desc = portal.getDescription();
+                    } else {    
+                        desc = portal.getName();
+                    }
+                } else {
+                    desc = exit.getTo().getName();
+                }
             }
         }
         System.out.print(desc);
