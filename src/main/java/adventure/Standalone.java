@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.NoSuchElementException;
 
 import adventure.actions.Action;
 import adventure.actions.Actions;
@@ -41,7 +42,7 @@ public class Standalone implements Runnable {
 					command.perform(player);
 				}
 			}
-		} catch (QuitException e) {
+		} catch (QuitException | NoSuchElementException e) {
 			System.out.println("Bye");
 		}
 	}
