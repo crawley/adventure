@@ -13,7 +13,9 @@ public enum Direction {
     u("up"),
     d("down"),
     i("in"),
-    o("out");
+    o("out"),
+    a("above"),
+    b("below");
     
     private final String name;
     

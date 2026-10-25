@@ -6,17 +6,39 @@ import java.util.Collections;
 import java.util.List;
 
 public class Location extends Entity {
+    
+    public enum LocationType {
+        ROOM("in"), PASSAGEWAY("in"), PLATFORM("on"), 
+        PATH("on"), AREA1("in"), AREA2("on");
+        
+        private final String preposition;
+        
+        LocationType(String preposition) {
+            this.preposition = preposition;
+        }
+
+        public String getPreposition() {
+            return preposition;
+        }
+    }
 	
 	private final List<Vista> vistas;
 	private final ItemList items;
+	private final LocationType type;
 
-    public Location(String label, String name, String abbrev, String description) {
+    public Location(LocationType type, String label, String name, 
+            String abbrev, String description) {
 		super(label, name, abbrev, description);
+		this.type = type;
 		this.vistas = new ArrayList<>();
 		this.items = new ItemList("here");
 	}
 
-	public List<Vista> getVistas() {
+	public LocationType getType() {
+        return type;
+    }
+
+    public List<Vista> getVistas() {
         return vistas;
     }
     
@@ -50,7 +72,8 @@ public class Location extends Entity {
         } else if (entity instanceof Item) {
             return (Location) entity;
         } else {
-            throw new EntityException("Entity with label '" + label + "' is not a location");
+            throw new EntityException(
+                    "Entity with label '" + label + "' is not a location");
         }
     }
 

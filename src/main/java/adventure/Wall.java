@@ -7,7 +7,7 @@ public class Wall extends Vista {
     private final List<Item> itemsOnWall;
     
     public Wall(Direction direction, String name, String description) {
-        super(direction, description);
+        super(new Direction[] {direction}, description);
         this.name = name;
         this.itemsOnWall = new ItemList("on-wall-" + name + "-" + direction);
     }

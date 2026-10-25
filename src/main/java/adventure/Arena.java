@@ -2,6 +2,7 @@ package adventure;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.stream.Stream;
 
 import org.yaml.snakeyaml.Yaml;
 
+import adventure.Location.LocationType;
 import adventure.actions.Trigger;
 import adventure.actions.Trigger.Event;
 import adventure.actions.Trigger.Verb;
@@ -33,7 +35,7 @@ public class Arena {
 		instance = this;
 	}
 	
-	public void addExit(String fromLabel, String toLabel, Item portal, Direction direction,
+	public void addExit(String fromLabel, String toLabel, Item portal, String directions,
 	        String description) {
 		Location fromLoc = allLocations.get(fromLabel);
 		if (fromLoc == null) {
@@ -43,13 +45,15 @@ public class Arena {
         if (toLoc == null) {
 			throw new ArenaSyntaxException("location '" + toLabel + "' not found");
 		}
-        
-        Exit exit = new Exit(direction, portal, toLoc, description);
+        Direction[] dirs = Arrays.stream(directions.split("\\s+"))
+                .map((s) -> Direction.valueOf(s))
+                .toArray(Direction[]::new);
+        Vista exit = new Exit(dirs, portal, toLoc, description);
         fromLoc.addVista(exit);
 	}
     
     public void addExit(String from, String to, Item portal,
-	        Direction forward, Direction back, String description) {
+	        String forward, String back, String description) {
 		addExit(from, to, portal, forward, description);
 		addExit(to, from, portal, back, description);
 	}
@@ -100,9 +104,11 @@ public class Arena {
             String abbrev = getString(locData, "abbrev");
             String description = getString(locData, "description");
 	        if (arena.allLocations.get(label) != null) {
-	            throw new ArenaSyntaxException("location '" + label + "' already exists");
+	            throw new ArenaSyntaxException(
+	                    "location '" + label + "' already exists");
 	        }
-	        Location location = new Location(label, name, abbrev, description);
+	        LocationType kind = LocationType.valueOf(getString(locData, "type"));
+	        Location location = new Location(kind, label, name, abbrev, description);
 	        
 	        List<Map<String, String>> wallData = 
 	                (List<Map<String, String>>) locData.get("walls");
@@ -133,13 +139,13 @@ public class Arena {
 			if (exitData.containsKey("backwards")) {
 				arena.addExit(getString(exitData, "from"), getString(exitData, "to"), 
 						portal,
-						Direction.valueOf(getString(exitData, "forwards")),
-						Direction.valueOf(getString(exitData, "backwards")),
+						getString(exitData, "forwards"),
+						getString(exitData, "backwards"),
 						getString(exitData, "description"));
 			} else {
 				arena.addExit(getString(exitData, "from"), getString(exitData, "to"), 
 					    portal, 
-					    Direction.valueOf(getString(exitData, "forwards")),
+					    getString(exitData, "forwards"),
                         getString(exitData, "description"));
 			}
 		}

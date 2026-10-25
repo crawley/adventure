@@ -3,7 +3,7 @@ start: porch
 
 locations: 
   - label: path
-    kind: OUTSIDE
+    type: PATH
     name: the front path
     description: the front path of the Spooky House.
     vistas:
@@ -21,25 +21,25 @@ locations:
           a wooden gate set in a high stone wall.
 
   - label: porch
-    kind: OUTSIDE
+    type: PLATFORM
     name: the front porch
     description: the front porch of the Spooky House
 
   - label: hallway
-    kind: ROOM
+    type: PASSAGEWAY
     name: the hallway
     description: |
       an entrance hallway
     walls:
       - direction: e
         name: east wall
-        description: a long wall
+        description: a long wall with a doorway
       - direction: w
         name: west wall
-        description: a long wall
+        description: a long wall with a doorway
 
   - label: dining
-    kind: ROOM
+    type: ROOM
     name: the dining room
     description: |
       a room with a large window.  
@@ -50,7 +50,7 @@ locations:
         description: a blank wall
       - direction: w
         name: west wall
-        description: a wall
+        description: a wall with a doorway
       - direction: s
         name: south wall
         description: a wall with a window
@@ -59,7 +59,7 @@ locations:
         description: a blank wall
 
   - label: sitting
-    kind: ROOM
+    type: ROOM
     name: the sitting room
     description: |
       a room with a large window and fireplace.  
@@ -67,7 +67,7 @@ locations:
     walls:
       - direction: e
         name: east wall
-        description: a wall
+        description: a wall with a doorway
       - direction: w
         name: west wall
         description: a wall with a fireplace
@@ -92,8 +92,8 @@ exits:
       abbrev: door
       description: an ornate oak door
       flags: OPENABLE LOCKABLE
-    forwards: n
-    backwards: s
+    forwards: n i
+    backwards: s o
 
   - from: hallway
     to: dining

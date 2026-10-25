@@ -1,6 +1,7 @@
 package adventure.actions;
 
 import adventure.Actor;
+import adventure.Direction;
 import adventure.Exit;
 import adventure.Item;
 import adventure.Location;
@@ -10,10 +11,11 @@ public class WhereAction implements Action {
 	@Override
 	public void perform(Actor actor, String[] args) {
 	    Location here = actor.getCurrentLocation();
-		System.out.println("You are in " + here.getName());
+		System.out.println("You are " + here.getType().getPreposition() 
+		        + " " + here.getName());
 		System.out.println("You can go in the following directions: ");
 		for (Exit exit: here.getExits()) {
-			System.out.print("  " + exit.getDirection().getName());
+			System.out.print("  " + showDirections(exit));
 			Item portal = exit.getPortal();
 			if (portal != null && !portal.isHidden()) {
 			    System.out.print(
@@ -25,6 +27,17 @@ public class WhereAction implements Action {
 			System.out.println();
 		}
 	}
+
+    private String showDirections(Exit exit) {
+        String res = "";
+        for (Direction direction: exit.getDirections()) {
+            if (res.length() > 0) {
+                res += ", ";
+            }
+            res += direction.getName();
+        }
+        return res;
+    }
 
     @Override
     public String describe() {

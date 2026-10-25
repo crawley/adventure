@@ -16,11 +16,12 @@ public class LookAction implements Action {
 	@Override
 	public void perform(Actor actor, String[] args) {
 	    Location here = actor.getCurrentLocation();
-		if (here.getDescription() == null) {
-		    System.out.println("You are in " + here.getName());
-		} else {
-		    System.out.println(here.getDescription());
+	    String desc = here.getDescription();
+		if (desc == null) {
+		    desc = here.getName();
 		}
+		System.out.println("You are " + here.getType().getPreposition()
+		        + " " + desc);
 		List<Item> items = here.getItems();
 		boolean firstItem = true;
 		for (Item item: items) {
@@ -34,12 +35,16 @@ public class LookAction implements Action {
 		    }
 		}
 		List<Vista> vistas = here.getVistas();
-		for (Direction direction: Direction.values()) {
+		Direction[] directions = new Direction[] {
+		        Direction.n, Direction.ne, Direction.e, Direction.se, 
+		        Direction.s, Direction.sw, Direction.w, Direction.nw, 
+		        Direction.a, Direction.b}; 
+		for (Direction direction: directions) {
 		    Optional<Vista> optVista = vistas.stream()
-		            .filter((w) -> w.getDirection().equals(direction))
+		            .filter((w) -> w.mainDirection().equals(direction))
 		            .findFirst();
 		    if (optVista.isPresent()) {
-		        System.out.print("In the " + direction.getName() + " direction you see ");
+		        System.out.print(describeDirection(direction) + " you see ");
 		        Vista vista = optVista.get();
 		        if (vista instanceof Exit) {
 		            describeExit((Exit) vista);
@@ -51,6 +56,14 @@ public class LookAction implements Action {
 		    }
 		}
 	}
+	
+    private String describeDirection(Direction direction) {
+        return switch(direction) {
+        case a -> "Above you";
+        case b -> "Below you";
+        default -> "To your " + direction.getName();
+        };
+    }
 
     private void describeVista(Vista vista) {
         String desc = vista.getDescription();

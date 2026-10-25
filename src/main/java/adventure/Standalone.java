@@ -31,7 +31,9 @@ public class Standalone implements Runnable {
 	@Override
 	public void run() {
 	    input = new Scanner(System.in);
-		System.out.println("You are at " + player.getCurrentLocation().getName());
+	    Location here = player.getCurrentLocation();
+		System.out.println("You are " + here.getType().getPreposition() 
+		        + " " + here.getName());
 		try {
 			while (true) {
 				Command command;
