@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -72,12 +73,25 @@ public class Arena {
                 new Container(label, name, abbrev, description, flags, triggers) :
 	            new Item(label, name, abbrev, description, flags, triggers);
 	    if (location != null) {
-	        // A portal 'item' doesn't have a (single) location ...
-	        Location loc = allLocations.get(location);
+	        String[] parts = location.split("#", 2);
+	        Location loc = allLocations.get(parts[0]);
 	        if (loc == null) {
 	            throw new ArenaSyntaxException("location '" + location + "' not found");
 	        }
-	        loc.addItem(item);
+	        if (parts.length == 1) {
+	            loc.addItem(item);
+	        } else {
+	            Direction dir = Direction.valueOf(parts[1]);
+	            Optional<Vista> opt = loc.getVistas().stream()
+	                    .filter((v) -> v.matchesDirection(dir))
+	                    .findFirst();
+	            Vista vista;
+	            if (opt.isPresent() && (vista = opt.get()) instanceof Wall) {
+	                ((Wall) vista).getItemsOnWall().add(item);
+	            } else {
+	                throw new ArenaSyntaxException("no wall '" + location + "' found");
+	            }
+	        }
 	    }
         return item;
 	}

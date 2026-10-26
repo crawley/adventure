@@ -11,13 +11,14 @@ import adventure.Item;
 public abstract class Verb implements Action {
     
     protected enum Context {
-        WORN, HELD, FLOOR, PORTALS;
+        WORN, HELD, FLOOR, WALLS, PORTALS;
         
         public List<Item> items(Actor actor) {
             return switch (this) {
             case WORN -> actor.getItemsWorn();
             case HELD -> actor.getItemsInHand();
             case FLOOR -> actor.getCurrentLocation().getItems();
+            case WALLS -> actor.getCurrentLocation().wallItems();
             case PORTALS -> actor.getCurrentLocation().portalItems();
             default ->
                 new ArrayList<Item>();

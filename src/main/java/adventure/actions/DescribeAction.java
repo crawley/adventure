@@ -19,7 +19,7 @@ public class DescribeAction implements Action {
             String word = args[0];
             List<Item> items = Verb.resolve(
                     word, actor, Context.FLOOR, Context.PORTALS, 
-                    Context.HELD, Context.WORN);
+                    Context.WALLS, Context.HELD, Context.WORN);
             if (items.isEmpty()) {
                 System.out.println("Cannot see a " + word);
             } else if (items.size() == 1) {
@@ -37,7 +37,7 @@ public class DescribeAction implements Action {
 	private void describe(Item item, String word) {
 	    System.out.println(word + ": " + item.getName());
 	    if (item.getDescription() != null) {
-	        System.out.println(item.getDescription());
+	        System.out.println("This is " + item.getDescription());
 	    }
 	    if (item.hasStateFlags()) {
 	        if (item.isOpenable()) {

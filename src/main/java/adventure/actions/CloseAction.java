@@ -12,7 +12,8 @@ public class CloseAction extends Verb {
 
     @Override
     public void perform(Actor actor, String[] args) {
-        performOnItem(actor, args, Context.FLOOR, Context.PORTALS);
+        performOnItem(actor, args, 
+                Context.FLOOR, Context.WALLS, Context.PORTALS);
     }
     
     @Override

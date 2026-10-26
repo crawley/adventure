@@ -14,7 +14,8 @@ public class GetAction extends Verb {
 
     @Override
     public void perform(Actor actor, String[] args) {
-        performOnItemWith(actor, args, true, "from", Context.HELD, Context.FLOOR);
+        performOnItemWith(actor, args, true, "from", 
+                Context.HELD, Context.FLOOR, Context.WALLS);
     }
     
     @Override

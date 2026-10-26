@@ -85,4 +85,12 @@ public class Location extends Entity {
                 .toList();
         return Collections.unmodifiableList(list);
     }
+
+    public List<Item> wallItems() {
+        List<Item> list = vistas.stream()
+                .filter((v) -> v instanceof Wall)
+                .flatMap((v) -> ((Wall) v).getItemsOnWall().stream())
+                .toList();
+        return Collections.unmodifiableList(list);
+    }
 }

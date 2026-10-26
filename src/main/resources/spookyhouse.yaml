@@ -156,8 +156,8 @@ items:
     name: a fireplace
     description: | 
       a large stone fireplace.
-      The fireplace contains cold ashes from the last fire.
-    location: sitting
+      In the fireplace are the cold ashes from a fire.
+    location: sitting#w
     flags: 
         
   - label: sofa
