@@ -20,6 +20,7 @@ import adventure.actions.Trigger.Verb;
 public class Arena {
 	
     private Map<String, Location> allLocations;
+    private Map<String, Actor> allActors;
     private Associations associations;
 	private String startLabel;
 	
@@ -31,6 +32,7 @@ public class Arena {
 	
 	public Arena (String startLabel) {
 		this.allLocations = new HashMap<>();
+		this.allActors = new HashMap<>();
 		this.associations = new Associations();
 		this.startLabel = startLabel;
 		instance = this;
@@ -38,14 +40,8 @@ public class Arena {
 	
 	public void addExit(String fromLabel, String toLabel, Item portal, String directions,
 	        String description) {
-		Location fromLoc = allLocations.get(fromLabel);
-		if (fromLoc == null) {
-			throw new ArenaSyntaxException("location '" + fromLabel + "' not found");
-		}
-		Location toLoc = allLocations.get(toLabel);
-        if (toLoc == null) {
-			throw new ArenaSyntaxException("location '" + toLabel + "' not found");
-		}
+		Location fromLoc = parseLocation(fromLabel);
+		Location toLoc = parseLocation(toLabel);
         Direction[] dirs = parseDirections(directions);
         Vista exit = new Exit(dirs, portal, toLoc, description);
         fromLoc.addVista(exit);
@@ -74,10 +70,7 @@ public class Arena {
 	            new Item(label, name, abbrev, description, flags, triggers);
 	    if (location != null) {
 	        String[] parts = location.split("#", 2);
-	        Location loc = allLocations.get(parts[0]);
-	        if (loc == null) {
-	            throw new ArenaSyntaxException("location '" + location + "' not found");
-	        }
+	        Location loc = parseLocation(parts[0]);
 	        if (parts.length == 1) {
 	            loc.addItem(item);
 	        } else {
@@ -96,13 +89,34 @@ public class Arena {
         return item;
 	}
 	
-	public Location getStart() {
+	public Actor addActor(String label, String kind, String location, 
+	        String name, String abbrev, String description) {
+	    Location loc = parseLocation(location);
+	    Actor actor = new Actor(Actor.Kind.valueOf(kind), label, name,
+	            abbrev, description, loc);
+	    allActors.put(label, actor);
+	    return actor;
+	}
+	
+	private Location parseLocation(String location) {
+	    Location loc = allLocations.get(location);
+        if (loc == null) {
+            throw new ArenaSyntaxException("location '" + location + "' not found");
+        }
+        return loc;
+    }
+
+    public Location getStart() {
 		Location start = allLocations.get(startLabel);
 		if (start == null) {
 			throw new ArenaSyntaxException("start location '" + startLabel + "' not found");
 		}
 		return start;
 	}
+    
+    public List<Actor> getAllActors() {
+        return new ArrayList<>(allActors.values());
+    }
 	
 	public Associations getAssociations() {
 	    return associations;
@@ -129,24 +143,28 @@ public class Arena {
 	        LocationType kind = LocationType.valueOf(getString(locData, "type"));
 	        Location location = new Location(kind, label, name, abbrev, description);
 	        
-	        List<Map<String, String>> wallData = 
-	                (List<Map<String, String>>) locData.get("walls");
+	        List<Map<String, Object>> wallData = 
+	                (List<Map<String, Object>>) locData.get("walls");
 	        if (wallData != null) {
-	            for (Map<String, String> wall: wallData) {
+	            for (Map<String, Object> wall: wallData) {
 	                location.addVista(
-	                        new Wall(Direction.valueOf(wall.get("direction")),
-	                                wall.get("name"), wall.get("description")));
+	                        new Wall(Direction.valueOf(
+	                                getString(wall, "direction")),
+	                                getString(wall, "name"), 
+	                                getString(wall, "description")));
 	            }
 	        }
 
-	        List<Map<String, String>> vistaData = 
-	                (List<Map<String, String>>) locData.get("vistas");
+	        List<Map<String, Object>> vistaData = 
+	                (List<Map<String, Object>>) locData.get("vistas");
 	        if (vistaData != null) {
-	            for (Map<String, String> vista: vistaData) {
-	                Direction[] directions = parseDirections(vista.get("direction"));
+	            for (Map<String, Object> vista: vistaData) {
+	                Direction[] directions = 
+	                        parseDirections(getString(vista, "direction"));
 	                for (Direction direction: directions) {
 	                    location.addVista(
-	                            new Vista(direction, vista.get("description")));
+	                            new Vista(direction, 
+	                                    getString(vista, "description")));
 	                }
 	            }
 	        }
@@ -158,13 +176,15 @@ public class Arena {
 			Map<String, Object> exitData = (Map<String, Object>) data;
             Item portal = arena.parsePortal(exitData);
 			if (exitData.containsKey("backwards")) {
-				arena.addExit(getString(exitData, "from"), getString(exitData, "to"), 
+				arena.addExit(getString(exitData, "from"), 
+				        getString(exitData, "to"), 
 						portal,
 						getString(exitData, "forwards"),
 						getString(exitData, "backwards"),
 						getString(exitData, "description"));
 			} else {
-				arena.addExit(getString(exitData, "from"), getString(exitData, "to"), 
+				arena.addExit(getString(exitData, "from"), 
+				        getString(exitData, "to"), 
 					    portal, 
 					    getString(exitData, "forwards"),
                         getString(exitData, "description"));
@@ -173,11 +193,25 @@ public class Arena {
 				
 	    arena.parseItems(loaded);
 	    
+	    List<Object> creatures = (List<Object>) loaded.get("creatures");
+	    for (Object data: creatures) {
+	        Map<String, Object> creatureData = (Map<String, Object>) data;
+	        arena.addActor(
+	                getString(creatureData, "label"), 
+	                getString(creatureData, "kind"), 
+	                getString(creatureData, "location"), 
+	                getString(creatureData, "name"), 
+	                getString(creatureData, "abbrev"), 
+	                getString(creatureData, "description"));
+	    }
+	    
 	    List<Object> associationData = (List<Object>) loaded.get("associations");
 	    for (Object relationData: associationData) {
-	        Map<String, String> data = (Map<String, String>) relationData;
+	        Map<String, Object> data = (Map<String, Object>) relationData;
 	        arena.associations.addRelation(
-	                data.get("relation"), data.get("item1"), data.get("item2"));
+	                getString(data, "relation"), 
+	                getString(data, "item1"), 
+	                getString(data, "item2"));
 	    }
 	    
 		return arena;
@@ -225,25 +259,26 @@ public class Arena {
     }
 
     private static String getString(Map<String, Object> data, String tag) {
-        return (String) data.get(tag);
+        String res = (String) data.get(tag);
+        return (res != null) ? res.trim() : null;
     }
-
+    
     @SuppressWarnings("unchecked")
     private List<Trigger> parseTriggers(Map<String, Object> itemData) {
         List<Trigger> triggers = new ArrayList<>();
         List<Object> data = (List<Object>) itemData.get("triggers");
         if (data != null) {
             for (Object obj: data) {
-                Map<String, String> triggerData = (Map<String, String>) obj;
-                List<Event> events = parseEvents(triggerData.get("events"));
+                Map<String, Object> triggerData = (Map<String, Object>) obj;
+                List<Event> events = parseEvents(getString(triggerData, "events"));
                 if (events.isEmpty()) {
                     throw new ArenaSyntaxException("A trigger must some events");
                 }
                 Trigger trigger = new Trigger(
                         events,
-                        triggerData.get("target"),
-                        parseVerb(triggerData.get("verb")),
-                        triggerData.get("message"));
+                        getString(triggerData, "target"),
+                        parseVerb(getString(triggerData, "verb")),
+                        getString(triggerData, "message"));
                 triggers.add(trigger);
             }
         }

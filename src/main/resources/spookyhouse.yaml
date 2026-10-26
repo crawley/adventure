@@ -136,6 +136,13 @@ exits:
     forwards: w
     backwards: e
     
+creatures:
+  - label: cat
+    kind: PET
+    name: Jasper
+    description: a black cat
+    location: path
+    
 items:
   - label: knapsack
     kind: CONTAINER

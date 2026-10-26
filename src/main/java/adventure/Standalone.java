@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 import adventure.actions.Action;
 import adventure.actions.Actions;
@@ -26,15 +26,14 @@ public class Standalone implements Runnable {
 			throw new MissingArenaException("Problem loading arena '" +
 					fileName + "'", ex);
 		}
-		player = new Actor("player", arena.getStart(), arena);
+		player = new Actor(Actor.Kind.PLAYER, "player", "player", 
+		        "player", "the player (you)", arena.getStart());
 	}
 
 	@Override
 	public void run() {
 	    input = new Scanner(System.in);
-	    Location here = player.getCurrentLocation();
-		System.out.println("You are " + here.getType().getPreposition() 
-		        + " " + here.getName());
+	    player.showLocationAndActors();
 		try {
 			while (true) {
 				Command command;

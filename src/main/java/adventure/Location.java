@@ -93,4 +93,10 @@ public class Location extends Entity {
                 .toList();
         return Collections.unmodifiableList(list);
     }
-}
+    
+    public List<Actor> actors() {
+        return Arena.getInstance().getAllActors().stream()
+                .filter((a) -> a.getCurrentLocation() == this)
+                .toList();
+    }
+ }

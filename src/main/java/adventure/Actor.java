@@ -6,23 +6,28 @@ import adventure.actions.Trigger.Event;
 import adventure.actions.VerbResult;
 import adventure.actions.VerbResult.Outcome;
 
-public class Actor {
-    private final String name;
-    private final Arena arena;
+public class Actor extends Entity {
+    
+    public enum Kind {
+        PLAYER, NPC, PET, MONSTER
+    }
+    
+    private final Kind kind;
     private Location currentLocation;
     private final List<Item> itemsInHand = new ItemList("in hand");
     private final List<Item> itemsWorn = new ItemList("worn");
     private final int NOS_HANDS = 2;
     
     
-	public Actor(String name, Location location, Arena arena) {
-		this.name = name;
+	public Actor(Kind kind, String label, String name, String abbrev,
+	        String description, Location location) {
+		super(label, name, abbrev, description);
 		this.currentLocation = location;
-		this.arena = arena;
+		this.kind = kind;
 	}
 
-	public Arena getArena() {
-        return arena;
+	public Kind getKind() {
+        return kind;
     }
 
     public Location getCurrentLocation() {
@@ -33,10 +38,6 @@ public class Actor {
 		this.currentLocation = currentLocation;
 	}
 
-	public String getName() {
-		return name;
-	}
-    
 	public VerbResult wearItem(Item item) {
 	    if (item.isWearable()) {
 	        if (itemsWorn.contains(item)) {
@@ -99,6 +100,16 @@ public class Actor {
             return new VerbResult(Outcome.SUCCESS, item);
         } else {
             return new VerbResult(Outcome.NOT_APPLICABLE, item);
+        }
+    }
+
+    public void showLocationAndActors() {
+        System.out.println("You are " + currentLocation.getType().getPreposition() 
+                + " " + currentLocation.getName());
+        for (Actor actor: currentLocation.actors()) {
+            if (actor != this) {
+                System.out.println("You see " + actor.getDescription());
+            }
         }
     }
     

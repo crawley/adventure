@@ -14,13 +14,8 @@ public class LookAction implements Action {
 
 	@Override
 	public void perform(Actor actor, String[] args) {
+	    actor.showLocationAndActors();
 	    Location here = actor.getCurrentLocation();
-	    String desc = here.getDescription();
-		if (desc == null) {
-		    desc = here.getName();
-		}
-		System.out.println("You are " + here.getType().getPreposition()
-		        + " " + desc);
 		List<Item> items = here.getItems();
 		boolean firstItem = true;
 		for (Item item: items) {

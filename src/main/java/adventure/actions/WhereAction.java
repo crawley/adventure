@@ -4,17 +4,14 @@ import adventure.Actor;
 import adventure.Direction;
 import adventure.Exit;
 import adventure.Item;
-import adventure.Location;
 
 public class WhereAction implements Action {
 
 	@Override
 	public void perform(Actor actor, String[] args) {
-	    Location here = actor.getCurrentLocation();
-		System.out.println("You are " + here.getType().getPreposition() 
-		        + " " + here.getName());
+	    actor.showLocationAndActors();
 		System.out.println("You can go in the following directions: ");
-		for (Exit exit: here.getExits()) {
+		for (Exit exit: actor.getCurrentLocation().getExits()) {
 			System.out.print("  " + showDirections(exit));
 			Item portal = exit.getPortal();
 			if (portal != null && !portal.isHidden()) {
