@@ -1,7 +1,6 @@
 package adventure.actions;
 
 import java.util.List;
-import java.util.Optional;
 
 import adventure.Actor;
 import adventure.Direction;

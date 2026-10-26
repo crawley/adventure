@@ -45,12 +45,17 @@ public class Arena {
         if (toLoc == null) {
 			throw new ArenaSyntaxException("location '" + toLabel + "' not found");
 		}
-        Direction[] dirs = Arrays.stream(directions.split("\\s+"))
-                .map((s) -> Direction.valueOf(s))
-                .toArray(Direction[]::new);
+        Direction[] dirs = parseDirections(directions);
         Vista exit = new Exit(dirs, portal, toLoc, description);
         fromLoc.addVista(exit);
 	}
+
+    private static Direction[] parseDirections(String directions) {
+        Direction[] dirs = Arrays.stream(directions.split("\\s+"))
+                .map((s) -> Direction.valueOf(s))
+                .toArray(Direction[]::new);
+        return dirs;
+    }
     
     public void addExit(String from, String to, Item portal,
 	        String forward, String back, String description) {
@@ -124,9 +129,11 @@ public class Arena {
 	                (List<Map<String, String>>) locData.get("vistas");
 	        if (vistaData != null) {
 	            for (Map<String, String> vista: vistaData) {
-	                location.addVista(
-	                        new Vista(Direction.valueOf(vista.get("direction")),
-	                                vista.get("description")));
+	                Direction[] directions = parseDirections(vista.get("direction"));
+	                for (Direction direction: directions) {
+	                    location.addVista(
+	                            new Vista(direction, vista.get("description")));
+	                }
 	            }
 	        }
 	        arena.allLocations.put(label, location);
@@ -216,7 +223,7 @@ public class Arena {
                 Map<String, String> triggerData = (Map<String, String>) obj;
                 List<Event> events = parseEvents(triggerData.get("events"));
                 if (events.isEmpty()) {
-                    throw new ArenaSyntaxException("A trigger must have 1 or more events");
+                    throw new ArenaSyntaxException("A trigger must some events");
                 }
                 Trigger trigger = new Trigger(
                         events,

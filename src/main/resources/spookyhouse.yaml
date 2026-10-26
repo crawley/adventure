@@ -2,6 +2,25 @@
 start: porch
 
 locations: 
+  - label: road
+    type: PATH
+    name: a road
+    description: a dusty road
+    vistas:
+      - direction: s se sw ne nw
+        description: |
+          a barbed wire fence.
+          Beyond the fence you see pastures with woodlands beyond.
+      - direction: n
+        description: a high stone wall.
+      - direction: e
+        description: |
+          the road runs off into the distance.
+          In the distance you see trees and the roofs of buildings.
+      - direction: w
+        description: |
+          the road runs off into the distance.
+
   - label: path
     type: PATH
     name: the front path
@@ -18,7 +37,7 @@ locations:
           Beyond the patch of grass is a high stone wall.
       - direction: s
         description: |
-          a wooden gate set in a high stone wall.
+          the path ends with a high stone wall.
 
   - label: porch
     type: PLATFORM
@@ -79,6 +98,18 @@ locations:
         description: a blank wall
 
 exits:
+
+  - from: road
+    to: path
+    portal:
+      label: frontgate
+      name: the front date
+      abbrev: gate
+      description: a rustic gate
+      flags: OPENABLE OPEN
+    forwards: n i
+    backwards: s o
+ 
   - from: path
     to: porch
     forwards: n
