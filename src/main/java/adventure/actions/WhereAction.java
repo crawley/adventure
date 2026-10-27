@@ -8,7 +8,7 @@ import adventure.Item;
 public class WhereAction implements Action {
 
 	@Override
-	public void perform(Actor actor, String[] args) {
+	public int perform(Actor actor, String[] args) {
 	    actor.showLocationAndActors();
 		System.out.println("You can go in the following directions: ");
 		for (Exit exit: actor.getCurrentLocation().getExits()) {
@@ -23,6 +23,7 @@ public class WhereAction implements Action {
 			}
 			System.out.println();
 		}
+		return 0;
 	}
 
     private String showDirections(Exit exit) {

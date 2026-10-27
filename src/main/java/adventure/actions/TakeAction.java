@@ -11,8 +11,8 @@ public class TakeAction extends Verb {
     }
 
 	@Override
-	public void perform(Actor actor, String[] args) {
-	    performOnItem(actor, args, 
+	public int perform(Actor actor, String[] args) {
+	    return performOnItem(actor, args, 
 	            Context.FLOOR, Context.WALLS);
 	}
 	

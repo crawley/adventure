@@ -175,19 +175,21 @@ public abstract class Verb implements Action {
         }
     }
 
-    protected void performOnItem(Actor actor, String[] args, 
+    protected int performOnItem(Actor actor, String[] args, 
             Context ...contexts) {
         if (args.length == 0) {
             System.out.println("What do you want to " + verb + "?");
+            return 0;
         } else if (args.length > 1) {
             System.out.println("You can only " + 
                     verb + " one thing at a time");
+            return 0;
         } else {
-            processVerbResult(applyHere(actor, args[0], contexts));
+            return processVerbResult(applyHere(actor, args[0], contexts));
         }
     }
     
-    protected void performOnItemWith(Actor actor, String[] args,
+    protected int performOnItemWith(Actor actor, String[] args,
             boolean fromContainer, String preposition, Context ...contexts) {
         if (args.length == 0) {
             System.out.println("What do you want to " + verb + "?");
@@ -210,17 +212,18 @@ public abstract class Verb implements Action {
             if (label2 != null) {
                 VerbResult res = applyHereWith(
                         actor, label, label2, fromContainer, contexts);
-                processVerbResult(res);
+                return processVerbResult(res);
             }
         }
+        return 0;
     }
     
-    private void processVerbResult(VerbResult res) {
+    private int processVerbResult(VerbResult res) {
         Item item = res.getItem();
         Item item2 = res.getItem2();
         switch (res.getOutcome()) {
         case SUCCESS:
-            onSuccess(item, item2); 
+            onSuccess(item, item2);
             break;
         case NOT_FOUND:
             System.out.println("You do not see " + res.getWord());
@@ -250,6 +253,7 @@ public abstract class Verb implements Action {
         default:
             break;
         }
+        return res.getTimeTaken();
     }
         
     public String getVerb() {

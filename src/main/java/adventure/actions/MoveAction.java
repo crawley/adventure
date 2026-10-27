@@ -11,8 +11,8 @@ public class MoveAction extends Verb {
     }
 
     @Override
-    public void perform(Actor actor, String[] args) {
-        performOnItem(actor, args, Context.FLOOR, Context.WALLS);
+    public int perform(Actor actor, String[] args) {
+        return performOnItem(actor, args, Context.FLOOR, Context.WALLS);
     }
 
     @Override

@@ -5,7 +5,7 @@ import adventure.Actor;
 public class ActionsAction implements Action {
 
 	@Override
-	public void perform(Actor target, String[] args) {
+	public int perform(Actor target, String[] args) {
 	    Actions actions = Actions.getInstance();
 	    System.out.print("Actions: ");
 	    for (String name: actions.actionNames()) {
@@ -17,7 +17,7 @@ public class ActionsAction implements Action {
 		    System.out.print(name + " ");
 		}
 		System.out.println();
-
+        return 0;
 	}
 
     @Override

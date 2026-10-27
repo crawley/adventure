@@ -10,7 +10,7 @@ import adventure.actions.Verb.Context;
 public class DescribeAction implements Action {
 
 	@Override
-	public void perform(Actor actor, String[] args) {
+	public int perform(Actor actor, String[] args) {
 	    if (args.length == 0) {
 	        System.out.println("What do you want to be described?");
 	    } else if (args.length > 1) {
@@ -32,6 +32,7 @@ public class DescribeAction implements Action {
                 }
             }
         }
+	    return 0;
 	}
 
 	private void describe(Item item, String word) {

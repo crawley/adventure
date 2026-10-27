@@ -11,8 +11,8 @@ public class RemoveAction extends Verb {
     }
 
     @Override
-    public void perform(Actor actor, String[] args) {
-        performOnItem(actor, args, Context.WORN);
+    public int perform(Actor actor, String[] args) {
+        return performOnItem(actor, args, Context.WORN);
     }
 
     @Override

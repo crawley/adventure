@@ -13,8 +13,8 @@ public class PutAction extends Verb {
     }
 
     @Override
-    public void perform(Actor actor, String[] args) {
-        performOnItemWith(actor, args, false, "into", Context.HELD);
+    public int perform(Actor actor, String[] args) {
+        return performOnItemWith(actor, args, false, "into", Context.HELD);
     }
     
     @Override
@@ -29,7 +29,7 @@ public class PutAction extends Verb {
         if (container instanceof Container) {
             ((Container) container).addItem(item);
             actor.getItemsInHand().remove(item);
-            return new VerbResult(Outcome.SUCCESS, item, container);
+            return new VerbResult(1, item, container);
         } else {
             return new VerbResult(Outcome.NOT_POSSIBLE, container,
                     "is not a container");

@@ -132,7 +132,7 @@ public class Item extends Entity {
     
     public VerbResult moveItem() {
         if (this.isMoveable()) {
-            return new VerbResult(Outcome.SUCCESS, this);
+            return new VerbResult(1, this);
         } else {
             return new VerbResult(Outcome.NOT_APPLICABLE, this);
         }
@@ -147,7 +147,7 @@ public class Item extends Entity {
             return new VerbResult(Outcome.NOT_POSSIBLE, this, "it is locked");
         } else {
             this.setOpen(true);
-            return new VerbResult(Outcome.SUCCESS, this);
+            return new VerbResult(1, this);
         }
     }
     
@@ -158,7 +158,7 @@ public class Item extends Entity {
             return new VerbResult(Outcome.ALREADY_DONE, this);
         } else {
             this.setOpen(false);
-            return new VerbResult(Outcome.SUCCESS, this);
+            return new VerbResult(1, this);
         }
     }
 
@@ -175,7 +175,7 @@ public class Item extends Entity {
             return new VerbResult(Outcome.NOT_POSSIBLE, this, "it is open");
         } else {
             this.setLocked(true);
-            return new VerbResult(Outcome.SUCCESS, this);
+            return new VerbResult(1, this);
         }
     }
 
@@ -190,7 +190,7 @@ public class Item extends Entity {
                     "the key does not fit its lock");
         } else {
             this.setLocked(false);
-            return new VerbResult(Outcome.SUCCESS, this);
+            return new VerbResult(1, this);
         }
     }
     

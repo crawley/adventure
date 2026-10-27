@@ -14,8 +14,8 @@ public class Command {
 		this.args = args.toArray(new String[0]);
 	}
 
-	public void perform(Actor target) {
-		action.perform(target, args);
+	public int perform(Actor target) {
+		return action.perform(target, args);
 	}
 
 }

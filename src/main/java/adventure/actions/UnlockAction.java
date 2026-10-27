@@ -11,8 +11,8 @@ public class UnlockAction extends Verb {
     }
 
     @Override
-    public void perform(Actor actor, String[] args) {
-        performOnItemWith(actor, args, false, "with", 
+    public int perform(Actor actor, String[] args) {
+        return performOnItemWith(actor, args, false, "with", 
                 Context.FLOOR, Context.WALLS, Context.PORTALS);
     }
     

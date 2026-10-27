@@ -4,7 +4,7 @@ import adventure.Actor;
 
 public interface Action {
 	
-	public void perform(Actor target, String[] args);
+	public int perform(Actor target, String[] args);
 	
 	public String describe();
 

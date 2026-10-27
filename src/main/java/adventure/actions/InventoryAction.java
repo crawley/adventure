@@ -6,7 +6,7 @@ import adventure.Entity;
 public class InventoryAction implements Action {
 
 	@Override
-	public void perform(Actor actor, String[] args) {
+	public int perform(Actor actor, String[] args) {
         if (!actor.getItemsWorn().isEmpty()) {
             System.out.println("You are wearing: ");
             for (Entity item: actor.getItemsWorn()) {
@@ -21,6 +21,7 @@ public class InventoryAction implements Action {
 		        System.out.println("  " + item.getAbbrev() + ": " + item.getName());
 		    }
 	    }
+	    return 0;
 	}
 
     @Override

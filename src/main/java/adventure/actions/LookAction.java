@@ -13,7 +13,7 @@ import adventure.Wall;
 public class LookAction implements Action {
 
 	@Override
-	public void perform(Actor actor, String[] args) {
+	public int perform(Actor actor, String[] args) {
 	    actor.showLocationAndActors();
 	    Location here = actor.getCurrentLocation();
 		List<Item> items = here.getItems();
@@ -52,6 +52,7 @@ public class LookAction implements Action {
 		        }
 		    }
 		}
+		return 0;
 	}
 	
     private String describeDirection(Direction direction) {

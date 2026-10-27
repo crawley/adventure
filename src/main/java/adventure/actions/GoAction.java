@@ -15,7 +15,7 @@ public class GoAction implements Action {
 	}
 
 	@Override
-	public void perform(Actor actor, String[] args) {
+	public int perform(Actor actor, String[] args) {
 	    for (Exit exit: actor.getCurrentLocation().getExits()) {
 	        if (exit.matchesDirection(direction)) {
 	            Item portal = exit.getPortal();
@@ -32,10 +32,11 @@ public class GoAction implements Action {
 	                System.out.println("You are " + loc.getType().getPreposition() 
 	                        + " " + loc.getName());
 	            }
-				return;
+				return 1;
 			}
 		}
 		System.out.println("You can't go " + direction.getName());
+		return 0;
 	}
 	
 	@Override

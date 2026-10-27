@@ -45,7 +45,7 @@ public class Actor extends Entity {
 	        } else {
 	            itemsWorn.add(item);
 	            itemsInHand.remove(item);
-	            return new VerbResult(Outcome.SUCCESS, item);
+	            return new VerbResult(3, item);
 	        }
 	    } else {
 	        return new VerbResult(Outcome.NOT_APPLICABLE, item);
@@ -61,7 +61,7 @@ public class Actor extends Entity {
             itemsInHand.add(item);
             item.trigger(Event.TAKEN);
         }
-        return new VerbResult(Outcome.SUCCESS, item); 
+        return new VerbResult(2, item); 
     }
 
     public List<Item> getItemsWorn() {
@@ -78,7 +78,7 @@ public class Actor extends Entity {
         } else if (item.isTakeable()) {
             getCurrentLocation().removeItem(item);
             itemsInHand.add(item);
-            return new VerbResult(Outcome.SUCCESS, item);
+            return new VerbResult(1, item);
         } else {
             return new VerbResult(Outcome.NOT_APPLICABLE, item);
         }
@@ -87,7 +87,7 @@ public class Actor extends Entity {
     public VerbResult dropItem(Item item) {
         itemsInHand.remove(item);
         getCurrentLocation().addItem(item);
-        return new VerbResult(Outcome.SUCCESS, item);
+        return new VerbResult(1, item);
     }
 
     public boolean handsFull() {
@@ -97,7 +97,7 @@ public class Actor extends Entity {
     public VerbResult eatItem(Item item) {
         if (item.isEdible()) {
             itemsInHand.remove(item);
-            return new VerbResult(Outcome.SUCCESS, item);
+            return new VerbResult(2, item);
         } else {
             return new VerbResult(Outcome.NOT_APPLICABLE, item);
         }

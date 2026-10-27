@@ -38,7 +38,8 @@ public class Standalone implements Runnable {
 			while (true) {
 				Command command;
 				if ((command = readCommand()) != null) {
-					command.perform(player);
+					int ticks = command.perform(player);
+					System.out.println("Took " + ticks + " ticks.");
 				}
 			}
 		} catch (QuitException | NoSuchElementException e) {

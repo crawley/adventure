@@ -13,6 +13,7 @@ public class VerbResult {
     }
 
     private final Outcome outcome;
+    private final int timeTaken;
     private final String word;
     private final Item item;
     private final Item item2;
@@ -20,11 +21,13 @@ public class VerbResult {
     private final String details;
     private final List<Item> alternatives;
     
-    private VerbResult(Outcome outcome, Item item, Item item2, 
+    private VerbResult(Outcome outcome, int timeTaken, 
+            Item item, Item item2, 
             Location location, String word, 
             String details, List<Item> alternatives) {
         super();
         this.outcome = outcome;
+        this.timeTaken = timeTaken;
         this.item = item;
         this.item2 = item2;
         this.location = location;
@@ -33,32 +36,40 @@ public class VerbResult {
         this.alternatives = alternatives;
     }
     
+    public VerbResult(int timeTaken, Item item) {
+        this(Outcome.SUCCESS, timeTaken, item, null, null, null, null, null);
+    }
+    
+    public VerbResult(int timeTaken, Item item, Item item2) {
+        this(Outcome.SUCCESS, timeTaken, item, item2, null, null, null, null);
+    }
+   
     public VerbResult(Outcome outcome, Item item) {
-        this(outcome, item, null, null, null, null, null);
+        this(outcome, 0, item, null, null, null, null, null);
     }
     
     public VerbResult(Outcome outcome, Item item, Item item2) {
-        this(outcome, item, item2, null, null, null, null);
+        this(outcome, 0, item, item2, null, null, null, null);
     }
     
     public VerbResult(Outcome outcome, Location location) {
-        this(outcome, null, null, location, null, null, null);
+        this(outcome, 0, null, null, location, null, null, null);
     }
     
     public VerbResult(Outcome outcome, String word) {
-        this(outcome, null, null, null, word, null, null);
+        this(outcome, 0, null, null, null, word, null, null);
     }
     
     public VerbResult(Outcome outcome, String word, List<Item> alternatives) {
-        this(outcome, null, null, null, word, null, alternatives);
+        this(outcome, 0, null, null, null, word, null, alternatives);
     }
     
     public VerbResult(Outcome outcome) {
-        this(outcome, null, null, null, null, null, null);
+        this(outcome, 0, null, null, null, null, null, null);
     }
 
     public VerbResult(Outcome outcome, Item item, String details) {
-        this(outcome, item, null, null, null, details, null);
+        this(outcome, 0, item, null, null, null, details, null);
     }
 
     public Outcome getOutcome() {
@@ -87,5 +98,9 @@ public class VerbResult {
 
     public Item getItem2() {
         return item2;
+    }
+
+    public int getTimeTaken() {
+        return timeTaken;
     }
 }

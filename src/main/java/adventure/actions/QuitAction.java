@@ -6,7 +6,7 @@ import adventure.QuitException;
 public class QuitAction implements Action {
 
 	@Override
-	public void perform(Actor actor, String[] args) {
+	public int perform(Actor actor, String[] args) {
 		throw new QuitException();
 	}
 

@@ -5,7 +5,7 @@ import adventure.Actor;
 public class HelpAction implements Action {
 
 	@Override
-	public void perform(Actor actor, String[] args) {
+	public int perform(Actor actor, String[] args) {
 	    if (args.length == 0) {
 	        System.out.println("What action do you want help for?");
 	    } else if (args.length > 1) {
@@ -18,6 +18,7 @@ public class HelpAction implements Action {
 	            System.out.println(args[0] + " - " + action.describe());
 	        }
         }
+	    return 0;
 	}
 
     @Override
