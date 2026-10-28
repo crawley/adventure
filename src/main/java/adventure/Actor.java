@@ -135,15 +135,12 @@ public class Actor extends Entity {
             if (trigger.getEvents().contains(event)) {
                 if (trigger.getVerb() != null) {
                     switch (trigger.getVerb()) {
-
                     case DECR_AND_TEST:
                     case RESET_IF_ZERO:
                         break;
                     case SAY:
                         for (Actor actor: Arena.getInstance().getAllActors()) {
-                            System.out.println("actor = " + actor.getName());
                             if (actor != this && actor.location == location) {
-                                System.out.println("Here");
                                 if (trigger.trigger()) {
                                     System.out.println(trigger.getMessage());
                                 }
