@@ -3,8 +3,9 @@ package adventure;
 import java.util.Collections;
 import java.util.List;
 
-import adventure.actions.Trigger.Event;
 import adventure.actions.Trigger;
+import adventure.actions.Trigger.Event;
+import adventure.actions.Triggered;
 import adventure.actions.VerbResult;
 import adventure.actions.VerbResult.Outcome;
 
@@ -133,16 +134,17 @@ public class Actor extends Entity {
     public void trigger(Trigger.Event event) {
         for (Trigger trigger: triggers) {
             if (trigger.getEvents().contains(event)) {
-                if (trigger.getVerb() != null) {
-                    switch (trigger.getVerb()) {
+                for (Triggered action: trigger.getActions()) {
+                    switch (action.getVerb()) {
                     case DECR_AND_TEST:
                     case RESET_IF_ZERO:
                         break;
                     case SAY:
                         for (Actor actor: Arena.getInstance().getAllActors()) {
                             if (actor != this && actor.location == location) {
-                                if (trigger.trigger()) {
-                                    System.out.println(trigger.getMessage());
+                                if (action.trigger()) {
+                                    System.out.println(
+                                            this.getName() + " says " + action.getMessage());
                                 }
                             }
                         }

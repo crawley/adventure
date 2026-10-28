@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import adventure.actions.Trigger;
+import adventure.actions.Triggered;
 import adventure.actions.VerbResult;
 import adventure.actions.VerbResult.Outcome;
 
@@ -196,17 +197,17 @@ public class Item extends Entity {
     
     public void trigger(Trigger.Event event) {
         for (Trigger trigger: triggers) {
-            if (trigger.getEvents().contains(event)) {
-                if (!trigger.trigger()) {
+            if (!trigger.getEvents().contains(event)) {
+                continue;
+            }
+            for (Triggered action: trigger.getActions()) {
+                if (!action.trigger()) {
                     continue;
                 }
-                if (trigger.getMessage() != null) {
-                    System.out.println(trigger.getMessage());
-                }
-                if (trigger.getVerb() != null) {
-                    Item item = lookupItem(trigger.getTarget());
+                if (action.getVerb() != null) {
+                    Item item = lookupItem(action.getTarget());
                     if (item != null) {
-                        switch (trigger.getVerb()) {
+                        switch (action.getVerb()) {
                         case HIDE:
                             item.setHidden(true);
                             break;
@@ -235,6 +236,15 @@ public class Item extends Entity {
                             break;
                         default:
                         }
+                    } else {
+                        switch (action.getVerb()) {
+                        case MESSAGE:
+                            if (action.getMessage() != null) {
+                                System.out.println(action.getMessage());
+                            }
+                            break;
+                        default:
+                        }
                     }
                 }
             }
@@ -242,6 +252,9 @@ public class Item extends Entity {
     }
 
     public static Item lookupItem(String label) {
+        if (label == null) {
+            return  null;
+        }
         Entity entity = Entity.lookup(label);
         if (entity == null) {
             throw new EntityException("No entity with label '" + label + "'");

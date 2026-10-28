@@ -15,7 +15,8 @@ import org.yaml.snakeyaml.Yaml;
 import adventure.Location.LocationType;
 import adventure.actions.Trigger;
 import adventure.actions.Trigger.Event;
-import adventure.actions.Trigger.Verb;
+import adventure.actions.Triggered;
+import adventure.actions.Triggered.Verb;
 
 public class Arena {
 	
@@ -143,7 +144,7 @@ public class Arena {
 			Map<String, Object> locData = (Map<String, Object>) data;
 			String label = getString(locData, "label");
 			String name = getString(locData, "name");
-            String abbrev = getString(locData, "abbrev");
+            String abbrev = getOptString(locData, "abbrev");
             String description = getString(locData, "description");
 	        if (arena.allLocations.get(label) != null) {
 	            throw new ArenaException(
@@ -190,13 +191,13 @@ public class Arena {
 						portal,
 						getString(exitData, "forwards"),
 						getString(exitData, "backwards"),
-						getString(exitData, "description"));
+						getOptString(exitData, "description"));
 			} else {
 				arena.makeExit(getString(exitData, "from"), 
 				        getString(exitData, "to"), 
 					    portal, 
 					    getString(exitData, "forwards"),
-                        getString(exitData, "description"));
+                        getOptString(exitData, "description"));
 			}
 		}
 				
@@ -211,7 +212,7 @@ public class Arena {
 	                getString(creatureData, "kind"), 
 	                getString(creatureData, "location"), 
 	                getString(creatureData, "name"), 
-	                getString(creatureData, "abbrev"), 
+	                getOptString(creatureData, "abbrev"), 
 	                getString(creatureData, "description"),
 	                triggers);
 	    }
@@ -248,17 +249,17 @@ public class Arena {
     @SuppressWarnings("unchecked")
     private Item parseItem(Object data) {
         Map<String, Object> itemData = (Map<String, Object>) data;
-        long flags = parseItemFlags(getString(itemData, "flags"));
+        long flags = parseItemFlags(getOptString(itemData, "flags"));
         List<Trigger> triggers = parseTriggers(itemData);
         Item item = makeItem(
-                getString(itemData, "kind"), 
-                getString(itemData, "location"), 
+                getOptString(itemData, "kind"), 
+                getOptString(itemData, "location"), 
                 getString(itemData, "label"), 
                 getString(itemData, "name"), 
-                getString(itemData, "abbrev"), 
-                getString(itemData, "description"), 
+                getOptString(itemData, "abbrev"), 
+                getOptString(itemData, "description"), 
                 flags, triggers);
-        if ("CONTAINER".equals(getString(itemData, "kind"))
+        if ("CONTAINER".equals(getOptString(itemData, "kind"))
                 && itemData.get("contents") != null) {
             List<Object> contents = (List<Object>) itemData.get("contents");
             for (Object content: contents) {
@@ -270,13 +271,32 @@ public class Arena {
     }
 
     private static String getString(Map<String, Object> data, String tag) {
-        String res = (String) data.get(tag);
-        return (res != null) ? res.trim() : null;
+        return getString(data, tag, false);
     }
     
+    private static String getOptString(Map<String, Object> data, String tag) {
+        return getString(data, tag, true);
+    }
+    
+    private static String getString(
+            Map<String, Object> data, String tag, boolean optional) {
+        Object obj = data.get(tag);
+        if (obj == null) {
+            if (optional) {
+                return null;
+            } else {
+                throw new ArenaException("Missing '" + tag + "' attribute");
+            }
+        } else if (obj instanceof String) {
+            return ((String) obj).trim();
+        } else {
+            throw new ArenaException("Expected '" + tag + "' to be a simple attribute");
+        }
+    }
+
     private static boolean getBoolean(Map<String, Object> data, 
             String tag, boolean defaultValue) {
-        String value = (String) data.get(tag);
+        String value = getOptString(data, tag);
         if (value == null) {
             return defaultValue;
         } else {
@@ -301,21 +321,33 @@ public class Arena {
                 if (events.isEmpty()) {
                     throw new ArenaException("A trigger must some events");
                 }
-                Trigger trigger = new Trigger(
-                        events,
-                        getString(triggerData, "target"),
-                        getString(triggerData, "arg"),
-                        parseVerb(getString(triggerData, "verb")),
-                        getString(triggerData, "message"),
-                        getBoolean(triggerData, "repeats", false));
+                List<Triggered> actions = parseActions(
+                        (List<Object>) triggerData.get("actions"));
+                Trigger trigger = new Trigger(events, actions);
                 triggers.add(trigger);
             }
         }
         return triggers;
     }
 
+    @SuppressWarnings("unchecked")
+    private static List<Triggered> parseActions(List<Object> actionsData) {
+        List<Triggered> actions = new ArrayList<>();
+        for (Object data: actionsData) {
+            Map<String, Object> actionData = (Map<String, Object>) data;
+            Triggered action = new Triggered(
+                    getOptString(actionData, "target"),
+                    getOptString(actionData, "arg"), 
+                    parseVerb(getString(actionData, "verb")), 
+                    getOptString(actionData, "message"), 
+                    getBoolean(actionData, "repeats", false));
+            actions.add(action);
+        }
+        return actions;
+    }
+
     private static Verb parseVerb(String string) {
-        return string == null ? null : Verb.valueOf(string.toUpperCase());
+        return Verb.valueOf(string.toUpperCase());
     }
 
     private static List<Event> parseEvents(String string) {

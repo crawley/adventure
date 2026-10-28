@@ -144,9 +144,10 @@ creatures:
     location: path
     triggers:
       - events: TICK
-        repeats: Y
-        verb: SAY
-        message: Jasper says "Meow"
+        actions:
+          - repeats: Y
+            verb: SAY
+            message: "Meow"
     
 items:
   - label: knapsack
@@ -162,7 +163,9 @@ items:
         flags: EDIBLE
         triggers:
           - events: CONSUMED
-            message: Nom nom nom
+            actions:
+            - verb: MESSAGE
+              message: You think "Nom nom nom"
   
   - label: fireplace
     name: a fireplace
@@ -186,9 +189,11 @@ items:
     flags: MOVEABLE 
     triggers:
       - events: MOVED SEARCHED
-        target: doorkey
-        verb: REVEAL
-        message: Under the doormat you see a key
+        actions:
+          - verb: REVEAL
+            target: doorkey
+          - verb: MESSAGE
+            message: Under the doormat you see a key
               
   - label: doorkey
     name: a shiny key
@@ -222,9 +227,11 @@ items:
     flags: MOVEABLE 
     triggers:
       - events: MOVED SEARCHED
-        message: |
-          There is a lot of dust under the armchair.
-          Written in the dust are the words "He kiiled me!".
+        actions:
+          - verb: MESSAGE
+            message: |
+              There is a lot of dust under the armchair.
+              Written in the dust are the words "He kiiled me!".
 
   - label: chair2
     name: an armchair
