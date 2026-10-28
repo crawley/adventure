@@ -48,12 +48,12 @@ public class Actor extends Entity {
         return triggers;
     }
 
-    public Location getCurrentLocation() {
+    public Location getLocation() {
 		return location;
 	}
 
-	public void setCurrentLocation(Location currentLocation) {
-		this.location = currentLocation;
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 
 	public VerbResult wearItem(Item item) {
@@ -73,7 +73,7 @@ public class Actor extends Entity {
     public VerbResult unwearItem(Item item) {
         itemsWorn.remove(item);
         if (itemsInHand.size() >= NOS_HANDS) {
-            getCurrentLocation().addItem(item);
+            getLocation().addItem(item);
             item.trigger(Event.DROPPED);
         } else {
             itemsInHand.add(item);
@@ -94,7 +94,7 @@ public class Actor extends Entity {
         if (itemsInHand.size() >= NOS_HANDS) {
             return new VerbResult(Outcome.FULL);
         } else if (item.isTakeable()) {
-            getCurrentLocation().removeItem(item);
+            getLocation().removeItem(item);
             itemsInHand.add(item);
             return new VerbResult(1, item);
         } else {
@@ -104,7 +104,7 @@ public class Actor extends Entity {
         
     public VerbResult dropItem(Item item) {
         itemsInHand.remove(item);
-        getCurrentLocation().addItem(item);
+        getLocation().addItem(item);
         return new VerbResult(1, item);
     }
 
@@ -133,24 +133,23 @@ public class Actor extends Entity {
     
     public void trigger(Trigger.Event event) {
         for (Trigger trigger: triggers) {
-            if (trigger.getEvents().contains(event)) {
-                for (Triggered action: trigger.getActions()) {
-                    switch (action.getVerb()) {
-                    case DECR_AND_TEST:
-                    case RESET_IF_ZERO:
-                        break;
-                    case SAY:
-                        for (Actor actor: Arena.getInstance().getAllActors()) {
-                            if (actor != this && actor.location == location) {
-                                if (action.trigger()) {
-                                    System.out.println(
-                                            this.getName() + " says " + action.getMessage());
-                                }
-                            }
+            if (!trigger.getEvents().contains(event)) {
+                continue;
+            }
+            for (Triggered action: trigger.getActions()) {
+                switch (action.getVerb()) {
+                case DECR_AND_TEST:
+                case RESET_IF_ZERO:
+                    break;
+                case SAY:
+                    for (Actor actor: location.actors()) {
+                        if (actor != this && action.trigger()) {
+                            System.out.println(this.getName() 
+                                    + " says " + action.getMessage());
                         }
-                        break;
-                    default:
                     }
+                    break;
+                default:
                 }
             }
         }

@@ -17,9 +17,9 @@ public abstract class Verb implements Action {
             return switch (this) {
             case WORN -> actor.getItemsWorn();
             case HELD -> actor.getItemsInHand();
-            case FLOOR -> actor.getCurrentLocation().getItems();
-            case WALLS -> actor.getCurrentLocation().wallItems();
-            case PORTALS -> actor.getCurrentLocation().portalItems();
+            case FLOOR -> actor.getLocation().getItems();
+            case WALLS -> actor.getLocation().wallItems();
+            case PORTALS -> actor.getLocation().portalItems();
             default ->
                 new ArrayList<Item>();
             };

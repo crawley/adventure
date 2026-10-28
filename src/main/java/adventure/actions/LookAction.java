@@ -15,7 +15,7 @@ public class LookAction implements Action {
 	@Override
 	public int perform(Actor actor, String[] args) {
 	    actor.showLocationAndActors();
-	    Location here = actor.getCurrentLocation();
+	    Location here = actor.getLocation();
 		List<Item> items = here.getItems();
 		boolean firstItem = true;
 		for (Item item: items) {

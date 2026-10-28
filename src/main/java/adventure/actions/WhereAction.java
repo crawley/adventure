@@ -11,7 +11,7 @@ public class WhereAction implements Action {
 	public int perform(Actor actor, String[] args) {
 	    actor.showLocationAndActors();
 		System.out.println("You can go in the following directions: ");
-		for (Exit exit: actor.getCurrentLocation().getExits()) {
+		for (Exit exit: actor.getLocation().getExits()) {
 			System.out.print("  " + showDirections(exit));
 			Item portal = exit.getPortal();
 			if (portal != null && !portal.isHidden()) {
