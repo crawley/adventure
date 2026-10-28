@@ -24,10 +24,10 @@ public class Arena {
     private Associations associations;
 	private String startLabel;
 	
-	private static Arena instance;
+	private static Arena theArena;
 	
 	public static Arena getInstance() {
-	    return instance;
+	    return theArena;
 	}
 	
 	public Arena (String startLabel) {
@@ -35,10 +35,10 @@ public class Arena {
 		this.allActors = new HashMap<>();
 		this.associations = new Associations();
 		this.startLabel = startLabel;
-		instance = this;
+		theArena = this;
 	}
 	
-	public void addExit(String fromLabel, String toLabel, Item portal, String directions,
+	public void makeExit(String fromLabel, String toLabel, Item portal, String directions,
 	        String description) {
 		Location fromLoc = parseLocation(fromLabel);
 		Location toLoc = parseLocation(toLabel);
@@ -54,13 +54,13 @@ public class Arena {
         return dirs;
     }
     
-    public void addExit(String from, String to, Item portal,
+    public void makeExits(String from, String to, Item portal,
 	        String forward, String back, String description) {
-		addExit(from, to, portal, forward, description);
-		addExit(to, from, portal, back, description);
+		makeExit(from, to, portal, forward, description);
+		makeExit(to, from, portal, back, description);
 	}
 	
-	public Item addItem(String kind, String location, String label, String name, String abbrev, 
+	public Item makeItem(String kind, String location, String label, String name, String abbrev, 
 	        String description, long flags, List<Trigger> triggers) {
 	    if (abbrev == null) {
 	        abbrev = label;
@@ -82,26 +82,35 @@ public class Arena {
 	            if (opt.isPresent() && (vista = opt.get()) instanceof Wall) {
 	                ((Wall) vista).getItemsOnWall().add(item);
 	            } else {
-	                throw new ArenaSyntaxException("no wall '" + location + "' found");
+	                throw new ArenaException("no wall '" + location + "' found");
 	            }
 	        }
 	    }
         return item;
 	}
 	
-	public Actor addActor(String label, String kind, String location, 
-	        String name, String abbrev, String description) {
+	public Actor makeActor(String label, String kind, String location, 
+	        String name, String abbrev, String description, List<Trigger> triggers) {
 	    Location loc = parseLocation(location);
 	    Actor actor = new Actor(Actor.Kind.valueOf(kind), label, name,
-	            abbrev, description, loc);
+	            abbrev, description, loc, triggers);
 	    allActors.put(label, actor);
 	    return actor;
+	}
+	
+	public void addActor(Actor actor) {
+	    String label = actor.getLabel();
+	    if (allActors.get(label) != null) {
+	        throw new ArenaException(
+	                "Actor with label '" + label + "' already exists");
+	    }
+	    allActors.put(label, actor);
 	}
 	
 	private Location parseLocation(String location) {
 	    Location loc = allLocations.get(location);
         if (loc == null) {
-            throw new ArenaSyntaxException("location '" + location + "' not found");
+            throw new ArenaException("location '" + location + "' not found");
         }
         return loc;
     }
@@ -109,7 +118,7 @@ public class Arena {
     public Location getStart() {
 		Location start = allLocations.get(startLabel);
 		if (start == null) {
-			throw new ArenaSyntaxException("start location '" + startLabel + "' not found");
+			throw new ArenaException("start location '" + startLabel + "' not found");
 		}
 		return start;
 	}
@@ -137,7 +146,7 @@ public class Arena {
             String abbrev = getString(locData, "abbrev");
             String description = getString(locData, "description");
 	        if (arena.allLocations.get(label) != null) {
-	            throw new ArenaSyntaxException(
+	            throw new ArenaException(
 	                    "location '" + label + "' already exists");
 	        }
 	        LocationType kind = LocationType.valueOf(getString(locData, "type"));
@@ -176,14 +185,14 @@ public class Arena {
 			Map<String, Object> exitData = (Map<String, Object>) data;
             Item portal = arena.parsePortal(exitData);
 			if (exitData.containsKey("backwards")) {
-				arena.addExit(getString(exitData, "from"), 
+				arena.makeExits(getString(exitData, "from"), 
 				        getString(exitData, "to"), 
 						portal,
 						getString(exitData, "forwards"),
 						getString(exitData, "backwards"),
 						getString(exitData, "description"));
 			} else {
-				arena.addExit(getString(exitData, "from"), 
+				arena.makeExit(getString(exitData, "from"), 
 				        getString(exitData, "to"), 
 					    portal, 
 					    getString(exitData, "forwards"),
@@ -196,13 +205,15 @@ public class Arena {
 	    List<Object> creatures = (List<Object>) loaded.get("creatures");
 	    for (Object data: creatures) {
 	        Map<String, Object> creatureData = (Map<String, Object>) data;
-	        arena.addActor(
+	        List<Trigger> triggers = parseTriggers(creatureData);
+	        arena.makeActor(
 	                getString(creatureData, "label"), 
 	                getString(creatureData, "kind"), 
 	                getString(creatureData, "location"), 
 	                getString(creatureData, "name"), 
 	                getString(creatureData, "abbrev"), 
-	                getString(creatureData, "description"));
+	                getString(creatureData, "description"),
+	                triggers);
 	    }
 	    
 	    List<Object> associationData = (List<Object>) loaded.get("associations");
@@ -239,7 +250,7 @@ public class Arena {
         Map<String, Object> itemData = (Map<String, Object>) data;
         long flags = parseItemFlags(getString(itemData, "flags"));
         List<Trigger> triggers = parseTriggers(itemData);
-        Item item = addItem(
+        Item item = makeItem(
                 getString(itemData, "kind"), 
                 getString(itemData, "location"), 
                 getString(itemData, "label"), 
@@ -263,8 +274,24 @@ public class Arena {
         return (res != null) ? res.trim() : null;
     }
     
+    private static boolean getBoolean(Map<String, Object> data, 
+            String tag, boolean defaultValue) {
+        String value = (String) data.get(tag);
+        if (value == null) {
+            return defaultValue;
+        } else {
+            switch (value.trim().toUpperCase()) {
+            case "Y", "YES", "TRUE", "1": return true;
+            case "N", "NO", "FALSE", "0": return false;
+            default:
+                throw new ArenaException(
+                        "Expected a boolean for '" + tag + "'");
+            }
+        }
+    }
+    
     @SuppressWarnings("unchecked")
-    private List<Trigger> parseTriggers(Map<String, Object> itemData) {
+    private static List<Trigger> parseTriggers(Map<String, Object> itemData) {
         List<Trigger> triggers = new ArrayList<>();
         List<Object> data = (List<Object>) itemData.get("triggers");
         if (data != null) {
@@ -272,24 +299,26 @@ public class Arena {
                 Map<String, Object> triggerData = (Map<String, Object>) obj;
                 List<Event> events = parseEvents(getString(triggerData, "events"));
                 if (events.isEmpty()) {
-                    throw new ArenaSyntaxException("A trigger must some events");
+                    throw new ArenaException("A trigger must some events");
                 }
                 Trigger trigger = new Trigger(
                         events,
                         getString(triggerData, "target"),
+                        getString(triggerData, "arg"),
                         parseVerb(getString(triggerData, "verb")),
-                        getString(triggerData, "message"));
+                        getString(triggerData, "message"),
+                        getBoolean(triggerData, "repeats", false));
                 triggers.add(trigger);
             }
         }
         return triggers;
     }
 
-    private Verb parseVerb(String string) {
+    private static Verb parseVerb(String string) {
         return string == null ? null : Verb.valueOf(string.toUpperCase());
     }
 
-    private List<Event> parseEvents(String string) {
+    private static List<Event> parseEvents(String string) {
         String[] words = (string == null ? "" : string).split("\\s+");
         return Stream.of(words)
                 .map(String::toUpperCase)
@@ -303,7 +332,7 @@ public class Arena {
             for (String word: words) {
                 Long flag = Item.ITEM_FLAGS.get(word.toUpperCase());
                 if (flag == null) {
-                    throw new ArenaSyntaxException("Unknown flag '" + word + "'");
+                    throw new ArenaException("Unknown flag '" + word + "'");
                 }
                 flags |= flag.longValue();
             }

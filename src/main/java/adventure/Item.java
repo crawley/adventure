@@ -197,10 +197,9 @@ public class Item extends Entity {
     public void trigger(Trigger.Event event) {
         for (Trigger trigger: triggers) {
             if (trigger.getEvents().contains(event)) {
-                if (trigger.isTriggered()) {
+                if (!trigger.trigger()) {
                     continue;
                 }
-                trigger.setTriggered(true);
                 if (trigger.getMessage() != null) {
                     System.out.println(trigger.getMessage());
                 }
@@ -234,6 +233,7 @@ public class Item extends Entity {
                                 item.setOpen(false);
                             }
                             break;
+                        default:
                         }
                     }
                 }

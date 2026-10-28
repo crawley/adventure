@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 import adventure.actions.Action;
 import adventure.actions.Actions;
+import adventure.actions.Trigger;
 
 public class Standalone implements Runnable {
 	
@@ -27,19 +28,25 @@ public class Standalone implements Runnable {
 					fileName + "'", ex);
 		}
 		player = new Actor(Actor.Kind.PLAYER, "player", "player", 
-		        "player", "the player (you)", arena.getStart());
+		        "player", "the player (you)", arena.getStart(), null);
+		arena.addActor(player);
 	}
 
 	@Override
 	public void run() {
 	    input = new Scanner(System.in);
+	    List<Actor> allActors = Arena.getInstance().getAllActors();
 	    player.showLocationAndActors();
 		try {
 			while (true) {
-				Command command;
-				if ((command = readCommand()) != null) {
+				Command command = readCommand();
+				if (command != null) {
 					int ticks = command.perform(player);
-					System.out.println("Took " + ticks + " ticks.");
+					for (int i = 0; i < ticks; i++) {
+					    for (Actor actor: allActors) {
+					        actor.trigger(Trigger.Event.TICK);
+					    }
+					}
 				}
 			}
 		} catch (QuitException | NoSuchElementException e) {

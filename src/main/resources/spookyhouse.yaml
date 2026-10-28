@@ -142,6 +142,11 @@ creatures:
     name: Jasper
     description: a black cat
     location: path
+    triggers:
+      - events: TICK
+        repeats: Y
+        verb: SAY
+        message: Jasper says "Meow"
     
 items:
   - label: knapsack

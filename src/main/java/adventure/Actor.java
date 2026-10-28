@@ -1,8 +1,10 @@
 package adventure;
 
+import java.util.Collections;
 import java.util.List;
 
 import adventure.actions.Trigger.Event;
+import adventure.actions.Trigger;
 import adventure.actions.VerbResult;
 import adventure.actions.VerbResult.Outcome;
 
@@ -13,29 +15,44 @@ public class Actor extends Entity {
     }
     
     private final Kind kind;
-    private Location currentLocation;
     private final List<Item> itemsInHand = new ItemList("in hand");
     private final List<Item> itemsWorn = new ItemList("worn");
+    private final List<Trigger> triggers;
     private final int NOS_HANDS = 2;
     
+    private Location location;
+    private int hunger = 0;
     
 	public Actor(Kind kind, String label, String name, String abbrev,
-	        String description, Location location) {
+	        String description, Location location, List<Trigger> triggers) {
 		super(label, name, abbrev, description);
-		this.currentLocation = location;
+		this.location = location;
 		this.kind = kind;
+		this.triggers = (triggers == null) ? Collections.emptyList() : triggers;
 	}
 
 	public Kind getKind() {
         return kind;
     }
 
+    public int getHunger() {
+        return hunger;
+    }
+
+    public void setHunger(int hunger) {
+        this.hunger = hunger;
+    }
+
+    public List<Trigger> getTriggers() {
+        return triggers;
+    }
+
     public Location getCurrentLocation() {
-		return currentLocation;
+		return location;
 	}
 
 	public void setCurrentLocation(Location currentLocation) {
-		this.currentLocation = currentLocation;
+		this.location = currentLocation;
 	}
 
 	public VerbResult wearItem(Item item) {
@@ -104,13 +121,40 @@ public class Actor extends Entity {
     }
 
     public void showLocationAndActors() {
-        System.out.println("You are " + currentLocation.getType().getPreposition() 
-                + " " + currentLocation.getName());
-        for (Actor actor: currentLocation.actors()) {
+        System.out.println("You are " + location.getType().getPreposition() 
+                + " " + location.getName());
+        for (Actor actor: location.actors()) {
             if (actor != this) {
                 System.out.println("You see " + actor.getDescription());
             }
         }
     }
     
+    public void trigger(Trigger.Event event) {
+        for (Trigger trigger: triggers) {
+            if (trigger.getEvents().contains(event)) {
+                if (trigger.getVerb() != null) {
+                    switch (trigger.getVerb()) {
+
+                    case DECR_AND_TEST:
+                    case RESET_IF_ZERO:
+                        break;
+                    case SAY:
+                        for (Actor actor: Arena.getInstance().getAllActors()) {
+                            System.out.println("actor = " + actor.getName());
+                            if (actor != this && actor.location == location) {
+                                System.out.println("Here");
+                                if (trigger.trigger()) {
+                                    System.out.println(trigger.getMessage());
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                    }
+                }
+            }
+        }
+    }
+
 }
