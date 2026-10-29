@@ -28,7 +28,8 @@ public class Standalone implements Runnable {
 					fileName + "'", ex);
 		}
 		player = new Actor(Actor.Kind.PLAYER, "player", "player", 
-		        "player", "the player (you)", arena.getStart(), null);
+		        "player", "the player (you)", arena.getStart(), 
+		        null, null);
 		arena.addActor(player);
 	}
 

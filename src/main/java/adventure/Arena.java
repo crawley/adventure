@@ -91,10 +91,11 @@ public class Arena {
 	}
 	
 	public Actor makeActor(String label, String kind, String location, 
-	        String name, String abbrev, String description, List<Trigger> triggers) {
+	        String name, String abbrev, String description, 
+	        List<Trigger> triggers, PropertySet props) {
 	    Location loc = parseLocation(location);
 	    Actor actor = new Actor(Actor.Kind.valueOf(kind), label, name,
-	            abbrev, description, loc, triggers);
+	            abbrev, description, loc, triggers, props);
 	    allActors.put(label, actor);
 	    return actor;
 	}
@@ -207,6 +208,7 @@ public class Arena {
 	    for (Object data: creatures) {
 	        Map<String, Object> creatureData = (Map<String, Object>) data;
 	        List<Trigger> triggers = parseTriggers(creatureData);
+	        PropertySet props = parseProperties(creatureData);
 	        arena.makeActor(
 	                getString(creatureData, "label"), 
 	                getString(creatureData, "kind"), 
@@ -214,7 +216,8 @@ public class Arena {
 	                getString(creatureData, "name"), 
 	                getString(creatureData, "abbrev"), 
 	                getString(creatureData, "description"),
-	                triggers);
+	                triggers,
+	                props);
 	    }
 	    
 	    List<Object> associationData = (List<Object>) loaded.get("associations");
@@ -228,6 +231,37 @@ public class Arena {
 	    
 		return arena;
 	}
+
+    @SuppressWarnings("unchecked")
+    private static PropertySet parseProperties(Map<String, Object> data) {
+        PropertySet props = new PropertySet();
+        List<Object> propsData = (List<Object>) data.get("properties");
+        for (Object obj: propsData) {
+            Map<String, Object> propData = (Map<String, Object>) obj;
+            String name = getString(propData, "name");
+            String type = getString(propData, "type");
+            Property prop;
+            if (type.equals("boolean")) {
+                prop = new BooleanProperty(name, 
+                        getBoolean(propData, "initial", false));
+            } else if (type.equals("int")) {
+                prop = new IntegerProperty(name, 
+                        getInteger(propData, "initial", 0), 
+                        getInteger(propData, "min", Integer.MIN_VALUE), 
+                        getInteger(propData, "max", Integer.MAX_VALUE));
+            } else if (type.equals("float")) {
+                prop = new FloatProperty(name, 
+                        getFloat(propData, "initial", 0), 
+                        getFloat(propData, "min", Float.MIN_VALUE), 
+                        getFloat(propData, "max", Float.MAX_VALUE));
+            } else {
+                throw new ArenaException(
+                        "property type not one of 'boolean', 'int' or 'float'");
+            }
+            props.add(prop);
+        }
+        return props;
+    }
 
     private Item parsePortal(Map<String, Object> exitData) {
         Object portalData = exitData.get("portal");
@@ -310,6 +344,38 @@ public class Arena {
         }
     }
     
+    private static int getInteger(Map<String, Object> data, 
+            String tag, int defaultValue) {
+        String value = getOptString(data, tag);
+        if (value == null) {
+            return defaultValue;
+        } else {
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException ex) {
+                throw new ArenaException(
+                        "Value of '" + tag + "' is not an integer",
+                        ex);
+            }
+        }
+    }
+    
+    private static float getFloat(Map<String, Object> data, 
+            String tag, float defaultValue) {
+        String value = getOptString(data, tag);
+        if (value == null) {
+            return defaultValue;
+        } else {
+            try {
+                return Float.parseFloat(value);
+            } catch (NumberFormatException ex) {
+                throw new ArenaException(
+                        "Value of '" + tag + "' is not an float",
+                        ex);
+            }
+        }
+    }
+    
     @SuppressWarnings("unchecked")
     private static List<Trigger> parseTriggers(Map<String, Object> itemData) {
         List<Trigger> triggers = new ArrayList<>();
@@ -337,10 +403,11 @@ public class Arena {
             Map<String, Object> actionData = (Map<String, Object>) data;
             Triggered action = new Triggered(
                     getOptString(actionData, "target"),
-                    getOptString(actionData, "arg"), 
+                    getOptString(actionData, "arg"),
+                    getOptString(actionData, "arg2"),  
                     parseVerb(getString(actionData, "verb")), 
                     getOptString(actionData, "message"), 
-                    getBoolean(actionData, "repeats", false));
+                    !getBoolean(actionData, "onetime", true));
             actions.add(action);
         }
         return actions;

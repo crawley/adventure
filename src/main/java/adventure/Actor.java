@@ -19,17 +19,20 @@ public class Actor extends Entity {
     private final List<Item> itemsInHand = new ItemList("in hand");
     private final List<Item> itemsWorn = new ItemList("worn");
     private final List<Trigger> triggers;
+    private final PropertySet properties;
     private final int NOS_HANDS = 2;
     
     private Location location;
     private int hunger = 0;
     
 	public Actor(Kind kind, String label, String name, String abbrev,
-	        String description, Location location, List<Trigger> triggers) {
+	        String description, Location location, 
+	        List<Trigger> triggers, PropertySet properties) {
 		super(label, name, abbrev, description);
 		this.location = location;
 		this.kind = kind;
 		this.triggers = (triggers == null) ? Collections.emptyList() : triggers;
+		this.properties = (properties == null) ? new PropertySet() : properties;
 	}
 
 	public Kind getKind() {
@@ -46,6 +49,10 @@ public class Actor extends Entity {
 
     public List<Trigger> getTriggers() {
         return triggers;
+    }
+
+    public PropertySet getProperties() {
+        return properties;
     }
 
     public Location getLocation() {
@@ -138,8 +145,14 @@ public class Actor extends Entity {
             }
             for (Triggered action: trigger.getActions()) {
                 switch (action.getVerb()) {
-                case DECR_AND_TEST:
-                case RESET_IF_ZERO:
+                case INCREMENT:
+                case DECREMENT:
+                case TEST_MIN:
+                case TEST_MAX:
+                case TEST:
+                case SET_MAX:
+                case SET_MIN:
+                case SET:
                     break;
                 case SAY:
                     for (Actor actor: location.actors()) {

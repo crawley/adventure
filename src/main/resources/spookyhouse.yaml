@@ -7,12 +7,14 @@ locations:
     name: a road
     description: a dusty road
     vistas:
-      - direction: s se sw ne nw
+      - direction: s se sw
         description: |
           a barbed wire fence.
           Beyond the fence you see pastures with woodlands beyond.
       - direction: n
         description: a high stone wall.
+      - direction: ne nw
+        description: a corner of the high stone wall.
       - direction: e
         description: |
           the road runs off into the distance.
@@ -143,16 +145,24 @@ creatures:
     abbrev: cat
     description: a black cat
     location: path
+    properties:
+      - name: hunger
+        type: int
+        initial: "5"
+        min: "0"
+        max: "10"
     triggers:
       - events: TICK
         actions:
-          - repeats: Y
-            verb: SAY
+          - verb: INCREMENT
+            arg: hunger
+          - verb: TEST_MAX
+            arg: hunger
+          - verb: SAY
             message: "Meow"
       - events: PETTED
         actions:
-          - repeats: Y
-            verb: SAY
+          - verb: SAY
             message: "Purr"
     
 items:
@@ -197,8 +207,10 @@ items:
       - events: MOVED SEARCHED
         actions:
           - verb: REVEAL
+            onetime: Y
             target: doorkey
           - verb: MESSAGE
+            onetime: Y
             message: Under the doormat you see a key
               
   - label: doorkey
@@ -235,9 +247,11 @@ items:
       - events: MOVED SEARCHED
         actions:
           - verb: MESSAGE
+            onetime: Y
             message: |
               There is a lot of dust under the armchair.
               Written in the dust are the words "He kiiled me!".
+              A sudden draft scatters the dust.
 
   - label: chair2
     name: an armchair

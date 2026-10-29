@@ -8,4 +8,8 @@ public class ArenaException extends RuntimeException {
 		super(msg);
 	}
 
+    public ArenaException(String msg, Exception ex) {
+        super(msg, ex);
+    }
+
 }
