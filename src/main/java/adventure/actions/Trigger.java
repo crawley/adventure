@@ -5,9 +5,11 @@ import java.util.List;
 public class Trigger {
     
     public enum Event {
+        TICK, 
         MOVED, SEARCHED, OPENED, CLOSED, DROPPED, 
         WORN, UNWORN, TAKEN, LOCKED, UNLOCKED, 
-        ADDED, REMOVED, CONSUMED, TICK
+        ADDED, REMOVED, CONSUMED, 
+        PETTED
     }
     
     private final List<Event> events;

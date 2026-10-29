@@ -29,6 +29,7 @@ public class Actions {
         actions.put("unlock", new UnlockAction());
         actions.put("put", new PutAction());
         actions.put("get", new GetAction());
+        actions.put("pet", new PetAction());
         actions.put("eat", new EatAction());
         actions.put("inventory", new InventoryAction());
         aliases.put("invent", "inventory");

@@ -13,7 +13,7 @@ public class UnlockAction extends Verb {
     @Override
     public int perform(Actor actor, String[] args) {
         return performOnItemWith(actor, args, false, "with", 
-                Context.FLOOR, Context.WALLS, Context.PORTALS);
+                Context.ITEMS_ON_FLOOR, Context.ITEMS_ON_WALLS, Context.PORTALS);
     }
     
     @Override

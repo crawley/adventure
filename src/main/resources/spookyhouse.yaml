@@ -137,9 +137,10 @@ exits:
     backwards: e
     
 creatures:
-  - label: cat
+  - label: jasper
     kind: PET
     name: Jasper
+    abbrev: cat
     description: a black cat
     location: path
     triggers:
@@ -148,6 +149,11 @@ creatures:
           - repeats: Y
             verb: SAY
             message: "Meow"
+      - events: PETTED
+        actions:
+          - repeats: Y
+            verb: SAY
+            message: "Purr"
     
 items:
   - label: knapsack

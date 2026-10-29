@@ -212,7 +212,7 @@ public class Arena {
 	                getString(creatureData, "kind"), 
 	                getString(creatureData, "location"), 
 	                getString(creatureData, "name"), 
-	                getOptString(creatureData, "abbrev"), 
+	                getString(creatureData, "abbrev"), 
 	                getString(creatureData, "description"),
 	                triggers);
 	    }

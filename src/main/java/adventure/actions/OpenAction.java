@@ -13,7 +13,7 @@ public class OpenAction extends Verb {
     @Override
     public int perform(Actor actor, String[] args) {
         return performOnItem(actor, args, 
-                Context.FLOOR, Context.PORTALS, Context.WALLS);
+                Context.ITEMS_ON_FLOOR, Context.PORTALS, Context.ITEMS_ON_WALLS);
     }
     
     @Override

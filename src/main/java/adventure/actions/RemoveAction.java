@@ -12,7 +12,7 @@ public class RemoveAction extends Verb {
 
     @Override
     public int perform(Actor actor, String[] args) {
-        return performOnItem(actor, args, Context.WORN);
+        return performOnItem(actor, args, Context.ITEMS_WORN);
     }
 
     @Override

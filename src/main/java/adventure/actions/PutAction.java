@@ -14,7 +14,7 @@ public class PutAction extends Verb {
 
     @Override
     public int perform(Actor actor, String[] args) {
-        return performOnItemWith(actor, args, false, "into", Context.HELD);
+        return performOnItemWith(actor, args, false, "into", Context.ITEMS_HELD);
     }
     
     @Override

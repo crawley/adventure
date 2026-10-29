@@ -12,7 +12,7 @@ public class EatAction extends Verb {
 
 	@Override
 	public int perform(Actor actor, String[] args) {
-		return performOnItem(actor, args, Context.HELD);
+		return performOnItem(actor, args, Context.ITEMS_HELD);
 	}
 	
 	@Override
