@@ -407,7 +407,7 @@ public class Arena {
                     getOptString(actionData, "arg2"),  
                     parseVerb(getString(actionData, "verb")), 
                     getOptString(actionData, "message"), 
-                    !getBoolean(actionData, "onetime", true));
+                    !getBoolean(actionData, "onetime", false));
             actions.add(action);
         }
         return actions;
