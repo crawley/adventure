@@ -1,12 +1,12 @@
 package adventure;
 
-public class FloatProperty extends Property {
+public class FloatProperty extends NumberProperty {
     
-    private final float min;
-    private final float max;
-    private float value;
+    private final double min;
+    private final double max;
+    private double value;
 
-    public FloatProperty(String name, float initial, float min, float max) {
+    public FloatProperty(String name, double initial, double min, double max) {
         super(name);
         if (min > max) {
             throw new IllegalArgumentException("min > max");
@@ -22,7 +22,7 @@ public class FloatProperty extends Property {
     }
 
     @Override
-    public float floatValue() {
+    public double floatValue() {
         return getValue();
     }
 
@@ -31,11 +31,11 @@ public class FloatProperty extends Property {
         return intValue() != 0;
     }
 
-    public synchronized float getValue() {
+    public synchronized double getValue() {
         return value;
     }
 
-    public synchronized void setValue(float value) {
+    public synchronized void setValue(double value) {
         if (value < min) {
             value = min;
         } else if (value > max) {
@@ -44,12 +44,32 @@ public class FloatProperty extends Property {
         this.value = value;
     }
 
-    public float getMin() {
+    public double getMin() {
         return min;
     }
 
-    public float getMax() {
+    public double getMax() {
         return max;
+    }
+
+    @Override
+    public synchronized void increment() {
+        setValue(value + 1);
+    }
+
+    @Override
+    public synchronized void decrement() {
+        setValue(value - 1);
+    }
+
+    @Override
+    public boolean testMin() {
+        return value == min;
+    }
+
+    @Override
+    public boolean testMax() {
+        return value == max;
     }
 
 }

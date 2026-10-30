@@ -143,12 +143,24 @@ public class Actor extends Entity {
             if (!trigger.getEvents().contains(event)) {
                 continue;
             }
-            for (Triggered action: trigger.getActions()) {
+            actions: for (Triggered action: trigger.getActions()) {
                 switch (action.getVerb()) {
                 case INCREMENT:
+                    getNumberProperty(action.getArg()).increment();
+                    break;
                 case DECREMENT:
+                    getNumberProperty(action.getArg()).increment();
+                    break;
                 case TEST_MIN:
+                    if (!getNumberProperty(action.getArg()).testMin()) {
+                        break actions;
+                    }
+                    break;
                 case TEST_MAX:
+                    if (!getNumberProperty(action.getArg()).testMax()) {
+                        break actions;
+                    }
+                    break;
                 case TEST:
                 case SET_MAX:
                 case SET_MIN:
@@ -165,6 +177,20 @@ public class Actor extends Entity {
                 default:
                 }
             }
+        }
+    }
+
+    private NumberProperty getNumberProperty(String name) {
+        Property prop = properties.lookup(name);
+        if (prop == null) {
+            throw new TriggerException(
+                    "Can't find '" + name + "' property on actor '" + getLabel() + "'");
+        }
+        if (prop instanceof NumberProperty) {
+            return (NumberProperty) prop;
+        } else {
+            throw new TriggerException(
+                    "Property '" + name + "' on actor '" + getLabel() + "' not numeric");
         }
     }
 

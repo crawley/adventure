@@ -13,7 +13,7 @@ public abstract class Property {
     
     public abstract int intValue();
     
-    public abstract float floatValue();
+    public abstract double floatValue();
     
     public String getName() {
         return name;

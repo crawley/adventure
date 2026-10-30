@@ -1,6 +1,6 @@
 package adventure;
 
-public class IntegerProperty extends Property {
+public class IntegerProperty extends NumberProperty {
     
     private final int min;
     private final int max;
@@ -22,7 +22,7 @@ public class IntegerProperty extends Property {
     }
 
     @Override
-    public float floatValue() {
+    public double floatValue() {
         return getValue();
     }
 
@@ -47,4 +47,23 @@ public class IntegerProperty extends Property {
         return max;
     }
 
+    @Override
+    public synchronized void increment() {
+        setValue(value + 1);
+    }
+
+    @Override
+    public synchronized void decrement() {
+        setValue(value - 1);
+    }
+    
+    @Override
+    public boolean testMin() {
+        return value == min;
+    }
+
+    @Override
+    public boolean testMax() {
+        return value == max;
+    }
 }

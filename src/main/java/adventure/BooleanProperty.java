@@ -15,8 +15,8 @@ public class BooleanProperty extends Property {
     }
 
     @Override
-    public float floatValue() {
-        return value ? 1.0f : 0.0f;
+    public double floatValue() {
+        return value ? 1.0 : 0.0;
     }
 
     @Override
