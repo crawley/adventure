@@ -8,7 +8,9 @@ public class Entity {
     private final String label;
     private final String name;
     private final String abbrev;
-    private final String description;
+    
+    // Can be changed by a trigger ...
+    protected String description;
     
     protected static Map<String, Entity> allEntities = new HashMap<>();
 

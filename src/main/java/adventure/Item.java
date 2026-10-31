@@ -6,6 +6,7 @@ import java.util.Map;
 
 import adventure.actions.Trigger;
 import adventure.actions.Triggered;
+import adventure.actions.Triggered.Verb;
 import adventure.actions.VerbResult;
 import adventure.actions.VerbResult.Outcome;
 
@@ -204,48 +205,60 @@ public class Item extends Entity {
                 if (!action.trigger()) {
                     continue;
                 }
-                if (action.getVerb() != null) {
-                    Item item = lookupItem(action.getTarget());
-                    if (item != null) {
-                        switch (action.getVerb()) {
-                        case HIDE:
-                            item.setHidden(true);
-                            break;
-                        case REVEAL:
-                            item.setHidden(false);
-                            break;
-                        case LOCK:
-                            if (item.isLockable()) {
-                                item.setLocked(true);
-                            }
-                            break;
-                        case UNLOCK:
-                            if (item.isLockable()) {
-                                item.setLocked(false);
-                            }
-                            break;
-                        case OPEN:
-                            if (item.isOpenable()) {
-                                item.setOpen(true);
-                            }
-                            break;
-                        case CLOSE:
-                            if (item.isOpenable()) {
-                                item.setOpen(false);
-                            }
-                            break;
-                        default:
-                        }
-                    } else {
-                        switch (action.getVerb()) {
-                        case MESSAGE:
-                            if (action.getMessage() != null) {
-                                System.out.println(action.getMessage());
-                            }
-                            break;
-                        default:
-                        }
+                Verb verb = action.getVerb();
+                Item item = lookupItem(action.getTarget());
+                if (item == null) {
+                    item = this;
+                }
+                switch (verb) {
+                case HIDE:
+                    item.setHidden(true);
+                    break;
+                case REVEAL:
+                    item.setHidden(false);
+                    break;
+                case LOCK:
+                    if (item.isLockable()) {
+                        item.setLocked(true);
                     }
+                    break;
+                case UNLOCK:
+                    if (item.isLockable()) {
+                        item.setLocked(false);
+                    }
+                    break;
+                case OPEN:
+                    if (item.isOpenable()) {
+                        item.setOpen(true);
+                    }
+                    break;
+                case CLOSE:
+                    if (item.isOpenable()) {
+                        item.setOpen(false);
+                    }
+                    break;
+                case SET_FLAG:
+                    Long flag = ITEM_FLAGS.get(action.getArg());
+                    if (flag != null) {
+                        item.setFlag(flag.longValue(), true);
+                    }
+                    break;
+                case CLEAR_FLAG:
+                    flag = ITEM_FLAGS.get(action.getArg());
+                    if (flag != null) {
+                        item.setFlag(flag.longValue(), false);
+                    }
+                    break;
+                case SET_DESCRIPTION:
+                    item.description = action.getArg();
+                    break;
+                case MESSAGE:
+                    if (action.getMessage() != null) {
+                        System.out.println(action.getMessage());
+                    }
+                    break;
+                default:
+                    throw new TriggerException("Verb '" + verb + "' not implemented");
                 }
             }
         }

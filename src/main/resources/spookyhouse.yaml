@@ -108,10 +108,22 @@ exits:
     to: path
     portal:
       label: frontgate
-      name: the front date
+      name: the front gate
       abbrev: gate
       description: a rustic gate
-      flags: OPENABLE OPEN
+      flags: OPENABLE
+      triggers: 
+        - events: OPENED
+          actions:
+            - verb: MESSAGE
+              message: The gate collapses.
+              onetime: Y
+            - verb: CLEAR_FLAG
+              arg: OPENABLE
+              onetime: Y
+            - verb: SET_DESCRIPTION
+              arg: a collaped gate that will no longer close
+              onetime: Y
     forwards: n i
     backwards: s o
  

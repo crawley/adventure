@@ -6,7 +6,7 @@ public class Triggered {
         HIDE, REVEAL, OPEN, CLOSE, LOCK, UNLOCK, 
         MESSAGE, SAY, 
         INCREMENT, DECREMENT, TEST_MIN, TEST_MAX, SET_MIN, SET_MAX, 
-        TEST, SET
+        TEST, SET, SET_DESCRIPTION, SET_FLAG, CLEAR_FLAG, 
     }
     
     private final String message;
