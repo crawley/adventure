@@ -62,13 +62,13 @@ public class Arena {
 	}
 	
 	public Item makeItem(String kind, String location, String label, String name, String abbrev, 
-	        String description, long flags, List<Trigger> triggers) {
+	        String description, long flags, List<Trigger> triggers, PropertySet props) {
 	    if (abbrev == null) {
 	        abbrev = label;
 	    }
 	    Item item = ("CONTAINER".equals(kind)) ?
-                new Container(label, name, abbrev, description, flags, triggers) :
-	            new Item(label, name, abbrev, description, flags, triggers);
+                new Container(label, name, abbrev, description, flags, triggers, props) :
+	            new Item(label, name, abbrev, description, flags, triggers, props);
 	    if (location != null) {
 	        String[] parts = location.split("#", 2);
 	        Location loc = parseLocation(parts[0]);
@@ -90,7 +90,7 @@ public class Arena {
         return item;
 	}
 	
-	public Actor makeActor(String label, String kind, String location, 
+	public Entity makeActor(String label, String kind, String location, 
 	        String name, String abbrev, String description, 
 	        List<Trigger> triggers, PropertySet props) {
 	    Location loc = parseLocation(location);
@@ -236,29 +236,31 @@ public class Arena {
     private static PropertySet parseProperties(Map<String, Object> data) {
         PropertySet props = new PropertySet();
         List<Object> propsData = (List<Object>) data.get("properties");
-        for (Object obj: propsData) {
-            Map<String, Object> propData = (Map<String, Object>) obj;
-            String name = getString(propData, "name");
-            String type = getString(propData, "type");
-            Property prop;
-            if (type.equals("boolean")) {
-                prop = new BooleanProperty(name, 
-                        getBoolean(propData, "initial", false));
-            } else if (type.equals("int")) {
-                prop = new IntegerProperty(name, 
-                        getInteger(propData, "initial", 0), 
-                        getInteger(propData, "min", Integer.MIN_VALUE), 
-                        getInteger(propData, "max", Integer.MAX_VALUE));
-            } else if (type.equals("float")) {
-                prop = new FloatProperty(name, 
-                        getFloat(propData, "initial", 0), 
-                        getFloat(propData, "min", Float.MIN_VALUE), 
-                        getFloat(propData, "max", Float.MAX_VALUE));
-            } else {
-                throw new ArenaException(
-                        "property type not one of 'boolean', 'int' or 'float'");
+        if (propsData != null) {
+            for (Object obj: propsData) {
+                Map<String, Object> propData = (Map<String, Object>) obj;
+                String name = getString(propData, "name");
+                String type = getString(propData, "type");
+                Property prop;
+                if (type.equals("boolean")) {
+                    prop = new BooleanProperty(name, 
+                            getBoolean(propData, "initial", false));
+                } else if (type.equals("int")) {
+                    prop = new IntegerProperty(name, 
+                            getInteger(propData, "initial", 0), 
+                            getInteger(propData, "min", Integer.MIN_VALUE), 
+                            getInteger(propData, "max", Integer.MAX_VALUE));
+                } else if (type.equals("float")) {
+                    prop = new FloatProperty(name, 
+                            getFloat(propData, "initial", 0), 
+                            getFloat(propData, "min", Float.MIN_VALUE), 
+                            getFloat(propData, "max", Float.MAX_VALUE));
+                } else {
+                    throw new ArenaException(
+                            "property type '" + type + "' not recognized");
+                }
+                props.add(prop);
             }
-            props.add(prop);
         }
         return props;
     }
@@ -285,6 +287,7 @@ public class Arena {
         Map<String, Object> itemData = (Map<String, Object>) data;
         long flags = parseItemFlags(getOptString(itemData, "flags"));
         List<Trigger> triggers = parseTriggers(itemData);
+        PropertySet props = parseProperties(itemData);
         Item item = makeItem(
                 getOptString(itemData, "kind"), 
                 getOptString(itemData, "location"), 
@@ -292,7 +295,7 @@ public class Arena {
                 getString(itemData, "name"), 
                 getOptString(itemData, "abbrev"), 
                 getOptString(itemData, "description"), 
-                flags, triggers);
+                flags, triggers, props);
         if ("CONTAINER".equals(getOptString(itemData, "kind"))
                 && itemData.get("contents") != null) {
             List<Object> contents = (List<Object>) itemData.get("contents");

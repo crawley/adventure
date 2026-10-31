@@ -28,7 +28,7 @@ public class Location extends Entity {
 
     public Location(LocationType type, String label, String name, 
             String abbrev, String description) {
-		super(label, name, abbrev, description);
+		super(label, name, abbrev, description, null);
 		this.type = type;
 		this.vistas = new ArrayList<>();
 		this.items = new ItemList("here");

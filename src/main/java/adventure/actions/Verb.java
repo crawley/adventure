@@ -62,7 +62,7 @@ public abstract class Verb implements Action {
                 "applyActor not supported for " + this.getClass());
     }
 
-    protected VerbResult applyActorWith(Actor actor, Actor target, Item item) {
+    protected VerbResult applyActorWith(Entity actor, Entity target, Item item) {
         throw new UnsupportedOperationException(
                 "applyActorWith not supported for " + this.getClass());
     }
@@ -99,7 +99,7 @@ public abstract class Verb implements Action {
         }
     }
 
-    private VerbResult checkActor(Actor actor, String word, List<Actor> actors) {
+    private VerbResult checkActor(Entity actor, String word, List<Actor> actors) {
         if (actors.isEmpty()) {
             return new VerbResult(VerbResult.Outcome.NOT_FOUND, word);
         } else if (actors.size() > 1) {
@@ -201,7 +201,7 @@ public abstract class Verb implements Action {
         return doResolve(word, lists);
     }
 
-    public static List<Item> resolve(String word, Actor actor, List<Item> list) {
+    public static List<Item> resolve(String word, Entity actor, List<Item> list) {
         List<List<Item>> lists = list.stream()
                 .filter((item) -> item instanceof Container)
                 .map((item) -> ((Container) item).getContents())

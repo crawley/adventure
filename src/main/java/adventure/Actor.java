@@ -19,7 +19,6 @@ public class Actor extends Entity {
     private final List<Item> itemsInHand = new ItemList("in hand");
     private final List<Item> itemsWorn = new ItemList("worn");
     private final List<Trigger> triggers;
-    private final PropertySet properties;
     private final int NOS_HANDS = 2;
     
     private Location location;
@@ -28,11 +27,10 @@ public class Actor extends Entity {
 	public Actor(Kind kind, String label, String name, String abbrev,
 	        String description, Location location, 
 	        List<Trigger> triggers, PropertySet properties) {
-		super(label, name, abbrev, description);
+		super(label, name, abbrev, description, properties);
 		this.location = location;
 		this.kind = kind;
 		this.triggers = (triggers == null) ? Collections.emptyList() : triggers;
-		this.properties = (properties == null) ? new PropertySet() : properties;
 	}
 
 	public Kind getKind() {
@@ -49,10 +47,6 @@ public class Actor extends Entity {
 
     public List<Trigger> getTriggers() {
         return triggers;
-    }
-
-    public PropertySet getProperties() {
-        return properties;
     }
 
     public Location getLocation() {
@@ -131,7 +125,7 @@ public class Actor extends Entity {
     public void showLocationAndActors() {
         System.out.println("You are " + location.getType().getPreposition() 
                 + " " + location.getName());
-        for (Actor actor: location.actors()) {
+        for (Entity actor: location.actors()) {
             if (actor != this) {
                 System.out.println("You see " + actor.getDescription());
             }
@@ -164,7 +158,7 @@ public class Actor extends Entity {
                     }
                     break;
                 case SAY:
-                    for (Actor actor: location.actors()) {
+                    for (Entity actor: location.actors()) {
                         if (actor != this && action.trigger()) {
                             System.out.println(this.getName() 
                                     + " says " + action.getMessage());
@@ -176,38 +170,6 @@ public class Actor extends Entity {
                             "Verb '" + action.getVerb() + "' not implemented");
                 }
             }
-        }
-    }
-
-    private Number getNumericArg2(Triggered action) {
-        String arg = action.getArg2();
-        if (arg == null) {
-            return null;
-        } else {
-            try {
-                return Integer.parseInt(arg);
-            } catch (NumberFormatException ex) {
-                try {
-                    return Double.parseDouble(arg);
-                } catch (NumberFormatException ex2) {
-                    throw new TriggerException(
-                            "Action arg value ('" + arg + "') not a number");
-                }
-            }
-        }
-    }
-
-    private NumberProperty getNumberProperty(String name) {
-        Property prop = properties.lookup(name);
-        if (prop == null) {
-            throw new TriggerException(
-                    "Can't find '" + name + "' property on actor '" + getLabel() + "'");
-        }
-        if (prop instanceof NumberProperty) {
-            return (NumberProperty) prop;
-        } else {
-            throw new TriggerException(
-                    "Property '" + name + "' on actor '" + getLabel() + "' not numeric");
         }
     }
 

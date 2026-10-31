@@ -3,6 +3,8 @@ package adventure;
 import java.util.HashMap;
 import java.util.Map;
 
+import adventure.actions.Triggered;
+
 public class Entity {
 
     private final String label;
@@ -11,6 +13,7 @@ public class Entity {
     
     // Can be changed by a trigger ...
     protected String description;
+    protected final PropertySet properties;
     
     protected static Map<String, Entity> allEntities = new HashMap<>();
 
@@ -23,12 +26,14 @@ public class Entity {
      * @param description a description for the entity.
      * @throws EntityException if the label is non-unique.
      */
-    public Entity(String label, String name, String abbrev, String description) {
+    public Entity(String label, String name, String abbrev, String description, 
+            PropertySet properties) {
         super();
         this.label = label;
         this.name = name;
         this.abbrev = abbrev == null ? label : abbrev;
         this.description = description;
+        this.properties = (properties == null) ? new PropertySet() : properties;
 
         if (allEntities.containsKey(label)) {
             throw new EntityException("Entity with label '" + label + "' already exists");
@@ -64,6 +69,43 @@ public class Entity {
         return description;
     }
     
+    public PropertySet getProperties() {
+        return properties;
+    }
+
+    protected Number getNumericArg2(Triggered action) {
+        String arg = action.getArg2();
+        if (arg == null) {
+            return null;
+        } 
+        try {
+            return Integer.parseInt(arg);
+        } catch (NumberFormatException ex) {
+            try {
+                return Double.parseDouble(arg);
+            } catch (NumberFormatException ex2) {
+                throw new TriggerException(
+                        "Action arg value ('" + arg + "') not a number");
+            }
+        }
+    }
+
+    protected NumberProperty getNumberProperty(String name) {
+        Property prop = properties.lookup(name);
+        if (prop == null) {
+            throw new TriggerException(
+                    "Can't find '" + name + "' property on '" +
+                            getLabel() + "'");
+        }
+        if (prop instanceof NumberProperty) {
+            return (NumberProperty) prop;
+        } else {
+            throw new TriggerException(
+                    "Property '" + name + "' on '" + getLabel() +
+                    "' not numeric");
+        }
+    }
+
     /**
      * Lookup an entity via its label.
      * @param label

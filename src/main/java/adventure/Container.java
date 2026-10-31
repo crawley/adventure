@@ -9,8 +9,10 @@ public class Container extends Item {
     private final List<Item> contents;
 
     public Container(String label, String name, String abbrev, 
-            String description, long flags, List<Trigger> triggers) {
-        super(label, name, abbrev, description, flags, triggers);
+            String description, long flags, 
+            List<Trigger> triggers, PropertySet properties) {
+        super(label, name, abbrev, description, flags, 
+                triggers, properties);
         contents = new ItemList(label + "contents");
     }
 
