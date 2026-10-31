@@ -52,6 +52,9 @@ locations:
     description: |
       an entrance hallway
     walls:
+      - direction: s
+        name: south wall
+        description: a short wall with a doorway
       - direction: e
         name: east wall
         description: a long wall with a doorway
@@ -183,6 +186,19 @@ items:
             - verb: MESSAGE
               message: You think "Nom nom nom"
   
+  - label: coatstand
+    kind: CONTAINER
+    name: a coat stand
+    description: an old fashioned coat stand
+    location: hallway#s
+    flag: MOVEABLE
+    contents:
+      - label: cap
+        name: a red baseball cap
+        flags: WEARABLE MOVEABLE TAKEABLE 
+        description: |
+          The cap has the words "Make Arcadia Great Again" on the front.
+    
   - label: fireplace
     name: a fireplace
     description: | 
