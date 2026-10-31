@@ -6,9 +6,9 @@ public abstract class NumberProperty  extends Property {
         super(name);
     }
     
-    public abstract void increment();
+    public abstract void increment(Number by);
 
-    public abstract void decrement();
+    public abstract void decrement(Number by);
     
     public abstract boolean testMin();
 

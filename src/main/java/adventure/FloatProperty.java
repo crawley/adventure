@@ -53,13 +53,21 @@ public class FloatProperty extends NumberProperty {
     }
 
     @Override
-    public synchronized void increment() {
-        setValue(value + 1);
+    public synchronized void increment(Number by) {
+        if (by == null) {
+            setValue(value + 1);
+        } else {
+            setValue(value + by.doubleValue());
+        }
     }
 
     @Override
-    public synchronized void decrement() {
-        setValue(value - 1);
+    public synchronized void decrement(Number by) {
+        if (by == null) {
+            setValue(value - 1);
+        } else {
+            setValue(value - by.doubleValue());
+        }
     }
 
     @Override

@@ -33,6 +33,8 @@ public class Actions {
         actions.put("eat", new EatAction());
         actions.put("inventory", new InventoryAction());
         aliases.put("invent", "inventory");
+        actions.put("statistics", new StatisticsAction());
+        aliases.put("stats", "statistics");
         actions.put("quit", new QuitAction());
         actions.put("actions", new ActionsAction());
         aliases.put("?", "actions");

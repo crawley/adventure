@@ -1,6 +1,7 @@
 package adventure;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class PropertySet {
@@ -19,4 +20,7 @@ public class PropertySet {
         return props.get(name);
     }
 
+    public Set<String> keys() {
+        return props.keySet();
+    }
 }

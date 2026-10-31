@@ -27,9 +27,11 @@ public class Standalone implements Runnable {
 			throw new MissingArenaException("Problem loading arena '" +
 					fileName + "'", ex);
 		}
+		PropertySet props = new PropertySet();
+		props.add(new IntegerProperty("hunger", 5, 0, 10));
 		player = new Actor(Actor.Kind.PLAYER, "player", "player", 
 		        "player", "the player (you)", arena.getStart(), 
-		        null, null);
+		        null, props);
 		arena.addActor(player);
 	}
 

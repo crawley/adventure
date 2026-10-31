@@ -146,10 +146,12 @@ public class Actor extends Entity {
             actions: for (Triggered action: trigger.getActions()) {
                 switch (action.getVerb()) {
                 case INCREMENT:
-                    getNumberProperty(action.getArg()).increment();
+                    Number by = getNumericArg2(action);
+                    getNumberProperty(action.getArg()).increment(by);
                     break;
                 case DECREMENT:
-                    getNumberProperty(action.getArg()).increment();
+                    by = getNumericArg2(action);
+                    getNumberProperty(action.getArg()).decrement(by);
                     break;
                 case TEST_MIN:
                     if (!getNumberProperty(action.getArg()).testMin()) {
@@ -161,11 +163,6 @@ public class Actor extends Entity {
                         break actions;
                     }
                     break;
-                case TEST:
-                case SET_MAX:
-                case SET_MIN:
-                case SET:
-                    break;
                 case SAY:
                     for (Actor actor: location.actors()) {
                         if (actor != this && action.trigger()) {
@@ -175,6 +172,26 @@ public class Actor extends Entity {
                     }
                     break;
                 default:
+                    throw new TriggerException(
+                            "Verb '" + action.getVerb() + "' not implemented");
+                }
+            }
+        }
+    }
+
+    private Number getNumericArg2(Triggered action) {
+        String arg = action.getArg2();
+        if (arg == null) {
+            return null;
+        } else {
+            try {
+                return Integer.parseInt(arg);
+            } catch (NumberFormatException ex) {
+                try {
+                    return Double.parseDouble(arg);
+                } catch (NumberFormatException ex2) {
+                    throw new TriggerException(
+                            "Action arg value ('" + arg + "') not a number");
                 }
             }
         }
