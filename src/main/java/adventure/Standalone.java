@@ -24,7 +24,7 @@ public class Standalone implements Runnable {
 		{
 			arena = Arena.load(is);
 		} catch (IOException ex) {
-			throw new MissingArenaException("Problem loading arena '" +
+			throw new ArenaException("Can't find or read arena file '" +
 					fileName + "'", ex);
 		}
 		PropertySet props = new PropertySet();
