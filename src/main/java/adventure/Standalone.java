@@ -28,7 +28,7 @@ public class Standalone implements Runnable {
 					fileName + "'", ex);
 		}
 		PropertySet props = new PropertySet();
-		props.add(new IntegerProperty("hunger", 5, 0, 10));
+		props.add(new FloatProperty("hunger", 5, 0, 10));
 		player = new Actor(Actor.Kind.PLAYER, "player", "player", 
 		        "player", "the player (you)", arena.getStart(), 
 		        null, props);

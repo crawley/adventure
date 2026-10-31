@@ -244,17 +244,17 @@ public class Arena {
                 Property prop;
                 if (type.equals("boolean")) {
                     prop = new BooleanProperty(name, 
-                            getBoolean(propData, "initial", false));
+                            getBoolean(propData, "initial"));
                 } else if (type.equals("int")) {
                     prop = new IntegerProperty(name, 
-                            getInteger(propData, "initial", 0), 
-                            getInteger(propData, "min", Integer.MIN_VALUE), 
-                            getInteger(propData, "max", Integer.MAX_VALUE));
+                            getInteger(propData, "initial"), 
+                            getOptInteger(propData, "min", Integer.MIN_VALUE), 
+                            getOptInteger(propData, "max", Integer.MAX_VALUE));
                 } else if (type.equals("float")) {
                     prop = new FloatProperty(name, 
-                            getFloat(propData, "initial", 0), 
-                            getFloat(propData, "min", Float.MIN_VALUE), 
-                            getFloat(propData, "max", Float.MAX_VALUE));
+                            getFloat(propData, "initial"), 
+                            getOptFloat(propData, "min", Float.MIN_VALUE), 
+                            getOptFloat(propData, "max", Float.MAX_VALUE));
                 } else {
                     throw new ArenaException(
                             "property type '" + type + "' not recognized");
@@ -331,51 +331,74 @@ public class Arena {
         }
     }
 
-    private static boolean getBoolean(Map<String, Object> data, 
+    private static boolean getBoolean(Map<String, Object> data, String tag) {
+        return parseBoolean(tag, getString(data, tag));
+    }
+    
+    private static boolean getOptBoolean(Map<String, Object> data, 
             String tag, boolean defaultValue) {
         String value = getOptString(data, tag);
         if (value == null) {
             return defaultValue;
         } else {
-            switch (value.trim().toUpperCase()) {
-            case "Y", "YES", "TRUE", "1": return true;
-            case "N", "NO", "FALSE", "0": return false;
-            default:
-                throw new ArenaException(
-                        "Expected a boolean for '" + tag + "'");
-            }
+            return parseBoolean(tag, value);
+        }
+    }
+
+    private static boolean parseBoolean(String tag, String value) {
+        switch (value.trim().toUpperCase()) {
+        case "Y", "YES", "TRUE", "1": return true;
+        case "N", "NO", "FALSE", "0": return false;
+        default:
+            throw new ArenaException(
+                    "Expected a boolean for '" + tag + "'");
         }
     }
     
-    private static int getInteger(Map<String, Object> data, 
+    private static int getInteger(Map<String, Object> data, String tag) {
+        try {
+            return Integer.parseInt(getString(data, tag));
+        } catch (NumberFormatException ex) {
+            throw new ArenaException(
+                    "Value of '" + tag + "' is not an integer",
+                    ex);
+        }
+    }
+    
+    private static int getOptInteger(Map<String, Object> data, 
             String tag, int defaultValue) {
         String value = getOptString(data, tag);
         if (value == null) {
             return defaultValue;
-        } else {
-            try {
-                return Integer.parseInt(value);
-            } catch (NumberFormatException ex) {
-                throw new ArenaException(
-                        "Value of '" + tag + "' is not an integer",
-                        ex);
-            }
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException ex) {
+            throw new ArenaException(
+                    "Value of '" + tag + "' is not an integer", ex);
         }
     }
     
-    private static float getFloat(Map<String, Object> data, 
+    private static float getFloat(Map<String, Object> data, String tag) {
+        try {
+            return Float.parseFloat(getString(data, tag));
+        } catch (NumberFormatException ex) {
+            throw new ArenaException(
+                    "Value of '" + tag + "' is not an float", ex);
+        }
+    }
+    
+    private static float getOptFloat(Map<String, Object> data, 
             String tag, float defaultValue) {
         String value = getOptString(data, tag);
         if (value == null) {
             return defaultValue;
-        } else {
-            try {
-                return Float.parseFloat(value);
-            } catch (NumberFormatException ex) {
-                throw new ArenaException(
-                        "Value of '" + tag + "' is not an float",
-                        ex);
-            }
+        } 
+        try {
+            return Float.parseFloat(value);
+        } catch (NumberFormatException ex) {
+            throw new ArenaException(
+                    "Value of '" + tag + "' is not an float", ex);
         }
     }
     
@@ -410,7 +433,7 @@ public class Arena {
                     getOptString(actionData, "arg2"),  
                     parseVerb(getString(actionData, "verb")), 
                     getOptString(actionData, "message"), 
-                    !getBoolean(actionData, "onetime", false));
+                    !getOptBoolean(actionData, "onetime", false));
             actions.add(action);
         }
         return actions;

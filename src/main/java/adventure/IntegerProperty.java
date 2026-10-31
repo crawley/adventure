@@ -30,13 +30,14 @@ public class IntegerProperty extends NumberProperty {
         return value;
     }
 
-    public synchronized void setValue(int value) {
-        if (value < min) {
-            value = min;
-        } else if (value > max) {
-            value = max;
+    public synchronized void setValue(int newvalue) {
+        if (newvalue < min) {
+            this.value = min;
+        } else if (newvalue > max) {
+            this.value = max;
+        } else {
+            this.value = newvalue;
         }
-        this.value = value;
     }
 
     public int getMin() {

@@ -22,7 +22,6 @@ public class Actor extends Entity {
     private final int NOS_HANDS = 2;
     
     private Location location;
-    private int hunger = 0;
     
 	public Actor(Kind kind, String label, String name, String abbrev,
 	        String description, Location location, 
@@ -35,14 +34,6 @@ public class Actor extends Entity {
 
 	public Kind getKind() {
         return kind;
-    }
-
-    public int getHunger() {
-        return hunger;
-    }
-
-    public void setHunger(int hunger) {
-        this.hunger = hunger;
     }
 
     public List<Trigger> getTriggers() {
@@ -116,6 +107,13 @@ public class Actor extends Entity {
     public VerbResult eatItem(Item item) {
         if (item.isEdible()) {
             itemsInHand.remove(item);
+            NumberProperty calories = item.getNumberProperty("calories");
+            if (calories != null) {
+                NumberProperty hunger = this.getNumberProperty("hunger");
+                if (hunger != null) {
+                    hunger.decrement(calories.floatValue());
+                }
+            }
             return new VerbResult(2, item);
         } else {
             return new VerbResult(Outcome.NOT_APPLICABLE, item);

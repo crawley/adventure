@@ -35,13 +35,14 @@ public class FloatProperty extends NumberProperty {
         return value;
     }
 
-    public synchronized void setValue(double value) {
-        if (value < min) {
-            value = min;
-        } else if (value > max) {
-            value = max;
+    public synchronized void setValue(double newValue) {
+        if (newValue < min) {
+            this.value = min;
+        } else if (newValue > max) {
+            this.value = max;
+        } else {
+            this.value = newValue;
         }
-        this.value = value;
     }
 
     public double getMin() {
