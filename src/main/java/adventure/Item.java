@@ -20,8 +20,8 @@ public class Item extends Entity {
     public static final long EDIBLE = 0x4L;
     public static final long WEARABLE = 0x8L;
     public static final long WIELDABLE = 0x10L;
-    public static final long OPENABLE = 0x40L;
-    public static final long LOCKABLE = 0x100L;
+    public static final long OPENABLE = 0x20L;
+    public static final long LOCKABLE = 0x40L;
     
     public static final long HAS_STATE_FLAGS = LOCKABLE | OPENABLE;
     
