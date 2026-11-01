@@ -13,6 +13,14 @@ public class PropertySet {
     }
     
     public void add(Property property) {
+        Property current = props.get(property.getName());
+        if (current != null) {
+            if (property.getClass() != current.getClass()) {
+                throw new StateInconsistencyException(
+                        "Inconsistent types for property '" 
+                                + property.getName() + "'");
+            }
+        }
         props.put(property.getName(), property);
     }
     
