@@ -249,14 +249,23 @@ items:
     name: a shiny key
     abbrev: key
     location: porch
-    flags: HIDDEN TAKEABLE
+    flags: TAKEABLE
+    properties:
+      - name: hidden
+        type: boolean
+        initial: Y
     
   - label: chest
     kind: CONTAINER
     name: a chest
     description: a large iron-bound wooden chest 
     location: sitting
-    flags: OPENABLE LOCKABLE LOCKED
+    flags: OPENABLE LOCKABLE
+    properties:
+      - name: locked
+        type: boolean
+        initial: Y
+
     associations:
       - association: HAS_KEY
         item: chestkey

@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import org.yaml.snakeyaml.Yaml;
 
+import adventure.Item.FlagDescriptor;
 import adventure.Location.LocationType;
 import adventure.actions.Trigger;
 import adventure.actions.Trigger.Event;
@@ -455,11 +456,11 @@ public class Arena {
         if (flagString != null) {
             String[] words = flagString.split("\\s+");
             for (String word: words) {
-                Long flag = Item.ITEM_FLAGS.get(word.toUpperCase());
+                FlagDescriptor flag = Item.ITEM_FLAGS.get(word.toUpperCase());
                 if (flag == null) {
                     throw new ArenaException("Unknown flag '" + word + "'");
                 }
-                flags |= flag.longValue();
+                flags |= flag.flag();
             }
         }
         return flags;

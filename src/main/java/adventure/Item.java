@@ -20,27 +20,30 @@ public class Item extends Entity {
     public static final long EDIBLE = 0x4L;
     public static final long WEARABLE = 0x8L;
     public static final long WIELDABLE = 0x10L;
-    public static final long HIDDEN = 0x20L;
     public static final long OPENABLE = 0x40L;
-    public static final long OPEN = 0x80L;
     public static final long LOCKABLE = 0x100L;
-    public static final long LOCKED = 0x200L;
     
     public static final long HAS_STATE_FLAGS = LOCKABLE | OPENABLE;
     
+    public record FlagDescriptor (
+            long flag, 
+            String property,
+            boolean initial) {
+        public FlagDescriptor(long flag) {
+            this(flag, null, false);
+        }
+    }
+    
     @SuppressWarnings("serial")
-    public static final Map<String, Long> ITEM_FLAGS = new HashMap<String, Long>(){
+    public static final Map<String, FlagDescriptor> ITEM_FLAGS = new HashMap<>(){
         {
-            put("TAKEABLE", TAKEABLE);
-            put("MOVEABLE", MOVEABLE);
-            put("WEARABLE", WEARABLE);
-            put("WIELDABLE", WIELDABLE);
-            put("EDIBLE", EDIBLE);
-            put("OPENABLE", OPENABLE);
-            put("OPEN", OPEN);
-            put("LOCKABLE", LOCKABLE);
-            put("LOCKED", LOCKED);
-            put("HIDDEN", HIDDEN);
+            put("TAKEABLE", new FlagDescriptor (TAKEABLE));
+            put("MOVEABLE", new FlagDescriptor (MOVEABLE));
+            put("WEARABLE", new FlagDescriptor (WEARABLE));
+            put("WIELDABLE", new FlagDescriptor (WIELDABLE));
+            put("EDIBLE", new FlagDescriptor (EDIBLE));
+            put("OPENABLE", new FlagDescriptor (OPENABLE, "open", false));
+            put("LOCKABLE", new FlagDescriptor (LOCKABLE, "locked", false));
         }
     };
     
@@ -50,6 +53,20 @@ public class Item extends Entity {
         super(label, name, abbrev, description, properties);
         this.flags = flags;
         this.triggers = triggers;
+        
+        // Add default and flag properties
+        for (FlagDescriptor desc: ITEM_FLAGS.values()) {
+            if (desc.property != null && ((flags & desc.flag) != 0)) {
+                if (this.properties.lookup(desc.property) == null) {
+                    BooleanProperty prop = new BooleanProperty(
+                            desc.property, desc.initial);
+                    this.properties.add(prop);
+                }
+            }
+        }
+        if (this.properties.lookup("hidden") == null) {
+            this.properties.add(new BooleanProperty("hidden", false));
+        }
     }
 
     public List<Trigger> getTriggers() {
@@ -90,11 +107,11 @@ public class Item extends Entity {
     }
     
     public boolean isHidden() {
-        return (flags & HIDDEN) != 0;
+        return this.properties.lookup("hidden").isTrue();
     }
     
     public void setHidden(boolean hidden) {
-        setFlag(HIDDEN, hidden);
+        ((BooleanProperty) this.properties.lookup("hidden")).setValue(hidden);
     }
     
     public boolean isLockable() {
@@ -102,11 +119,11 @@ public class Item extends Entity {
     }
     
     public boolean isLocked() {
-        return (flags & LOCKED) != 0;
+        return this.properties.lookup("locked").isTrue();
     }
     
     public void setLocked(boolean locked) {
-        setFlag(LOCKED, locked);
+        ((BooleanProperty) this.properties.lookup("locked")).setValue(locked);
     }
     
     public boolean isOpenable() {
@@ -114,11 +131,11 @@ public class Item extends Entity {
     }
 
     public boolean isOpen() {
-        return (flags & OPEN) != 0;
+        return this.properties.lookup("open").isTrue();
     }
     
     public void setOpen(boolean open) {
-        setFlag(OPEN, open);
+        ((BooleanProperty) this.properties.lookup("open")).setValue(open);
     }
     
     private void setFlag(long flag, boolean yes) {
@@ -239,13 +256,13 @@ public class Item extends Entity {
                     }
                     break;
                 case SET_FLAG:
-                    Long flag = ITEM_FLAGS.get(action.getArg());
+                    Long flag = ITEM_FLAGS.get(action.getArg()).flag;
                     if (flag != null) {
                         item.setFlag(flag.longValue(), true);
                     }
                     break;
                 case CLEAR_FLAG:
-                    flag = ITEM_FLAGS.get(action.getArg());
+                    flag = ITEM_FLAGS.get(action.getArg()).flag;
                     if (flag != null) {
                         item.setFlag(flag.longValue(), false);
                     }

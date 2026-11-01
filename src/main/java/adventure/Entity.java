@@ -24,6 +24,7 @@ public class Entity {
      * @param name a name for the entity
      * @param abbrev a short tag for use in commands.  If null, default to the label.
      * @param description a description for the entity.
+     * @param properties the entity's initial property set
      * @throws EntityException if the label is non-unique.
      */
     public Entity(String label, String name, String abbrev, String description, 
