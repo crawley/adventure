@@ -151,8 +151,7 @@ locations:
   - label: corridor-w
     type: ROOM
     name: the downstairs corridor
-    description: |
-      the west end of a corridor running east-west.
+    description: the west end of a corridor running east-west.
     walls:
       - direction: e
         name: east wall
@@ -170,6 +169,37 @@ locations:
       - direction: n
         name: north wall
         description: the north side of the corridor
+        
+  - label: kitchen
+    type: ROOM
+    name: the kitchen
+    description: an old fashioned kitchen 
+    walls:
+      - direction: s
+        name: south wall
+        description: the south wall of the kitchen
+      - direction: n
+        name: north wall
+        description: |
+          the north wall of the kitchen.
+          There is a large window with a view to the outside.
+          Beneath the window is a benchtop with a sink and cupboard below it. 
+      - direction: e
+        name: east wall
+        description: |
+          the east wall of the kitchen.
+          The wall is dominated by an large iron stove.
+      - direction: w
+        name: west wall
+        description: the west wall of the kitchen
+        
+  - label: pantry
+    type: ROOM
+    name: the pantry
+    description: |
+      a small room with floor to ceiling shelves on three walls.
+      There are empty boxes on the shelves.
+        
 
 exits:
 
@@ -237,6 +267,31 @@ exits:
     forwards: w
     backwards: e
     
+  - from: corridor-e
+    to: kitchen
+    portal:
+      label: kitchendoor
+      name: the kitchen door
+      abbrev: door
+      description: an plain door
+      flags: OPENABLE
+      triggers:
+        - events: OPENED
+          actions:
+            - verb: MESSAGE
+              message: The door creaks as it opens.
+        - events: CLOSED
+          actions:
+            - verb: MESSAGE
+              message: The door creaks as it closes.
+    forwards: n
+    backwards: s
+
+  - from: kitchen
+    to: pantry
+    forwards: w
+    backwards: e
+     
 creatures:
   - label: jasper
     kind: PET
@@ -295,13 +350,28 @@ items:
     name: a coat stand
     description: an old fashioned coat stand
     location: hallway#s
-    flag: MOVEABLE
+    flags: MOVEABLE
     contents:
       - label: cap
         name: a red baseball cap
         flags: WEARABLE MOVEABLE TAKEABLE 
         description: |
           The cap has the words "Make Arcadia Great Again" on the front.
+          
+  - label: kitchendrawer
+    kind: CONTAINER
+    name: a kichen drawer
+    abbrev: drawer
+    location: kitchen#n
+    flags: OPENABLE
+    contents:
+      - label: kitchenknife
+        name: a kitchen knife
+        abbrev: knife
+        description: a small kitchen knife with a wooden handle.
+      - label: canopener
+        name: a can opener
+        description: a rusty can opener
     
   - label: fireplace
     name: a fireplace
