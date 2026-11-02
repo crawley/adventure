@@ -170,7 +170,16 @@ public class Actor extends Entity {
         if (target.kind != Kind.PET) {
             return new VerbResult(Outcome.NOT_APPLICABLE, target);
         } else {
-            return new VerbResult(1, this, target);
+            return new VerbResult(1, target);
+        }
+    }
+
+    public VerbResult feed(Actor target, Item food) {
+        if (food.isEdible()) {
+            return new VerbResult(1, target, food);
+        } else {
+            return new VerbResult(Outcome.NOT_APPLICABLE, food,
+                    "is not edible");
         }
     }
 }

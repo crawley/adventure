@@ -12,13 +12,13 @@ public class PetAction extends Verb {
 
     @Override
     public int perform(Actor actor, String[] args) {
-        return performOnActor(actor, args, Context.ACTORS_HERE);
+        return performOnActor(actor, args);
     }
     
     @Override
     protected void onSuccess(Actor actor, Entity creature, Entity unused) {
         System.out.println("You " + getParticiple() + " " + creature.getName());
-        actor.trigger(Event.PETTED);
+        creature.trigger(Event.PETTED);
     }
     
     @Override

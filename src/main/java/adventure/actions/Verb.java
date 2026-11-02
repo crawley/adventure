@@ -62,7 +62,7 @@ public abstract class Verb implements Action {
                 "applyActor not supported for " + this.getClass());
     }
 
-    protected VerbResult applyActorWith(Entity actor, Entity target, Entity item) {
+    protected VerbResult applyActorWith(Actor actor, Actor target, Item item) {
         throw new UnsupportedOperationException(
                 "applyActorWith not supported for " + this.getClass());
     }
@@ -88,14 +88,26 @@ public abstract class Verb implements Action {
         }
     }
     
-    protected VerbResult applyActor(Actor actor, String word, 
-            Context[] contexts) {
-        List<Actor> actors = findActor(actor, word, contexts);
+    protected VerbResult applyActor(Actor actor, String word) {
+        List<Actor> actors = findActor(actor, word);
         VerbResult res = checkActor(actor, word, actors);
         if (res != null) {
             return res;
         } else {
             return applyActor(actor, actors.get(0));
+        }
+    }
+
+    protected VerbResult applyActorWith(Actor actor, String word, String word2,
+            Context[] contexts) {
+        List<Actor> actors = findActor(actor, word);
+        VerbResult res = checkActor(actor, word, actors);
+        List<Item> items = resolve(word2, actor, contexts);
+        res = checkUnique(word2, items);
+        if (res != null) {
+            return res;
+        } else {
+            return applyActorWith(actor, actors.get(0), items.get(0));
         }
     }
 
@@ -111,14 +123,7 @@ public abstract class Verb implements Action {
         }
     }
 
-    private List<Actor> findActor(Actor actor, String word,  
-            Context[] contexts) {
-        if (contexts.length > 1 || contexts[0] != Context.ACTORS_HERE) {
-            throw new UnsupportedOperationException("these contexts");
-        }
-        if (word.contains("#")) {
-            throw new UnsupportedOperationException("# in actor designator");
-        }
+    private List<Actor> findActor(Actor actor, String word) {
         return actor.getLocation().actors().stream()
                 .filter((a) -> (a.getAbbrev().equals(word)
                         || a.getName().equals(word)))
@@ -242,12 +247,11 @@ public abstract class Verb implements Action {
                     verb + " one thing at a time");
             return 0;
         } else {
-            return processVerbResult(applyHere(actor, args[0], contexts));
+            return processVerbResult(actor, applyHere(actor, args[0], contexts));
         }
     }
     
-    protected int performOnActor(Actor actor, String[] args, 
-            Context ...contexts) {
+    protected int performOnActor(Actor actor, String[] args) {
         if (args.length == 0) {
             System.out.println("Who or what do you want to " + verb + "?");
             return 0;
@@ -256,7 +260,7 @@ public abstract class Verb implements Action {
                     "You can only " + verb + " one being at a time");
             return 0;
         } else {
-            return processVerbResult(applyActor(actor, args[0], contexts));
+            return processVerbResult(actor, applyActor(actor, args[0]));
         }
     }
 
@@ -283,14 +287,39 @@ public abstract class Verb implements Action {
             if (label2 != null) {
                 VerbResult res = applyHereWith(
                         actor, label, label2, fromContainer, contexts);
-                return processVerbResult(res);
+                return processVerbResult(actor, res);
             }
         }
         return 0;
     }
     
-    private int processVerbResult(VerbResult res) {
-        Actor actor = res.getActor();
+    protected int performOnActorWith(Actor actor, String[] args,
+            String preposition, Context ...contexts) {
+        if (args.length == 0) {
+            System.out.println("Who or what do you want to " + verb + "?");
+        } else {
+            String label = args[0];
+            String label2 = null;
+            if (args.length == 1) {
+                System.out.println("What do you want to " + 
+                        verb + " " + args[0] + " " + preposition +"?");
+            } else if (args[1].equals(preposition)) {
+                if (args.length == 2) {
+                    System.out.println(verb + " " + args[0] + " " 
+                            + preposition + " what?");
+                } else {
+                    label2 = args[2];
+                }
+            } else {
+                label2 = args[1];
+            }
+            VerbResult res = applyActorWith(actor, label, label2, contexts);
+            return processVerbResult(actor, res);
+        }
+        return 0;
+    }
+    
+    private int processVerbResult(Actor actor, VerbResult res) {
         Entity target = res.getTarget();
         Item item2 = res.getItem2();
         switch (res.getOutcome()) {

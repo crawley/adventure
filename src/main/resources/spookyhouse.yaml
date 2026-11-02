@@ -179,7 +179,7 @@ creatures:
         actions:
           - verb: SAY
             message: "Purr"
-      - events: CONSUMED
+      - events: ATE
         actions:
           - verb: SAY
             message: "Mraow!"
