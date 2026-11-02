@@ -19,7 +19,7 @@ public class PutAction extends Verb {
     }
     
     @Override
-    protected void onSuccess(Item item, Entity item2) {
+    protected void onSuccess(Actor actor, Entity item, Entity item2) {
         System.out.println("You " + getParticiple() + " " 
                 + item.getName() + " into " + item2.getName());
         item.trigger(Event.ADDED);

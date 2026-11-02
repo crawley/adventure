@@ -20,13 +20,13 @@ public class GetAction extends Verb {
     }
     
     @Override
-    protected void onSuccess(Item item, Entity item2) {
+    protected void onSuccess(Actor actor, Entity item, Entity entity) {
         System.out.println("You " + getParticiple() + " " 
-                + item.getName() + " from " + item2.getName());
+                + item.getName() + " from " + entity.getName());
         item.trigger(Event.REMOVED);
         item.trigger(Event.TAKEN);
     }
-    
+
     @Override
     protected VerbResult applyWith(Actor actor, Item item, Item container) {
         if (container instanceof Container) {

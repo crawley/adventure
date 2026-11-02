@@ -18,21 +18,21 @@ public class VerbResult {
     private final int timeTaken;
     private final String word;
     private final Actor actor;
-    private final Item item;
-    private final Entity item2;
+    private final Entity target;
+    private final Item item2;
     private final Location location;
     private final String details;
     private final List<? extends Entity> alternatives;
     
     private VerbResult(Outcome outcome, int timeTaken, 
-            Actor actor, Item item, Entity item2, 
+            Actor actor, Entity target, Item item2, 
             Location location, String word, 
             String details, List<? extends Entity> alternatives) {
         super();
         this.outcome = outcome;
         this.timeTaken = timeTaken;
         this.actor = actor;
-        this.item = item;
+        this.target = target;
         this.item2 = item2;
         this.location = location;
         this.word = word;
@@ -40,28 +40,32 @@ public class VerbResult {
         this.alternatives = alternatives;
     }
     
-    public VerbResult(int timeTaken, Item item) {
-        this(Outcome.SUCCESS, timeTaken, null, item, null, null, null, null, null);
+    public VerbResult(int timeTaken, Item target) {
+        this(Outcome.SUCCESS, timeTaken, null, target, null, null, null, null, null);
     }
     
     public VerbResult(int timeTaken, Actor actor) {
         this(Outcome.SUCCESS, timeTaken, actor, null, null, null, null, null, null);
     }
     
-    public VerbResult(int timeTaken, Item item, Entity item2) {
-        this(Outcome.SUCCESS, timeTaken, null, item, item2, null, null, null, null);
+    public VerbResult(int timeTaken, Actor actor, Actor target) {
+        this(Outcome.SUCCESS, timeTaken, actor, target, null, null, null, null, null);
+    }
+    
+    public VerbResult(int timeTaken, Item target, Item item2) {
+        this(Outcome.SUCCESS, timeTaken, null, target, item2, null, null, null, null);
     }
    
-    public VerbResult(Outcome outcome, Item item) {
-        this(outcome, 0, null, item, null, null, null, null, null);
+    public VerbResult(Outcome outcome, Item target) {
+        this(outcome, 0, null, target, null, null, null, null, null);
     }
     
     public VerbResult(Outcome outcome, Actor actor) {
         this(outcome, 0, actor, null, null, null, null, null, null);
     }
 
-    public VerbResult(Outcome outcome, Item item, Entity item2) {
-        this(outcome, 0, null, item, item2, null, null, null, null);
+    public VerbResult(Outcome outcome, Item target, Item item2) {
+        this(outcome, 0, null, target, item2, null, null, null, null);
     }
     
     public VerbResult(Outcome outcome, Location location) {
@@ -81,8 +85,8 @@ public class VerbResult {
         this(outcome, 0, null, null, null, null, null, null, null);
     }
 
-    public VerbResult(Outcome outcome, Item item, String details) {
-        this(outcome, 0, null, item, null, null, null, details, null);
+    public VerbResult(Outcome outcome, Item target, String details) {
+        this(outcome, 0, null, target, null, null, null, details, null);
     }
 
     public Outcome getOutcome() {
@@ -93,8 +97,8 @@ public class VerbResult {
         return actor;
     }
 
-    public Item getItem() {
-        return item;
+    public Entity getTarget() {
+        return target;
     }
 
     public Location getLocation() {
@@ -113,7 +117,7 @@ public class VerbResult {
         return alternatives;
     }
 
-    public Entity getItem2() {
+    public Item getItem2() {
         return item2;
     }
 

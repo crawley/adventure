@@ -137,6 +137,10 @@ public abstract class Entity {
     
     protected abstract boolean doTrigger(Triggered action, Entity target);
 
+    public void destroy() {
+        allEntities.remove(this.getLabel());
+    }
+
     /**
      * Lookup an entity via its label.
      * @param label

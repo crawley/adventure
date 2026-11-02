@@ -16,8 +16,8 @@ public class PetAction extends Verb {
     }
     
     @Override
-    protected void onSuccess(Actor actor, Entity item) {
-        System.out.println("You " + getParticiple() + " " + actor.getName());
+    protected void onSuccess(Actor actor, Entity creature, Entity unused) {
+        System.out.println("You " + getParticiple() + " " + creature.getName());
         actor.trigger(Event.PETTED);
     }
     

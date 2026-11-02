@@ -291,16 +291,11 @@ public abstract class Verb implements Action {
     
     private int processVerbResult(VerbResult res) {
         Actor actor = res.getActor();
-        Item item = res.getItem();
-        Entity item2 = res.getItem2();
-        Entity target = (actor == null) ? item : actor;
+        Entity target = res.getTarget();
+        Item item2 = res.getItem2();
         switch (res.getOutcome()) {
         case SUCCESS:
-            if (target instanceof Item) {
-                onSuccess(item, item2);
-            } else {
-                onSuccess(actor, item);
-            }
+            onSuccess(actor, target, item2);
             break;
         case NOT_FOUND:
             boolean isName = Character.isUpperCase(res.getWord().charAt(0));
@@ -350,11 +345,8 @@ public abstract class Verb implements Action {
         return participle;
     }
 
-    protected void onSuccess(Item item, Entity item2) {
+    protected void onSuccess(Actor actor, Entity entity, Entity entity2) {
+        // do nothing
     }
     
-    protected void onSuccess(Actor actor, Entity item) {
-        
-    }
-
 }

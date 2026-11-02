@@ -170,7 +170,7 @@ public class Actor extends Entity {
         if (target.kind != Kind.PET) {
             return new VerbResult(Outcome.NOT_APPLICABLE, target);
         } else {
-            return new VerbResult(1, target);
+            return new VerbResult(1, this, target);
         }
     }
 }
