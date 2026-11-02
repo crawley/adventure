@@ -61,7 +61,7 @@ public class ItemList extends ArrayList<Item> implements List<Item> {
 
         @Override
     public boolean remove(Object obj) {
-        Item item = (Item) obj;
+        Entity item = (Entity) obj;
         if (!super.remove(item)) {
             throw new StateInconsistencyException(
                     "Item list '" + name + "' didn't contains item " + item.getLabel());

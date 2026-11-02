@@ -17,7 +17,7 @@ public class PropertySet {
         if (current != null) {
             if (property.getClass() != current.getClass()) {
                 throw new StateInconsistencyException(
-                        "Inconsistent types for property '" 
+                        "Inconsistent type for added property '" 
                                 + property.getName() + "'");
             }
         }

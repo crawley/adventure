@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import adventure.actions.Triggered;
+
 public class Location extends Entity {
     
     public enum LocationType {
@@ -28,7 +30,7 @@ public class Location extends Entity {
 
     public Location(LocationType type, String label, String name, 
             String abbrev, String description) {
-		super(label, name, abbrev, description, null);
+		super(label, name, abbrev, description, null, null);
 		this.type = type;
 		this.vistas = new ArrayList<>();
 		this.items = new ItemList("here");
@@ -98,5 +100,11 @@ public class Location extends Entity {
         return Arena.getInstance().getAllActors().stream()
                 .filter((a) -> a.getLocation() == this)
                 .toList();
+    }
+
+    @Override
+    protected boolean doTrigger(Triggered action, Entity target) {
+        // No triggers on locations (yet)
+        return false;
     }
  }

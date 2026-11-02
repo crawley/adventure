@@ -19,13 +19,13 @@ public class VerbResult {
     private final String word;
     private final Actor actor;
     private final Item item;
-    private final Item item2;
+    private final Entity item2;
     private final Location location;
     private final String details;
     private final List<? extends Entity> alternatives;
     
     private VerbResult(Outcome outcome, int timeTaken, 
-            Actor actor, Item item, Item item2, 
+            Actor actor, Item item, Entity item2, 
             Location location, String word, 
             String details, List<? extends Entity> alternatives) {
         super();
@@ -48,7 +48,7 @@ public class VerbResult {
         this(Outcome.SUCCESS, timeTaken, actor, null, null, null, null, null, null);
     }
     
-    public VerbResult(int timeTaken, Item item, Item item2) {
+    public VerbResult(int timeTaken, Item item, Entity item2) {
         this(Outcome.SUCCESS, timeTaken, null, item, item2, null, null, null, null);
     }
    
@@ -60,7 +60,7 @@ public class VerbResult {
         this(outcome, 0, actor, null, null, null, null, null, null);
     }
 
-    public VerbResult(Outcome outcome, Item item, Item item2) {
+    public VerbResult(Outcome outcome, Item item, Entity item2) {
         this(outcome, 0, null, item, item2, null, null, null, null);
     }
     
@@ -113,7 +113,7 @@ public class VerbResult {
         return alternatives;
     }
 
-    public Item getItem2() {
+    public Entity getItem2() {
         return item2;
     }
 

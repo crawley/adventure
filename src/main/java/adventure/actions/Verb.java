@@ -62,7 +62,7 @@ public abstract class Verb implements Action {
                 "applyActor not supported for " + this.getClass());
     }
 
-    protected VerbResult applyActorWith(Entity actor, Entity target, Item item) {
+    protected VerbResult applyActorWith(Entity actor, Entity target, Entity item) {
         throw new UnsupportedOperationException(
                 "applyActorWith not supported for " + this.getClass());
     }
@@ -292,7 +292,7 @@ public abstract class Verb implements Action {
     private int processVerbResult(VerbResult res) {
         Actor actor = res.getActor();
         Item item = res.getItem();
-        Item item2 = res.getItem2();
+        Entity item2 = res.getItem2();
         Entity target = (actor == null) ? item : actor;
         switch (res.getOutcome()) {
         case SUCCESS:
@@ -350,10 +350,10 @@ public abstract class Verb implements Action {
         return participle;
     }
 
-    protected void onSuccess(Item item, Item item2) {
+    protected void onSuccess(Item item, Entity item2) {
     }
     
-    protected void onSuccess(Actor actor, Item item) {
+    protected void onSuccess(Actor actor, Entity item) {
         
     }
 

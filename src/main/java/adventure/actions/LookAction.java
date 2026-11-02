@@ -4,6 +4,7 @@ import java.util.List;
 
 import adventure.Actor;
 import adventure.Direction;
+import adventure.Entity;
 import adventure.Exit;
 import adventure.Item;
 import adventure.Location;
@@ -82,7 +83,7 @@ public class LookAction implements Action {
         List<Item> items = wall.getItemsOnWall();
         if (!items.isEmpty()) {
             System.out.println(". On the wall are the following:");
-            for (Item item: items) {
+            for (Entity item: items) {
                 System.out.println("   " + item.getAbbrev() 
                 + ": " + item.getName());
             }

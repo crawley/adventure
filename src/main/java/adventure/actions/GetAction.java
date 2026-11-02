@@ -2,6 +2,7 @@ package adventure.actions;
 
 import adventure.Actor;
 import adventure.Container;
+import adventure.Entity;
 import adventure.Item;
 import adventure.actions.Trigger.Event;
 import adventure.actions.VerbResult.Outcome;
@@ -19,7 +20,7 @@ public class GetAction extends Verb {
     }
     
     @Override
-    protected void onSuccess(Item item, Item item2) {
+    protected void onSuccess(Item item, Entity item2) {
         System.out.println("You " + getParticiple() + " " 
                 + item.getName() + " from " + item2.getName());
         item.trigger(Event.REMOVED);

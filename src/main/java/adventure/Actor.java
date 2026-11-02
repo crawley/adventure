@@ -1,6 +1,5 @@
 package adventure;
 
-import java.util.Collections;
 import java.util.List;
 
 import adventure.actions.Trigger;
@@ -18,7 +17,6 @@ public class Actor extends Entity {
     private final Kind kind;
     private final List<Item> itemsInHand = new ItemList("in hand");
     private final List<Item> itemsWorn = new ItemList("worn");
-    private final List<Trigger> triggers;
     private final int NOS_HANDS = 2;
     
     private Location location;
@@ -26,18 +24,13 @@ public class Actor extends Entity {
 	public Actor(Kind kind, String label, String name, String abbrev,
 	        String description, Location location, 
 	        List<Trigger> triggers, PropertySet properties) {
-		super(label, name, abbrev, description, properties);
+		super(label, name, abbrev, description, triggers, properties);
 		this.location = location;
 		this.kind = kind;
-		this.triggers = (triggers == null) ? Collections.emptyList() : triggers;
 	}
 
 	public Kind getKind() {
         return kind;
-    }
-
-    public List<Trigger> getTriggers() {
-        return triggers;
     }
 
     public Location getLocation() {
@@ -107,6 +100,7 @@ public class Actor extends Entity {
     public VerbResult eatItem(Item item) {
         if (item.isEdible()) {
             itemsInHand.remove(item);
+            this.trigger(Event.ATE);
             NumberProperty calories = item.getNumberProperty("calories");
             if (calories != null) {
                 NumberProperty hunger = this.getNumberProperty("hunger");
@@ -130,45 +124,46 @@ public class Actor extends Entity {
         }
     }
     
-    public void trigger(Trigger.Event event) {
-        for (Trigger trigger: triggers) {
-            if (!trigger.getEvents().contains(event)) {
-                continue;
+    @Override
+    protected boolean doTrigger(Triggered action, Entity target) {
+        switch (action.getVerb()) {
+        case INCREMENT:
+            Number by = getNumericArg2(action);
+            getNumberProperty(action.getArg()).increment(by);
+            break;
+        case DECREMENT:
+            by = getNumericArg2(action);
+            getNumberProperty(action.getArg()).decrement(by);
+            break;
+        case TEST_MIN:
+            if (!getNumberProperty(action.getArg()).testMin()) {
+                return false;
             }
-            actions: for (Triggered action: trigger.getActions()) {
-                switch (action.getVerb()) {
-                case INCREMENT:
-                    Number by = getNumericArg2(action);
-                    getNumberProperty(action.getArg()).increment(by);
-                    break;
-                case DECREMENT:
-                    by = getNumericArg2(action);
-                    getNumberProperty(action.getArg()).decrement(by);
-                    break;
-                case TEST_MIN:
-                    if (!getNumberProperty(action.getArg()).testMin()) {
-                        break actions;
-                    }
-                    break;
-                case TEST_MAX:
-                    if (!getNumberProperty(action.getArg()).testMax()) {
-                        break actions;
-                    }
-                    break;
-                case SAY:
-                    for (Entity actor: location.actors()) {
-                        if (actor != this && action.trigger()) {
-                            System.out.println(this.getName() 
-                                    + " says " + action.getMessage());
-                        }
-                    }
-                    break;
-                default:
-                    throw new TriggerException(
-                            "Verb '" + action.getVerb() + "' not implemented");
+            break;
+        case TEST_MAX:
+            if (!getNumberProperty(action.getArg()).testMax()) {
+                return false;
+            }
+            break;
+        case THINK:
+            if (this.getLabel().equals("self") && action.trigger()) {
+                System.out.println("You think: " + action.getMessage());
+            }
+            break;
+        case SAY:
+            for (Entity actor: location.actors()) {
+                if (actor != this && action.trigger()) {
+                    System.out.println(this.getName() 
+                            + " says: " + action.getMessage());
                 }
             }
+            break;
+        default:
+            throw new TriggerException(
+                    "Verb '" + action.getVerb() 
+                    + "' not implemented for actors");
         }
+        return true;
     }
 
     public VerbResult pet(Actor target) {
@@ -178,5 +173,4 @@ public class Actor extends Entity {
             return new VerbResult(1, target);
         }
     }
-
 }

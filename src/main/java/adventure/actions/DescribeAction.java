@@ -4,6 +4,7 @@ import java.util.List;
 
 import adventure.Actor;
 import adventure.Container;
+import adventure.Entity;
 import adventure.Item;
 import adventure.actions.Verb.Context;
 
@@ -64,7 +65,7 @@ public class DescribeAction implements Action {
 	                System.out.println(
 	                        "  " + Grammar.definite(item) 
 	                        + " holds:");
-	                for (Item contentItem: contents) {
+	                for (Entity contentItem: contents) {
 	                    System.out.println(
 	                            "    " + contentItem.getAbbrev() 
 	                            + ": " + contentItem.getName());

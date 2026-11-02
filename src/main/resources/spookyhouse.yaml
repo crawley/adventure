@@ -179,6 +179,10 @@ creatures:
         actions:
           - verb: SAY
             message: "Purr"
+      - events: CONSUMED
+        actions:
+          - verb: SAY
+            message: "Mraow!"
     
 items:
   - label: knapsack
@@ -199,8 +203,8 @@ items:
         triggers:
           - events: CONSUMED
             actions:
-            - verb: MESSAGE
-              message: You think "Nom nom nom"
+            - verb: THINK
+              message: "Nom nom nom"
   
   - label: coatstand
     kind: CONTAINER

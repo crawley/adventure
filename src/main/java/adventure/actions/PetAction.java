@@ -1,7 +1,7 @@
 package adventure.actions;
 
 import adventure.Actor;
-import adventure.Item;
+import adventure.Entity;
 import adventure.actions.Trigger.Event;
 
 public class PetAction extends Verb {
@@ -16,7 +16,7 @@ public class PetAction extends Verb {
     }
     
     @Override
-    protected void onSuccess(Actor actor, Item item) {
+    protected void onSuccess(Actor actor, Entity item) {
         System.out.println("You " + getParticiple() + " " + actor.getName());
         actor.trigger(Event.PETTED);
     }
