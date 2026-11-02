@@ -10,10 +10,10 @@ public class Grammar {
     /**
      * Massage an entity's name (or abbrev) into the definite form.
      * 
-     * @param entity the entity to be name.
+     * @param entity the entity to be named.
      * @return the massaged name
      */
-    public static String definite(Entity entity) {
+    public static String definiteName(Entity entity) {
         String name = entity.getName();
         if (name == null) {
             return "the " + entity.getAbbrev();
@@ -23,6 +23,26 @@ public class Grammar {
             return "the" + name.substring(2, name.length());
         } else {
             return name;
+        }
+    }
+
+    /**
+     * Massage an entity's description into the indefinite form.
+     * 
+     * @param entity the entity to be described.
+     * @return the massaged description
+     */
+    public static String indefiniteDescription(Entity entity) {
+        String desc = entity.getDescription();
+        if (desc.startsWith("the ")) {
+            String rest = desc.substring(4, desc.length());
+            if ("aeiou".contains(desc.substring(0, 1))) {
+                return "an " + rest;
+            } else {
+                return "a " + rest;
+            }
+        } else {
+            return desc;
         }
     }
 

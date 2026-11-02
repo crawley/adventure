@@ -102,6 +102,75 @@ locations:
         name: north wall
         description: a blank wall
 
+  - label: corridor
+    type: ROOM
+    name: the downstairs corridor
+    description: |
+        a corridor running east-west.  
+    walls:
+      - direction: e
+        name: east wall
+        description: |
+          the east end of the corridor.
+          There is a small window in the wall.
+      - direction: w
+        name: west wall
+        description: |
+          the west end of the corridor.
+          There is a small window in the wall.
+      - direction: s
+        name: south wall
+        description: the south side of the corridor
+      - direction: n
+        name: north wall
+        description: the north side of the corridor
+        
+  - label: corridor-e
+    type: ROOM
+    name: the downstairs corridor
+    description: |
+        the east end of a corridor running east-west.
+    walls:
+      - direction: e
+        name: east wall
+        description: |
+          the east end of the corridor.
+          There is a small window in the wall.
+          The window is too dirty to see through.
+      - direction: w
+        name: west wall
+        description: |
+          the west end of the corridor.
+      - direction: s
+        name: south wall
+        description: the south side of the corridor
+      - direction: n
+        name: north wall
+        description: the north side of the corridor
+
+  - label: corridor-w
+    type: ROOM
+    name: the downstairs corridor
+    description: |
+      the west end of a corridor running east-west.
+    walls:
+      - direction: e
+        name: east wall
+        description: |
+          the east end of the corridor.
+      - direction: w
+        name: west wall
+        description: |
+          the west end of the corridor        .
+          There is a small window in the wall.
+          The window is too dirty to see through.
+      - direction: s
+        name: south wall
+        description: the south side of the corridor
+      - direction: n
+        name: north wall
+        description: the north side of the corridor
+
 exits:
 
   - from: road
@@ -110,7 +179,7 @@ exits:
       label: frontgate
       name: the front gate
       abbrev: gate
-      description: a rustic gate
+      description: an old wooden gate
       flags: OPENABLE
       triggers: 
         - events: OPENED
@@ -150,6 +219,21 @@ exits:
 
   - from: hallway
     to: sitting
+    forwards: w
+    backwards: e
+    
+  - from: hallway
+    to: corridor
+    forwards: n
+    backwards: s
+
+  - from: corridor
+    to: corridor-e
+    forwards: e
+    backwards: w
+    
+  - from: corridor
+    to: corridor-w
     forwards: w
     backwards: e
     

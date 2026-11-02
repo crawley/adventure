@@ -59,11 +59,11 @@ public class DescribeAction implements Action {
 	            List<Item> contents = ((Container) item).getContents();
 	            if (contents.isEmpty()) {
 	                System.out.println(
-	                        "  " + Grammar.definite(item) 
+	                        "  " + Grammar.definiteName(item) 
 	                        + " is empty");
 	            } else {
 	                System.out.println(
-	                        "  " + Grammar.definite(item) 
+	                        "  " + Grammar.definiteName(item) 
 	                        + " holds:");
 	                for (Entity contentItem: contents) {
 	                    System.out.println(

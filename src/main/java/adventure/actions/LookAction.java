@@ -29,6 +29,7 @@ public class LookAction implements Action {
 		                "  " + item.getAbbrev() + ": " + item.getName());
 		    }
 		}
+		System.out.println("This is " + Grammar.indefiniteDescription(here));
 		List<Vista> allVistas = here.getVistas();
 		Direction[] directions = new Direction[] {
 		        Direction.n, Direction.ne, Direction.e, Direction.se, 
@@ -60,7 +61,7 @@ public class LookAction implements Action {
         return switch(direction) {
         case a -> "Above you";
         case b -> "Below you";
-        default -> "To your " + direction.getName();
+        default -> "To the " + direction.getName();
         };
     }
 
