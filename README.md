@@ -1,0 +1,1 @@
+"Its only game.  Why you have to be mad?"
