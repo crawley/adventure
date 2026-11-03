@@ -46,4 +46,19 @@ public class Grammar {
         }
     }
 
+    /**
+     * Capitalize the first word of a phrase or sentence.
+     * 
+     * @param phrase
+     * @return the capitalized phrase
+     */
+    public static String capitalize(String phrase) {
+        if (phrase.length() > 0) {
+            return Character.toUpperCase(phrase.charAt(0)) 
+                    + phrase.substring(1);
+        } else {
+            return phrase;
+        }
+    }
+
 }

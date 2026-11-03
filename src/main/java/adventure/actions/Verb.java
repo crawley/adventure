@@ -344,12 +344,12 @@ public abstract class Verb implements Action {
             System.out.println(target.getName() + " is already " + adjective);
             break;
         case NOT_APPLICABLE:
-            System.out.println(target.getName() + 
+            System.out.println(Grammar.capitalize(Grammar.definiteName(target)) + 
                     " is not something that you can " + verb);
             break;
         case NOT_POSSIBLE:
             System.out.println("You failed to " + verb + " " + 
-                    target.getName() +
+                    Grammar.definiteName(target) +
                     ((res.getDetails() == null) ? "" : 
                         (" because " + res.getDetails())));
             break;

@@ -30,9 +30,16 @@ public class GetAction extends Verb {
     @Override
     protected VerbResult applyWith(Actor actor, Item item, Item container) {
         if (container instanceof Container) {
-            ((Container) container).removeItem(item);
-            actor.getItemsInHand().add(item);
-            return new VerbResult(Outcome.SUCCESS, item, container);
+            if (actor.handsFull()) {
+                return new VerbResult(Outcome.NOT_POSSIBLE, item,
+                        "your hands are full");
+            } if (!item.isTakeable()) {
+                return new VerbResult(Outcome.NOT_APPLICABLE, item);
+            } else {
+                ((Container) container).removeItem(item);
+                actor.getItemsInHand().add(item);
+                return new VerbResult(Outcome.SUCCESS, item, container);
+            }
         } else {
             return new VerbResult(Outcome.NOT_POSSIBLE, container,
                     "is not a container");

@@ -76,15 +76,16 @@ public class Actor extends Entity {
     }
 
     public VerbResult holdItem(Item item) {
-        if (itemsInHand.size() >= NOS_HANDS) {
-            return new VerbResult(Outcome.FULL);
-        } else if (item.isTakeable()) {
+        if (!item.isTakeable()) {
+            return new VerbResult(Outcome.NOT_APPLICABLE, item);
+        } else if (itemsInHand.size() >= NOS_HANDS) {
+            return new VerbResult(Outcome.NOT_POSSIBLE, item,
+                    "your hands are full");
+        } else {
             getLocation().removeItem(item);
             itemsInHand.add(item);
             return new VerbResult(1, item);
-        } else {
-            return new VerbResult(Outcome.NOT_APPLICABLE, item);
-        }
+        } 
     }
         
     public VerbResult dropItem(Item item) {
