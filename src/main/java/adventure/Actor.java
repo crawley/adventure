@@ -125,6 +125,7 @@ public class Actor extends Entity {
 
     public VerbResult feed(Actor target, Item food) {
         if (food.isEdible()) {
+            // Pets can't open cans ...
             if (food.isOpenable() && !food.isOpen()) {
                 return new VerbResult(Outcome.NOT_POSSIBLE, food,
                         "the " + food.getAbbrev() 
@@ -160,15 +161,9 @@ public class Actor extends Entity {
             getNumberProperty(action.getArg()).decrement(by);
             break;
         case TEST_MIN:
-            if (!getNumberProperty(action.getArg()).testMin()) {
-                return false;
-            }
-            break;
+            return !getNumberProperty(action.getArg()).testMin();
         case TEST_MAX:
-            if (!getNumberProperty(action.getArg()).testMax()) {
-                return false;
-            }
-            break;
+            return !getNumberProperty(action.getArg()).testMax();
         case TEST_RELATED:
             return Arena.getInstance().getAssociations()
                     .isRelated(action.getArg(), this, target);
