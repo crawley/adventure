@@ -7,6 +7,7 @@ import java.util.Map;
 
 import adventure.actions.Trigger;
 import adventure.actions.Triggered;
+import adventure.actions.Triggered.Verb;
 
 public abstract class Entity {
 
@@ -135,7 +136,44 @@ public abstract class Entity {
         }
     }
     
-    protected abstract boolean doTrigger(Triggered action, Entity target);
+    protected boolean doTrigger(Triggered action, Entity target) {
+        Verb verb = action.getVerb();
+        switch (verb) {
+        case INCREMENT:
+            Number by = getNumericArg2(action);
+            getNumberProperty(action.getArg()).increment(by);
+            break;
+        case DECREMENT:
+            by = getNumericArg2(action);
+            getNumberProperty(action.getArg()).decrement(by);
+            break;
+        case TEST_MIN:
+            if (!getNumberProperty(action.getArg()).testMin()) {
+                return false;
+            }
+            break;
+        case TEST_MAX:
+            if (!getNumberProperty(action.getArg()).testMax()) {
+                return false;
+            }
+            break;
+        case TEST_RELATED:
+            return Arena.getInstance().getAssociations()
+                    .isRelated(action.getArg(), this, target);
+        case TEST_UNRELATED:
+            return !(Arena.getInstance().getAssociations()
+                    .isRelated(action.getArg(), this, target));
+        case MESSAGE:
+            if (action.trigger() && action.getMessage() != null) {
+                System.out.println(action.getMessage());
+            }
+            break;
+        default:
+            throw new TriggerException(
+                    "Verb '" + verb + "' not implemented");
+        }
+        return true;
+    }
 
     public void destroy() {
         allEntities.remove(this.getLabel());

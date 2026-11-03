@@ -293,12 +293,12 @@ exits:
     backwards: e
      
 creatures:
-  - label: jasper
+  - label: cat
     kind: PET
     name: Jasper
     abbrev: cat
     description: a black cat
-    location: path
+    location: kitchen
     properties:
       - name: hunger
         type: int
@@ -320,8 +320,16 @@ creatures:
             message: "Purr"
       - events: ATE
         actions:
+          - verb: TEST_RELATED
+            arg: LIKES
           - verb: SAY
             message: "Mraow!"
+      - events: ATE
+        actions:
+          - verb: TEST_UNRELATED
+            arg: LIKES
+          - verb: MESSAGE
+            message: The cat sniffs the food and backs away.
     
 items:
   - label: knapsack
@@ -334,7 +342,7 @@ items:
       - label: sandwich
         name: a vegemite sandwich
         description: The sandwich looks fresh
-        flags: EDIBLE
+        flags: MOVEABLE TAKEABLE EDIBLE
         properties:
           - name: calories
             type: int
@@ -354,7 +362,7 @@ items:
     contents:
       - label: cap
         name: a red baseball cap
-        flags: WEARABLE MOVEABLE TAKEABLE 
+        flags: WEARABLE MOVEABLE TAKEABLE EDIBLE
         description: |
           The cap has the words "Make Arcadia Great Again" on the front.
           
@@ -465,7 +473,7 @@ items:
     name: a can of cat food
     abbrev: can
     description: a can of a budget brand of catfood
-    flags: MOVEABLE OPENABLE TAKEABLE
+    flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
     
   - label: tuna
@@ -474,7 +482,7 @@ items:
     description: |
       a can of tuna.
       The label says that the tuna is "dolphin friendly".
-    flags: MOVEABLE OPENABLE TAKEABLE
+    flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
 
   - label: beans
@@ -483,7 +491,7 @@ items:
     description: |
       a can of baked beans.
       It is only worth ...  a can of beans.
-    flags: MOVEABLE OPENABLE TAKEABLE
+    flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
 
   - label: spam
@@ -492,7 +500,7 @@ items:
     description: |
       this is a can of SPAM(tm).
       The label shows a Viking chorus.
-    flags: MOVEABLE OPENABLE TAKEABLE
+    flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
 
 associations:

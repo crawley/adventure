@@ -115,6 +115,29 @@ public class Actor extends Entity {
         }
     }
 
+    public VerbResult pet(Actor target) {
+        if (target.kind != Kind.PET) {
+            return new VerbResult(Outcome.NOT_APPLICABLE, target);
+        } else {
+            return new VerbResult(1, target);
+        }
+    }
+
+    public VerbResult feed(Actor target, Item food) {
+        if (food.isEdible()) {
+            if (food.isOpenable() && !food.isOpen()) {
+                return new VerbResult(Outcome.NOT_POSSIBLE, food,
+                        "the " + food.getAbbrev() 
+                        + " needs to be opened first");
+            } else {
+                return new VerbResult(1, target, food);
+            }
+        } else {
+            return new VerbResult(Outcome.NOT_APPLICABLE, food,
+                    "is not edible");
+        }
+    }
+
     public void showLocationAndActors() {
         System.out.println("You are " + location.getType().getPreposition() 
                 + " " + location.getName());
@@ -146,6 +169,12 @@ public class Actor extends Entity {
                 return false;
             }
             break;
+        case TEST_RELATED:
+            return Arena.getInstance().getAssociations()
+                    .isRelated(action.getArg(), this, target);
+        case TEST_UNRELATED:
+            return !(Arena.getInstance().getAssociations()
+                    .isRelated(action.getArg(), this, target));
         case THINK:
             if (this.getLabel().equals("self") && action.trigger()) {
                 System.out.println("You think: " + action.getMessage());
@@ -160,27 +189,8 @@ public class Actor extends Entity {
             }
             break;
         default:
-            throw new TriggerException(
-                    "Verb '" + action.getVerb() 
-                    + "' not implemented for actors");
+            return super.doTrigger(action, target);
         }
         return true;
-    }
-
-    public VerbResult pet(Actor target) {
-        if (target.kind != Kind.PET) {
-            return new VerbResult(Outcome.NOT_APPLICABLE, target);
-        } else {
-            return new VerbResult(1, target);
-        }
-    }
-
-    public VerbResult feed(Actor target, Item food) {
-        if (food.isEdible()) {
-            return new VerbResult(1, target, food);
-        } else {
-            return new VerbResult(Outcome.NOT_APPLICABLE, food,
-                    "is not edible");
-        }
     }
 }

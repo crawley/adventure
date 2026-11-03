@@ -272,14 +272,8 @@ public class Item extends Entity {
         case SET_DESCRIPTION:
             item.description = action.getArg();
             break;
-        case MESSAGE:
-            if (action.trigger() && action.getMessage() != null) {
-                System.out.println(action.getMessage());
-            }
-            break;
         default:
-            throw new TriggerException(
-                    "Verb '" + verb + "' not implemented for items");
+            return super.doTrigger(action, target);
         }
         return true;
     }
