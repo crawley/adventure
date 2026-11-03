@@ -14,7 +14,7 @@ public class Associations {
     
     public Associations() {}
     
-    public void addRelation(String relationship,
+    public void addRelationship(String relationship,
         String label1,
         String label2) {
         relations.add(new Relation(relationship, label1, label2));

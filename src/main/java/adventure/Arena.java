@@ -224,10 +224,10 @@ public class Arena {
 	    List<Object> associationData = (List<Object>) loaded.get("associations");
 	    for (Object relationData: associationData) {
 	        Map<String, Object> data = (Map<String, Object>) relationData;
-	        arena.associations.addRelation(
+	        arena.associations.addRelationship(
 	                getString(data, "relation"), 
-	                getString(data, "item1"), 
-	                getString(data, "item2"));
+	                getString(data, "entity1"), 
+	                getString(data, "entity2"));
 	    }
 	    
 		return arena;

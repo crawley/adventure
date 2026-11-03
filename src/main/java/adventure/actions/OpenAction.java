@@ -13,8 +13,14 @@ public class OpenAction extends Verb {
 
     @Override
     public int perform(Actor actor, String[] args) {
-        return performOnItem(actor, args, 
-                Context.ITEMS_ON_FLOOR, Context.PORTALS, Context.ITEMS_ON_WALLS);
+        if (args.length == 1) {
+            return performOnItem(actor, args, 
+                    Context.ITEMS_ON_FLOOR, Context.PORTALS, Context.ITEMS_ON_WALLS);
+        } else {
+            return performOnItemWith(actor, args, false, "with",
+                    Context.ITEMS_ON_FLOOR, Context.PORTALS, Context.ITEMS_ON_WALLS);
+
+        }
     }
     
     @Override
@@ -27,6 +33,12 @@ public class OpenAction extends Verb {
     protected VerbResult apply(Actor actor, Item item) {
         return item.openItem();
     }
+    
+    @Override
+    protected VerbResult applyWith(Actor actor, Item item, Item opener) {
+        return item.openItemWith(opener);
+    }
+
     
     @Override
     public String describe() {

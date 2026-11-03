@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import adventure.actions.Grammar;
 import adventure.actions.Trigger;
 import adventure.actions.Triggered;
 import adventure.actions.Triggered.Verb;
@@ -158,6 +159,22 @@ public class Item extends Entity {
             return new VerbResult(Outcome.ALREADY_DONE, this);
         } else if (this.isLockable() && this.isLocked()) {
             return new VerbResult(Outcome.NOT_POSSIBLE, this, "it is locked");
+        } else {
+            this.setOpen(true);
+            return new VerbResult(1, this);
+        }
+    }
+    
+    public VerbResult openItemWith(Item opener) {
+        Arena arena = Arena.getInstance();
+        if (!this.isOpenable()) {
+            return new VerbResult(Outcome.NOT_APPLICABLE, this);
+        } else if (this.isOpen()) {
+            return new VerbResult(Outcome.ALREADY_DONE, this);
+        } else if (!arena.getAssociations().isRelated("HAS_OPENER", this, opener)) {
+            return new VerbResult(Outcome.NOT_POSSIBLE, this,
+                    Grammar.definiteName(opener) + " cannot open a "
+                    + Grammar.indefiniteName(this));
         } else {
             this.setOpen(true);
             return new VerbResult(1, this);

@@ -3,26 +3,48 @@ package adventure.actions;
 import adventure.Entity;
 
 /**
- * Methods for massaging text into plausible English.
+ * Helper methods for massaging text into vaguely plausible English.
  */
 public class Grammar {
 
     /**
-     * Massage an entity's name (or abbrev) into the definite form.
+     * Get definite form of entity's name (or abbrev).
      * 
      * @param entity the entity to be named.
-     * @return the massaged name
+     * @return the definite form
      */
     public static String definiteName(Entity entity) {
-        String name = entity.getName();
-        if (name == null) {
-            return "the " + entity.getAbbrev();
-        } else if (name.startsWith("a ")) {
-            return "the" + name.substring(1, name.length());
-        } else if (name.startsWith("an ")) {
-            return "the" + name.substring(2, name.length());
+        String name = (entity.getName() == null) ?
+                entity.getAbbrev() : entity.getName();
+        return definiteForm(name);
+    }
+
+    /**
+     * Get indefinite form of entity's name (or abbrev).
+     * 
+     * @param entity the entity to be named.
+     * @return the indefinite form
+     */
+    public static String indefiniteName(Entity entity) {
+        String name = (entity.getName() == null) ?
+                entity.getAbbrev() : entity.getName();
+        return definiteForm(name);
+    }
+
+    /**
+     * Massage a phrase into its definite form.
+     * 
+     * @param phrase a phrase to be massaged.
+     * @return the massaged phrase
+     */
+    private static String definiteForm(String phrase) {
+        // TODO - account for existing article capitalization
+        if (phrase.startsWith("a ")) {
+            return "the" + phrase.substring(1, phrase.length());
+        } else if (phrase.startsWith("an ")) {
+            return "the" + phrase.substring(2, phrase.length());
         } else {
-            return name;
+            return phrase;
         }
     }
 
@@ -33,16 +55,26 @@ public class Grammar {
      * @return the massaged description
      */
     public static String indefiniteDescription(Entity entity) {
-        String desc = entity.getDescription();
-        if (desc.startsWith("the ")) {
-            String rest = desc.substring(4, desc.length());
-            if ("aeiou".contains(desc.substring(0, 1))) {
+        return indefiniteForm(entity.getDescription());
+    }
+
+    /**
+     * Massage a phrase into the indefinite form.
+     * 
+     * @param phrase a phrase to be massaged.
+     * @return the massaged phrase
+     */
+    private static String indefiniteForm(String phrase) {
+        // TODO - account for existing article capitalization
+        if (phrase.startsWith("the ")) {
+            String rest = phrase.substring(4, phrase.length());
+            if ("aeiou".contains(phrase.substring(0, 1))) {
                 return "an " + rest;
             } else {
                 return "a " + rest;
             }
         } else {
-            return desc;
+            return phrase;
         }
     }
 
@@ -60,5 +92,4 @@ public class Grammar {
             return phrase;
         }
     }
-
 }

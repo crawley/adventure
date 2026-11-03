@@ -369,9 +369,11 @@ items:
         name: a kitchen knife
         abbrev: knife
         description: a small kitchen knife with a wooden handle.
+        flags: MOVEABLE TAKEABLE
       - label: canopener
         name: a can opener
         description: a rusty can opener
+        flags: MOVEABLE TAKEABLE
     
   - label: fireplace
     name: a fireplace
@@ -418,7 +420,7 @@ items:
     name: a chest
     description: a large iron-bound wooden chest 
     location: sitting
-    flags: OPENABLE LOCKABLE
+    flags: MOVEABLE OPENABLE LOCKABLE
     properties:
       - name: locked
         type: boolean
@@ -432,7 +434,7 @@ items:
     name: a rusty iron key
     abbrev: key
     location: sitting
-    flags: TAKEABLE
+    flags: MOVEABLE TAKEABLE
     
   - label: chair1
     name: an armchair
@@ -457,13 +459,72 @@ items:
     abbrev: armchair
     description: an armchair upholstered in green fabric.
     location: sitting
-    flags: MOVEABLE 
+    flags: MOVEABLE
     
+  - label: catfood
+    name: a can of cat food
+    abbrev: can
+    description: a can of a budget brand of catfood
+    flags: MOVEABLE OPENABLE TAKEABLE
+    location: pantry
+    
+  - label: tuna
+    name: a can of tuna
+    abbrev: can
+    description: |
+      a can of tuna.
+      The label says that the tuna is "dolphin friendly".
+    flags: MOVEABLE OPENABLE TAKEABLE
+    location: pantry
+
+  - label: beans
+    name: a can of baked beans
+    abbrev: can
+    description: |
+      a can of baked beans.
+      It is only worth ...  a can of beans.
+    flags: MOVEABLE OPENABLE TAKEABLE
+    location: pantry
+
+  - label: spam
+    name: a can of potted meat
+    abbrev: can
+    description: |
+      this is a can of SPAM(tm).
+      The label shows a Viking chorus.
+    flags: MOVEABLE OPENABLE TAKEABLE
+    location: pantry
+
 associations:
   - relation: HAS_KEY
-    item1: frontdoor
-    item2: doorkey
+    entity1: frontdoor
+    entity2: doorkey
     
   - relation: HAS_KEY
-    item1: chest
-    item2: chestkey
+    entity1: chest
+    entity2: chestkey
+    
+  - relation: HAS_OPENER
+    entity1: catfood
+    entity2: canopener
+    
+  - relation: HAS_OPENER
+    entity1: tuna
+    entity2: canopener
+
+  - relation: HAS_OPENER
+    entity1: beans
+    entity2: canopener
+      
+  - relation: HAS_OPENER
+    entity1: spam
+    entity2: canopener
+    
+  - relation: LIKES
+    entity1: cat
+    entity2: catfood
+
+  - relation: LIKES
+    entity1: cat
+    entity2: tuna
+        
