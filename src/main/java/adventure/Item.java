@@ -269,9 +269,6 @@ public class Item extends Entity {
                 item.setFlag(flag.longValue(), false);
             }
             break;
-        case SET_DESCRIPTION:
-            item.description = action.getArg();
-            break;
         default:
             return super.doTrigger(action, target);
         }
@@ -279,13 +276,8 @@ public class Item extends Entity {
     }
 
     public static Item lookupItem(String label) {
-        if (label == null) {
-            return  null;
-        }
-        Entity entity = Entity.lookup(label);
-        if (entity == null) {
-            throw new EntityException("No entity with label '" + label + "'");
-        } else if (entity instanceof Item) {
+        Entity entity = Entity.lookupEntity(label);
+        if (entity instanceof Item) {
             return (Item) entity;
         } else {
             throw new EntityException("Entity with label '" + label + "' is not an item");

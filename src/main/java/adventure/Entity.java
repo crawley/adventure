@@ -13,11 +13,12 @@ public abstract class Entity {
 
     public static final long MOVEABLE = 0x2L;
     private final String label;
-    private final String name;
     private final String abbrev;
     
-    // Can be changed by a trigger ...
+    // These can be changed by a trigger action ...
     protected String description;
+    protected String name;
+
     protected final List<Trigger> triggers;
     protected final PropertySet properties;
     
@@ -148,21 +149,31 @@ public abstract class Entity {
             getNumberProperty(action.getArg()).decrement(by);
             break;
         case TEST_MIN:
-            if (!getNumberProperty(action.getArg()).testMin()) {
-                return false;
-            }
-            break;
+            return getNumberProperty(action.getArg()).testMin();
         case TEST_MAX:
-            if (!getNumberProperty(action.getArg()).testMax()) {
-                return false;
-            }
-            break;
+            return getNumberProperty(action.getArg()).testMax();
         case TEST_RELATED:
             return Arena.getInstance().getAssociations()
                     .isRelated(action.getArg(), this, target);
         case TEST_UNRELATED:
             return !(Arena.getInstance().getAssociations()
                     .isRelated(action.getArg(), this, target));
+        case SET_DESCRIPTION:
+            this.description = action.getArg();
+            break;
+        case SET_NAME:
+            this.name = action.getArg();
+            break;
+        case SET_TARGET_DESCRIPTION:
+            if (target != null) {
+                target.description = action.getArg();
+            }
+            break;
+        case SET_TARGET_NAME:
+            if (target != null) {
+                target.name = action.getArg();
+            }
+            break;
         case MESSAGE:
             if (action.trigger() && action.getMessage() != null) {
                 System.out.println(action.getMessage());
@@ -187,5 +198,15 @@ public abstract class Entity {
     protected static Entity lookup(String label) {
         return allEntities.get(label);
     }
+    
+    public static Entity lookupEntity(String label) {
+        Entity entity = Entity.lookup(label);
+        if (entity == null) {
+            throw new EntityException("No entity with label '" + label + "'");
+        } else {
+            return entity;
+        }
+    }
+
 
 }

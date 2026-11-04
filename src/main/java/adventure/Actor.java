@@ -100,19 +100,29 @@ public class Actor extends Entity {
 
     public VerbResult eatItem(Item item) {
         if (item.isEdible()) {
-            itemsInHand.remove(item);
-            this.trigger(Event.ATE);
-            NumberProperty calories = item.getNumberProperty("calories");
-            if (calories != null) {
-                NumberProperty hunger = this.getNumberProperty("hunger");
-                if (hunger != null) {
-                    hunger.decrement(calories.floatValue());
-                }
+            if (item.isOpenable() && !item.isOpen()) {
+                return new VerbResult(Outcome.NOT_POSSIBLE, item,
+                        "the " + item.getAbbrev() 
+                        + " needs to be opened first");
             }
+            itemsInHand.remove(item);
+            consume(item);
             return new VerbResult(2, item);
         } else {
             return new VerbResult(Outcome.NOT_APPLICABLE, item);
         }
+    }
+    
+    private void consume(Item food) {
+        NumberProperty calories = food.getNumberProperty("calories");
+        if (calories != null) {
+            NumberProperty hunger = this.getNumberProperty("hunger");
+            if (hunger != null) {
+                hunger.decrement(calories.floatValue());
+            }
+        }
+        this.trigger(Event.ATE);
+        food.trigger(Event.CONSUMED);
     }
 
     public VerbResult pet(Actor target) {
@@ -125,12 +135,13 @@ public class Actor extends Entity {
 
     public VerbResult feed(Actor target, Item food) {
         if (food.isEdible()) {
-            // Pets can't open cans ...
             if (food.isOpenable() && !food.isOpen()) {
                 return new VerbResult(Outcome.NOT_POSSIBLE, food,
                         "the " + food.getAbbrev() 
                         + " needs to be opened first");
             } else {
+                itemsInHand.remove(food);
+                target.consume(food);
                 return new VerbResult(1, target, food);
             }
         } else {
@@ -152,24 +163,6 @@ public class Actor extends Entity {
     @Override
     protected boolean doTrigger(Triggered action, Entity target) {
         switch (action.getVerb()) {
-        case INCREMENT:
-            Number by = getNumericArg2(action);
-            getNumberProperty(action.getArg()).increment(by);
-            break;
-        case DECREMENT:
-            by = getNumericArg2(action);
-            getNumberProperty(action.getArg()).decrement(by);
-            break;
-        case TEST_MIN:
-            return !getNumberProperty(action.getArg()).testMin();
-        case TEST_MAX:
-            return !getNumberProperty(action.getArg()).testMax();
-        case TEST_RELATED:
-            return Arena.getInstance().getAssociations()
-                    .isRelated(action.getArg(), this, target);
-        case TEST_UNRELATED:
-            return !(Arena.getInstance().getAssociations()
-                    .isRelated(action.getArg(), this, target));
         case THINK:
             if (this.getLabel().equals("self") && action.trigger()) {
                 System.out.println("You think: " + action.getMessage());

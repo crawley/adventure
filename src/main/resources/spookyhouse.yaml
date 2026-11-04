@@ -475,6 +475,13 @@ items:
     description: a can of a budget brand of catfood
     flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
+    triggers:
+      - events: CONSUMED
+        actions:
+          - verb: SET_DESCRIPTION
+            arg: an empty can
+          - verb: SET_NAME
+            arg: an empty can
     
   - label: tuna
     name: a can of tuna

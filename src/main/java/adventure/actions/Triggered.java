@@ -4,10 +4,11 @@ public class Triggered {
     
     public enum Verb {
         HIDE, REVEAL, OPEN, CLOSE, LOCK, UNLOCK, 
-        MESSAGE, SAY, 
+        MESSAGE, SAY, THINK, 
         INCREMENT, DECREMENT, TEST_MIN, TEST_MAX, SET_MIN, SET_MAX, 
         TEST, TEST_RELATED, TEST_UNRELATED,
-        SET, SET_DESCRIPTION, SET_FLAG, CLEAR_FLAG, THINK, 
+        SET_PROPERTY, SET_DESCRIPTION, SET_FLAG, CLEAR_FLAG, SET_NAME, 
+        SET_TARGET_DESCRIPTION, SET_TARGET_NAME, 
     }
     
     private final String message;
