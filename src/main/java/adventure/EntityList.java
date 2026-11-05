@@ -37,6 +37,7 @@ public class EntityList<T extends Entity> extends ArrayList<T> implements List<T
         if (other != null) {
             other.remove(elem);
         }
+        elem.setMemberOf(this);
         return super.add(elem);
     }
 
