@@ -1,5 +1,6 @@
 package adventure.actions;
 
+import java.util.Arrays;
 import java.util.List;
 
 import adventure.Direction;
@@ -15,47 +16,93 @@ public class LookAction implements Action {
 
 	@Override
 	public int perform(Person actor, String[] args) {
-	    actor.showLocationAndActors();
-	    Location here = actor.getLocation();
-		List<Item> items = here.getItems();
-		boolean firstItem = true;
-		for (Item item: items) {
-		    if (!item.isHidden()) {
-		        if (firstItem) {
-		            System.out.println("You can see the following items: ");
-		            firstItem = false;
-		        }
-		        System.out.println(
-		                "  " + item.getAbbrev() + ": " + item.getName());
-		    }
-		}
-		System.out.println("This is " + Grammar.indefiniteDescription(here));
-		List<Vista> allVistas = here.getVistas();
-		Direction[] directions = new Direction[] {
-		        Direction.n, Direction.ne, Direction.e, Direction.se, 
-		        Direction.s, Direction.sw, Direction.w, Direction.nw, 
-		        Direction.a, Direction.b}; 
-		for (Direction direction: directions) {
-		    List<Vista> vistas = allVistas.stream()
-		            .filter((w) -> w.mainDirection().equals(direction))
-		            .toList();
-		    if (!vistas.isEmpty()) {
-		        System.out.print(describeDirection(direction) + " you see ");
-		        Wall wall = null;
-		        for (Vista vista: vistas) {
-		            if (vista instanceof Exit) {
-		                describeExit((Exit) vista, wall);
-		            } else if (vista instanceof Wall) {
-		                wall = (Wall) vista;
-		                describeWall(wall);
-		            } else {
-		                describeVista(vista);
-		            }
-		        }
-		    }
-		}
+        Location here = actor.getLocation();
+	    if (args.length == 0) {
+	        actor.showLocationAndActors();
+	        List<Item> items = here.getItems();
+	        boolean firstItem = true;
+	        for (Item item: items) {
+	            if (!item.isHidden()) {
+	                if (firstItem) {
+	                    System.out.println("You can see the following items: ");
+	                    firstItem = false;
+	                }
+	                System.out.println(
+	                        "  " + item.getAbbrev() + ": " + item.getName());
+	            }
+	        }
+	        System.out.println("This is " + Grammar.indefiniteDescription(here));
+	    } else {
+	        Direction[] directions;
+	        
+	        if (args[0].equals("all")) {
+	            directions = new Direction[] {
+	                    Direction.n, Direction.ne, Direction.e, Direction.se, 
+	                    Direction.s, Direction.sw, Direction.w, Direction.nw, 
+	                    Direction.a, Direction.b}; 
+	        } else {
+	            try {
+	               directions = Arrays.stream(args)
+	                    .map((s) -> directionForName(s))
+	                    .toArray(Direction[]::new);
+	            } catch (IllegalArgumentException ex) {
+	                System.out.println("Unknown direction: " + ex.getMessage());
+	                return 0;
+	            }
+	        }
+	        boolean seen = false;
+	        for (Direction direction: directions) {
+	            seen |= lookInDirection(here, direction);
+	        }
+	        if (!seen) {
+	            if (args[0].equals("all")) {
+	                System.out.println("There is nothing to see here.  Move along.");
+	            } else {
+	                System.out.print("There is nothing to see ");
+	                if (args.length == 1) {
+	                    System.out.println("in that direction.");
+	                } else {
+                        System.out.println("in those directions.");
+	                }
+	            }
+	        }
+	    }
 		return 0;
 	}
+	
+	private Direction directionForName(String name) {
+	    name = name.toLowerCase();
+	    for (Direction dir: Direction.values()) {
+	        if (dir.toString().equals(name) ||
+	                dir.getName().equals(name)) {
+	            return dir;
+	        }
+	    }
+	    throw new IllegalArgumentException(name);
+	}
+
+    private boolean lookInDirection(Location here, Direction direction) {
+        List<Vista> vistas = here.getVistas().stream()
+                .filter((w) -> w.mainDirection().equals(direction))
+                .toList();
+        if (!vistas.isEmpty()) {
+            System.out.print(describeDirection(direction) + " you see ");
+            Wall wall = null;
+            for (Vista vista: vistas) {
+                if (vista instanceof Exit) {
+                    describeExit((Exit) vista, wall);
+                } else if (vista instanceof Wall) {
+                    wall = (Wall) vista;
+                    describeWall(wall);
+                } else {
+                    describeVista(vista);
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
 	
     private String describeDirection(Direction direction) {
         return switch(direction) {
