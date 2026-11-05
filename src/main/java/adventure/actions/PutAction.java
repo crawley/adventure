@@ -1,8 +1,8 @@
 package adventure.actions;
 
-import adventure.Actor;
 import adventure.Container;
 import adventure.Entity;
+import adventure.Person;
 import adventure.Item;
 import adventure.actions.Trigger.Event;
 import adventure.actions.VerbResult.Outcome;
@@ -14,19 +14,19 @@ public class PutAction extends Verb {
     }
 
     @Override
-    public int perform(Actor actor, String[] args) {
+    public int perform(Person actor, String[] args) {
         return performOnItemWith(actor, args, false, "into", Context.ITEMS_HELD);
     }
     
     @Override
-    protected void onSuccess(Actor actor, Entity item, Entity item2) {
+    protected void onSuccess(Person actor, Entity item, Entity item2) {
         System.out.println("You " + getParticiple() + " " 
                 + item.getName() + " into " + item2.getName());
         item.trigger(Event.ADDED);
     }
     
     @Override
-    protected VerbResult applyWith(Actor actor, Item item, Item container) {
+    protected VerbResult applyWith(Person actor, Item item, Item container) {
         if (container instanceof Container) {
             ((Container) container).addItem(item);
             actor.getItemsInHand().remove(item);

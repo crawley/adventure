@@ -1,12 +1,12 @@
 package adventure.actions;
 
-import adventure.Actor;
+import adventure.Person;
 import adventure.QuitException;
 
 public class QuitAction implements Action {
 
 	@Override
-	public int perform(Actor actor, String[] args) {
+	public int perform(Person actor, String[] args) {
 		throw new QuitException();
 	}
 

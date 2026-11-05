@@ -25,6 +25,7 @@ public class Arena {
     private Map<String, Actor> allActors;
     private Associations associations;
 	private String startLabel;
+	private Actor player;
 	
 	private static Arena theArena;
 	
@@ -95,8 +96,14 @@ public class Arena {
 	        String name, String abbrev, String description, 
 	        List<Trigger> triggers, PropertySet props) {
 	    Location loc = parseLocation(location);
-	    Actor actor = new Actor(Actor.Kind.valueOf(kind), label, name,
-	            abbrev, description, loc, triggers, props);
+	    Actor.Kind actorKind = Actor.Kind.valueOf(kind);
+	    Actor actor = switch (actorKind) {
+	    case PLAYER, NPC -> new Person(
+	            actorKind, label, name, abbrev, description, loc, triggers, props);
+	    case PET -> new Pet(
+	            actorKind, label, name, abbrev, description, loc, triggers, props);
+	    default -> null;
+	    };
 	    allActors.put(label, actor);
 	    return actor;
 	}
@@ -464,5 +471,13 @@ public class Arena {
             }
         }
         return flags;
+    }
+
+    public void setPlayer(Actor player) {
+        this.player = player;
+    }
+    
+    public Actor getPlayer() {
+        return this.player;
     }
 }

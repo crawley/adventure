@@ -7,6 +7,7 @@ import java.util.List;
 import adventure.Actor;
 import adventure.Container;
 import adventure.Entity;
+import adventure.Person;
 import adventure.Item;
 
 public abstract class Verb implements Action {
@@ -16,7 +17,7 @@ public abstract class Verb implements Action {
         WALLS, PORTALS, 
         ACTORS_HERE, ACTORS_ANYWHERE;
         
-        public List<Item> items(Actor actor) {
+        public List<Item> items(Person actor) {
             return switch (this) {
             case ITEMS_WORN -> actor.getItemsWorn();
             case ITEMS_HELD -> actor.getItemsInHand();
@@ -47,22 +48,22 @@ public abstract class Verb implements Action {
         this.participle = participle;
     }
 
-    protected VerbResult apply(Actor actor, Item item) {
+    protected VerbResult apply(Person actor, Item item) {
         throw new UnsupportedOperationException(
                 "apply not supported for " + this.getClass());
     }
         
-    protected VerbResult applyWith(Actor actor, Item item, Item item2) {
+    protected VerbResult applyWith(Person actor, Item item, Item item2) {
         throw new UnsupportedOperationException(
                 "applyWith not supported for " + this.getClass());
     }
 
-    protected VerbResult applyActor(Actor actor, Actor target) {
+    protected VerbResult applyActor(Person actor, Actor target) {
         throw new UnsupportedOperationException(
                 "applyActor not supported for " + this.getClass());
     }
 
-    protected VerbResult applyActorWith(Actor actor, Actor target, Item item) {
+    protected VerbResult applyActorWith(Person actor, Actor target, Item item) {
         throw new UnsupportedOperationException(
                 "applyActorWith not supported for " + this.getClass());
     }
@@ -77,7 +78,7 @@ public abstract class Verb implements Action {
      * @param contexts resolve word in these contexts
      * @return the VerbResult that gives the outcome, etcetera.
      */
-    protected VerbResult applyHere(Actor actor, String word, 
+    protected VerbResult applyHere(Person actor, String word, 
             Context ... contexts) {
         List<Item> items = resolve(word, actor, contexts);
         VerbResult res = checkUnique(word, items);
@@ -88,7 +89,7 @@ public abstract class Verb implements Action {
         }
     }
     
-    protected VerbResult applyActor(Actor actor, String word) {
+    protected VerbResult applyActor(Person actor, String word) {
         List<Actor> actors = findActor(actor, word);
         VerbResult res = checkActor(actor, word, actors);
         if (res != null) {
@@ -98,7 +99,7 @@ public abstract class Verb implements Action {
         }
     }
 
-    protected VerbResult applyActorWith(Actor actor, String word, String word2,
+    protected VerbResult applyActorWith(Person actor, String word, String word2,
             Context[] contexts) {
         List<Actor> actors = findActor(actor, word);
         VerbResult res = checkActor(actor, word, actors);
@@ -111,7 +112,7 @@ public abstract class Verb implements Action {
         }
     }
 
-    private VerbResult checkActor(Entity actor, String word, List<Actor> actors) {
+    private VerbResult checkActor(Person actor, String word, List<Actor> actors) {
         if (actors.isEmpty()) {
             return new VerbResult(VerbResult.Outcome.NOT_FOUND, word);
         } else if (actors.size() > 1) {
@@ -123,7 +124,7 @@ public abstract class Verb implements Action {
         }
     }
 
-    private List<Actor> findActor(Actor actor, String word) {
+    private List<Actor> findActor(Person actor, String word) {
         return actor.getLocation().actors().stream()
                 .filter((a) -> (a.getAbbrev().equals(word)
                         || a.getName().equals(word)))
@@ -146,7 +147,7 @@ public abstract class Verb implements Action {
      * @param resolve word or word2 in these contexts
      * @return the VerbResult that gives the outcome, etcetera.
      */
-    protected VerbResult applyHereWith(Actor actor, String word, String word2,
+    protected VerbResult applyHereWith(Person actor, String word, String word2,
             boolean fromContainer, Context ... contexts) {
         List<Item> items = null;
         List<Item> item2s = null;
@@ -199,14 +200,14 @@ public abstract class Verb implements Action {
      * @return A list of the items that 'word' resolved to.
      */
     @SafeVarargs
-    public static List<Item> resolve(String word, Actor actor, Context ... contexts) {
+    public static List<Item> resolve(String word, Person actor, Context ... contexts) {
         List<List<Item>> lists = Arrays.stream(contexts)
                 .map((c) -> c.items(actor))
                 .toList();
         return doResolve(word, lists);
     }
 
-    public static List<Item> resolve(String word, Entity actor, List<Item> list) {
+    public static List<Item> resolve(String word, Person actor, List<Item> list) {
         List<List<Item>> lists = list.stream()
                 .filter((item) -> item instanceof Container)
                 .map((item) -> ((Container) item).getContents())
@@ -237,7 +238,7 @@ public abstract class Verb implements Action {
         }
     }
 
-    protected int performOnItem(Actor actor, String[] args, 
+    protected int performOnItem(Person actor, String[] args, 
             Context ...contexts) {
         if (args.length == 0) {
             System.out.println("What do you want to " + verb + "?");
@@ -251,7 +252,7 @@ public abstract class Verb implements Action {
         }
     }
     
-    protected int performOnActor(Actor actor, String[] args) {
+    protected int performOnActor(Person actor, String[] args) {
         if (args.length == 0) {
             System.out.println("Who or what do you want to " + verb + "?");
             return 0;
@@ -264,7 +265,7 @@ public abstract class Verb implements Action {
         }
     }
 
-    protected int performOnItemWith(Actor actor, String[] args,
+    protected int performOnItemWith(Person actor, String[] args,
             boolean fromContainer, String preposition, Context ...contexts) {
         if (args.length == 0) {
             System.out.println("What do you want to " + verb + "?");
@@ -293,7 +294,7 @@ public abstract class Verb implements Action {
         return 0;
     }
     
-    protected int performOnActorWith(Actor actor, String[] args,
+    protected int performOnActorWith(Person actor, String[] args,
             String preposition, Context ...contexts) {
         if (args.length == 0) {
             System.out.println("Who or what do you want to " + verb + "?");
@@ -319,7 +320,7 @@ public abstract class Verb implements Action {
         return 0;
     }
     
-    private int processVerbResult(Actor actor, VerbResult res) {
+    private int processVerbResult(Person actor, VerbResult res) {
         Entity target = res.getTarget();
         Item item2 = res.getItem2();
         switch (res.getOutcome()) {
@@ -374,7 +375,7 @@ public abstract class Verb implements Action {
         return participle;
     }
 
-    protected void onSuccess(Actor actor, Entity entity, Entity entity2) {
+    protected void onSuccess(Person actor, Entity entity, Entity entity2) {
         // do nothing
     }
     

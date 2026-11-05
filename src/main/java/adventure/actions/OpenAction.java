@@ -1,7 +1,7 @@
 package adventure.actions;
 
-import adventure.Actor;
 import adventure.Entity;
+import adventure.Person;
 import adventure.Item;
 import adventure.actions.Trigger.Event;
 
@@ -12,7 +12,7 @@ public class OpenAction extends Verb {
     }
 
     @Override
-    public int perform(Actor actor, String[] args) {
+    public int perform(Person actor, String[] args) {
         if (args.length == 1) {
             return performOnItem(actor, args, 
                     Context.ITEMS_HELD, Context.ITEMS_ON_FLOOR, Context.PORTALS, 
@@ -26,18 +26,18 @@ public class OpenAction extends Verb {
     }
     
     @Override
-    protected void onSuccess(Actor actor, Entity item, Entity unused) {
+    protected void onSuccess(Person actor, Entity item, Entity unused) {
         System.out.println("You " + getParticiple() + " " + item.getName());
         item.trigger(Event.OPENED);
     }
     
     @Override
-    protected VerbResult apply(Actor actor, Item item) {
+    protected VerbResult apply(Person actor, Item item) {
         return item.openItem();
     }
     
     @Override
-    protected VerbResult applyWith(Actor actor, Item item, Item opener) {
+    protected VerbResult applyWith(Person actor, Item item, Item opener) {
         return item.openItemWith(opener);
     }
 

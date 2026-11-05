@@ -1,7 +1,7 @@
 package adventure.actions;
 
-import adventure.Actor;
 import adventure.Entity;
+import adventure.Person;
 import adventure.Item;
 import adventure.actions.Trigger.Event;
 
@@ -12,18 +12,18 @@ public class DropAction extends Verb {
     }
 
 	@Override
-	public int perform(Actor actor, String[] args) {
+	public int perform(Person actor, String[] args) {
 	    return performOnItem(actor, args, Context.ITEMS_HELD);
 	}
 	
 	@Override
-    public VerbResult apply(Actor actor, Item item) {
+    public VerbResult apply(Person actor, Item item) {
         return actor.dropItem(item);
     }
 	
 	
     @Override
-    protected void onSuccess(Actor actor, Entity item, Entity unused) {
+    protected void onSuccess(Person actor, Entity item, Entity unused) {
         System.out.println("You " + getParticiple() + " " + item.getName());
         item.trigger(Event.DROPPED);
     }

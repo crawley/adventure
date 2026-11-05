@@ -324,6 +324,8 @@ creatures:
             arg: LIKES
           - verb: SAY
             message: "Mraow!"
+          - verb: CONSUME
+            
       - events: ATE
         actions:
           - verb: TEST_UNRELATED
@@ -350,8 +352,12 @@ items:
         triggers:
           - events: CONSUMED
             actions:
-            - verb: THINK
-              message: "Nom nom nom"
+              - verb: SET_DESCRIPTION
+                arg: an old sandwich wrapper
+              - verb: SET_NAME
+                arg: some rubbish
+              - verb: SET_ABBREV
+                arg: rubbish
   
   - label: coatstand
     kind: CONTAINER
@@ -475,6 +481,10 @@ items:
     description: a can of a budget brand of catfood
     flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
+    properties:
+      - name: calories
+        type: int
+        initial: "10"
     triggers:
       - events: CONSUMED
         actions:
@@ -491,6 +501,17 @@ items:
       The label says that the tuna is "dolphin friendly".
     flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
+    properties:
+      - name: calories
+        type: int
+        initial: "20"
+    triggers:
+      - events: CONSUMED
+        actions:
+          - verb: SET_DESCRIPTION
+            arg: an empty can
+          - verb: SET_NAME
+            arg: an empty can
 
   - label: beans
     name: a can of baked beans
@@ -500,6 +521,17 @@ items:
       It is only worth ...  a can of beans.
     flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
+    triggers:
+      - events: CONSUMED
+        actions:
+          - verb: SET_DESCRIPTION
+            arg: an empty can
+          - verb: SET_NAME
+            arg: an empty can
+    properties:
+      - name: calories
+        type: int
+        initial: "10"
 
   - label: spam
     name: a can of potted meat
@@ -509,6 +541,37 @@ items:
       The label shows a Viking chorus.
     flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
+    triggers:
+      - events: CONSUMED
+        actions:
+          - verb: SET_DESCRIPTION
+            arg: an empty can
+          - verb: SET_NAME
+            arg: an empty can
+    properties:
+      - name: calories
+        type: int
+        initial: "50"
+
+  - label: spinach
+    name: a can of spinach
+    abbrev: can
+    description: |
+       this is a can of spinach.
+       The label shows a picture of a sailor.
+    flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
+    location: pantry
+    triggers:
+      - events: CONSUMED
+        actions:
+          - verb: SET_DESCRIPTION
+            arg: an empty can
+          - verb: SET_NAME
+            arg: an empty can
+    properties:
+      - name: calories
+        type: int
+        initial: "100"
 
 associations:
   - relation: HAS_KEY

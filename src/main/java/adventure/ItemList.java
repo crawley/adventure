@@ -27,6 +27,9 @@ public class ItemList extends ArrayList<Item> implements List<Item> {
 
     @Override
     public boolean add(Item item) {
+        if (item.isDestroyed()) {
+            throw new StateInconsistencyException("Item is destroyed");
+        }
         if (super.contains(item)) {
             throw new StateInconsistencyException(
                     "Item list '" + name + "' already contains item " + item.getLabel());
@@ -36,6 +39,9 @@ public class ItemList extends ArrayList<Item> implements List<Item> {
 
     @Override
     public void add(int pos, Item item) {
+        if (item.isDestroyed()) {
+            throw new StateInconsistencyException("Item is destroyed");
+        }
         if (super.contains(item)) {
             throw new StateInconsistencyException(
                     "Item list '" + name + "' already contains item " + item.getLabel());

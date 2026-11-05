@@ -1,8 +1,8 @@
 package adventure.actions;
 
-import adventure.Actor;
 import adventure.Direction;
 import adventure.Exit;
+import adventure.Person;
 import adventure.Item;
 import adventure.Location;
 
@@ -15,7 +15,7 @@ public class GoAction implements Action {
 	}
 
 	@Override
-	public int perform(Actor actor, String[] args) {
+	public int perform(Person actor, String[] args) {
 	    for (Exit exit: actor.getLocation().getExits()) {
 	        if (exit.matchesDirection(direction)) {
 	            Item portal = exit.getPortal();

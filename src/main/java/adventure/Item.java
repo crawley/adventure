@@ -257,6 +257,23 @@ public class Item extends Entity {
                 item.setOpen(false);
             }
             break;
+        case DROP:
+            for (Actor actor: Arena.getInstance().getAllActors()) {
+                if (actor instanceof Person) {
+                    Person human = (Person) actor;
+                    if (human.getItemsInHand().contains(item)) {
+                        human.dropItem(item);
+                        break;
+                    }
+                }
+            }
+            break;
+        case CONSUME:
+            this.trigger(Trigger.Event.CONSUMED);
+            break;
+        case DESTROY:
+            item.destroy();
+            break;
         case SET_FLAG:
             Long flag = ITEM_FLAGS.get(action.getArg()).flag;
             if (flag != null) {
@@ -276,6 +293,9 @@ public class Item extends Entity {
     }
 
     public static Item lookupItem(String label) {
+        if (label == null) {
+            return null;
+        }
         Entity entity = Entity.lookupEntity(label);
         if (entity instanceof Item) {
             return (Item) entity;

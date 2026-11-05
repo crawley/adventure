@@ -15,7 +15,7 @@ import adventure.actions.Trigger;
 public class Standalone implements Runnable {
 	
 	private Scanner input;
-	private Actor player;
+	private Person player;
 	private Arena arena;
 
 	public Standalone(String fileName) {
@@ -29,10 +29,10 @@ public class Standalone implements Runnable {
 		}
 		PropertySet props = new PropertySet();
 		props.add(new FloatProperty("hunger", 5, 0, 10));
-		player = new Actor(Actor.Kind.PLAYER, "player", "player", 
+		player = new Person(Actor.Kind.PLAYER, "player", "player", 
 		        "player", "the player (you)", arena.getStart(), 
 		        null, props);
-		arena.addActor(player);
+		arena.setPlayer(player);
 	}
 
 	@Override

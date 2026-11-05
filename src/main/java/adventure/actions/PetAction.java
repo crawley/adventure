@@ -2,6 +2,7 @@ package adventure.actions;
 
 import adventure.Actor;
 import adventure.Entity;
+import adventure.Person;
 import adventure.actions.Trigger.Event;
 
 public class PetAction extends Verb {
@@ -11,18 +12,18 @@ public class PetAction extends Verb {
     }
 
     @Override
-    public int perform(Actor actor, String[] args) {
+    public int perform(Person actor, String[] args) {
         return performOnActor(actor, args);
     }
     
     @Override
-    protected void onSuccess(Actor actor, Entity creature, Entity unused) {
+    protected void onSuccess(Person actor, Entity creature, Entity unused) {
         System.out.println("You " + getParticiple() + " " + creature.getName());
         creature.trigger(Event.PETTED);
     }
     
     @Override
-    protected VerbResult applyActor(Actor actor, Actor target) {
+    protected VerbResult applyActor(Person actor, Actor target) {
         return actor.pet(target);
     }
     

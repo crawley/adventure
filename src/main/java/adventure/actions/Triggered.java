@@ -3,12 +3,12 @@ package adventure.actions;
 public class Triggered {
     
     public enum Verb {
-        HIDE, REVEAL, OPEN, CLOSE, LOCK, UNLOCK, 
+        HIDE, REVEAL, OPEN, CLOSE, LOCK, UNLOCK, DROP, DESTROY, CONSUME,
         MESSAGE, SAY, THINK, 
         INCREMENT, DECREMENT, TEST_MIN, TEST_MAX, SET_MIN, SET_MAX, 
         TEST, TEST_RELATED, TEST_UNRELATED,
         SET_PROPERTY, SET_DESCRIPTION, SET_FLAG, CLEAR_FLAG, SET_NAME, 
-        SET_TARGET_DESCRIPTION, SET_TARGET_NAME, 
+        SET_TARGET_DESCRIPTION, SET_TARGET_NAME, SET_ABBREV, SET_TARGET_ABBREV, 
     }
     
     private final String message;

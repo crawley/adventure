@@ -104,7 +104,6 @@ public class Location extends Entity {
 
     @Override
     protected boolean doTrigger(Triggered action, Entity target) {
-        // No triggers on locations (yet)
-        return false;
+        throw new UnsupportedOperationException("No location triggers");
     }
  }

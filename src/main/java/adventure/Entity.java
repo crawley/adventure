@@ -13,14 +13,15 @@ public abstract class Entity {
 
     public static final long MOVEABLE = 0x2L;
     private final String label;
-    private final String abbrev;
     
     // These can be changed by a trigger action ...
-    protected String description;
-    protected String name;
+    private String description;
+    private String name;
+    private String abbrev;
 
     protected final List<Trigger> triggers;
     protected final PropertySet properties;
+    private boolean destroyed;
     
     protected static Map<String, Entity> allEntities = new HashMap<>();
 
@@ -81,6 +82,10 @@ public abstract class Entity {
     
     public PropertySet getProperties() {
         return properties;
+    }
+    
+    public boolean isDestroyed() {
+        return destroyed;
     }
 
     protected Number getNumericArg2(Triggered action) {
@@ -164,6 +169,9 @@ public abstract class Entity {
         case SET_NAME:
             this.name = action.getArg();
             break;
+        case SET_ABBREV:
+            this.abbrev = action.getArg();
+            break;
         case SET_TARGET_DESCRIPTION:
             if (target != null) {
                 target.description = action.getArg();
@@ -174,6 +182,12 @@ public abstract class Entity {
                 target.name = action.getArg();
             }
             break;
+        case SET_TARGET_ABBREV:
+            if (target != null) {
+                target.abbrev = action.getArg();
+            }
+            break;
+
         case MESSAGE:
             if (action.trigger() && action.getMessage() != null) {
                 System.out.println(action.getMessage());
@@ -187,6 +201,7 @@ public abstract class Entity {
     }
 
     public void destroy() {
+        destroyed = true;
         allEntities.remove(this.getLabel());
     }
 
@@ -200,6 +215,9 @@ public abstract class Entity {
     }
     
     public static Entity lookupEntity(String label) {
+        if (label == null) {
+            return null;
+        }
         Entity entity = Entity.lookup(label);
         if (entity == null) {
             throw new EntityException("No entity with label '" + label + "'");
@@ -207,6 +225,4 @@ public abstract class Entity {
             return entity;
         }
     }
-
-
 }

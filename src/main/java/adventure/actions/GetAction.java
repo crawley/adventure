@@ -1,8 +1,8 @@
 package adventure.actions;
 
-import adventure.Actor;
 import adventure.Container;
 import adventure.Entity;
+import adventure.Person;
 import adventure.Item;
 import adventure.actions.Trigger.Event;
 import adventure.actions.VerbResult.Outcome;
@@ -14,13 +14,13 @@ public class GetAction extends Verb {
     }
 
     @Override
-    public int perform(Actor actor, String[] args) {
+    public int perform(Person actor, String[] args) {
         return performOnItemWith(actor, args, true, "from", 
                 Context.ITEMS_HELD, Context.ITEMS_ON_FLOOR, Context.ITEMS_ON_WALLS);
     }
     
     @Override
-    protected void onSuccess(Actor actor, Entity item, Entity entity) {
+    protected void onSuccess(Person actor, Entity item, Entity entity) {
         System.out.println("You " + getParticiple() + " " 
                 + item.getName() + " from " + entity.getName());
         item.trigger(Event.REMOVED);
@@ -28,7 +28,7 @@ public class GetAction extends Verb {
     }
 
     @Override
-    protected VerbResult applyWith(Actor actor, Item item, Item container) {
+    protected VerbResult applyWith(Person actor, Item item, Item container) {
         if (container instanceof Container) {
             if (actor.handsFull()) {
                 return new VerbResult(Outcome.NOT_POSSIBLE, item,

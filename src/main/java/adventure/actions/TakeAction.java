@@ -1,7 +1,7 @@
 package adventure.actions;
 
-import adventure.Actor;
 import adventure.Entity;
+import adventure.Person;
 import adventure.Item;
 import adventure.actions.Trigger.Event;
 
@@ -12,7 +12,7 @@ public class TakeAction extends Verb {
     }
 
 	@Override
-	public int perform(Actor actor, String[] args) {
+	public int perform(Person actor, String[] args) {
 	    return performOnItem(actor, args, 
 	            Context.ITEMS_ON_FLOOR, Context.ITEMS_ON_WALLS);
 	}
@@ -23,12 +23,12 @@ public class TakeAction extends Verb {
     }
 
     @Override
-    protected VerbResult apply(Actor actor, Item item) {
+    protected VerbResult apply(Person actor, Item item) {
         return actor.holdItem(item);
     }
     
     @Override
-    protected void onSuccess(Actor actor, Entity item, Entity unused) {
+    protected void onSuccess(Person actor, Entity item, Entity unused) {
         System.out.println("You " + getParticiple() + " " + item.getName());
         item.trigger(Event.TAKEN);
     }

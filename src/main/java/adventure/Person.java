@@ -1,0 +1,128 @@
+package adventure;
+
+import java.util.List;
+
+import adventure.actions.Trigger;
+import adventure.actions.Trigger.Event;
+import adventure.actions.VerbResult;
+import adventure.actions.VerbResult.Outcome;
+
+public class Person extends Actor {
+    
+    private final List<Item> itemsInHand = new ItemList("in hand");
+    private final List<Item> itemsWorn = new ItemList("worn");
+    private final int NOS_HANDS = 2;
+        
+	public Person(Kind kind, String label, String name, String abbrev,
+	        String description, Location location, 
+	        List<Trigger> triggers, PropertySet properties) {
+		super(kind, label, name, abbrev, description, location, triggers, properties);
+	}
+
+	public VerbResult wearItem(Item item) {
+	    if (item.isWearable()) {
+	        if (itemsWorn.contains(item)) {
+	            return new VerbResult(Outcome.ALREADY_DONE, item);
+	        } else {
+	            itemsWorn.add(item);
+	            itemsInHand.remove(item);
+	            return new VerbResult(3, item);
+	        }
+	    } else {
+	        return new VerbResult(Outcome.NOT_APPLICABLE, item);
+	    }
+	}
+
+    public VerbResult unwearItem(Item item) {
+        itemsWorn.remove(item);
+        if (itemsInHand.size() >= NOS_HANDS) {
+            getLocation().addItem(item);
+            item.trigger(Event.DROPPED);
+        } else {
+            itemsInHand.add(item);
+            item.trigger(Event.TAKEN);
+        }
+        return new VerbResult(2, item); 
+    }
+
+    public List<Item> getItemsWorn() {
+        return itemsWorn;
+    }
+    
+    public List<Item> getItemsInHand() {
+        return itemsInHand;
+    }
+
+    public VerbResult holdItem(Item item) {
+        if (!item.isTakeable()) {
+            return new VerbResult(Outcome.NOT_APPLICABLE, item);
+        } else if (itemsInHand.size() >= NOS_HANDS) {
+            return new VerbResult(Outcome.NOT_POSSIBLE, item,
+                    "your hands are full");
+        } else {
+            getLocation().removeItem(item);
+            itemsInHand.add(item);
+            return new VerbResult(1, item);
+        } 
+    }
+        
+    public VerbResult dropItem(Item item) {
+        itemsInHand.remove(item);
+        getLocation().addItem(item);
+        return new VerbResult(1, item);
+    }
+
+    public boolean handsFull() {
+        return itemsInHand.size() >= NOS_HANDS;
+    }
+
+    public VerbResult eatItem(Item item) {
+        if (item.isEdible()) {
+            if (item.isOpenable() && !item.isOpen()) {
+                return new VerbResult(Outcome.NOT_POSSIBLE, item,
+                        "the " + item.getAbbrev() 
+                        + " needs to be opened first");
+            }
+            eat(item);
+            return new VerbResult(2, item);
+        } else {
+            return new VerbResult(Outcome.NOT_APPLICABLE, item);
+        }
+    }
+    
+    public VerbResult pet(Actor target) {
+        if (target.getKind() != Kind.PET) {
+            return new VerbResult(Outcome.NOT_APPLICABLE, target);
+        } else {
+            return new VerbResult(1, target);
+        }
+    }
+
+    public VerbResult feed(Actor target, Item food) {
+        if (food.isEdible()) {
+            if (food.isOpenable() && !food.isOpen()) {
+                return new VerbResult(Outcome.NOT_POSSIBLE, food,
+                        "the " + food.getAbbrev() 
+                        + " needs to be opened first");
+            } else {
+                itemsInHand.remove(food);
+                target.eat(food);
+                return new VerbResult(1, target, food);
+            }
+        } else {
+            return new VerbResult(Outcome.NOT_APPLICABLE, food,
+                    "is not edible");
+        }
+    }
+
+    public void showLocationAndActors() {
+        Location here = getLocation();
+        System.out.println("You are " + here.getType().getPreposition() 
+                + " " + here.getName());
+        for (Entity actor: here.actors()) {
+            if (actor != this) {
+                System.out.println("You see " + actor.getDescription());
+            }
+        }
+    }
+}

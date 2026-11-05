@@ -1,11 +1,11 @@
 package adventure.actions;
 
-import adventure.Actor;
+import adventure.Person;
 
 public class ActionsAction implements Action {
 
 	@Override
-	public int perform(Actor target, String[] args) {
+	public int perform(Person target, String[] args) {
 	    Actions actions = Actions.getInstance();
 	    System.out.print("Actions: ");
 	    for (String name: actions.actionNames()) {

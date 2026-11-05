@@ -1,14 +1,14 @@
 package adventure.actions;
 
-import adventure.Actor;
 import adventure.Direction;
 import adventure.Exit;
+import adventure.Person;
 import adventure.Item;
 
 public class WhereAction implements Action {
 
 	@Override
-	public int perform(Actor actor, String[] args) {
+	public int perform(Person actor, String[] args) {
 	    actor.showLocationAndActors();
 		System.out.println("You can go in the following directions: ");
 		for (Exit exit: actor.getLocation().getExits()) {

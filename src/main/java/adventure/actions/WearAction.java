@@ -1,7 +1,7 @@
 package adventure.actions;
 
-import adventure.Actor;
 import adventure.Entity;
+import adventure.Person;
 import adventure.Item;
 import adventure.actions.Trigger.Event;
 
@@ -12,7 +12,7 @@ public class WearAction extends Verb {
     }
 
 	@Override
-	public int perform(Actor actor, String[] args) {
+	public int perform(Person actor, String[] args) {
 		return performOnItem(actor, args, Context.ITEMS_HELD);
 	}
 	
@@ -22,12 +22,12 @@ public class WearAction extends Verb {
     }
 
     @Override
-    protected VerbResult apply(Actor actor, Item item) {
+    protected VerbResult apply(Person actor, Item item) {
         return actor.wearItem(item);
     }
     
     @Override
-    protected void onSuccess(Actor actor, Entity item, Entity unused) {
+    protected void onSuccess(Person actor, Entity item, Entity unused) {
         System.out.println("You are now " + getAdjective() + " " + item.getName());
         item.trigger(Event.WORN);
     }

@@ -1,12 +1,12 @@
 package adventure.actions;
 
-import adventure.Actor;
 import adventure.Entity;
+import adventure.Person;
 
 public class InventoryAction implements Action {
 
 	@Override
-	public int perform(Actor actor, String[] args) {
+	public int perform(Person actor, String[] args) {
         if (!actor.getItemsWorn().isEmpty()) {
             System.out.println("You are wearing: ");
             for (Entity item: actor.getItemsWorn()) {

@@ -2,8 +2,8 @@ package adventure.actions;
 
 import adventure.Actor;
 import adventure.Entity;
+import adventure.Person;
 import adventure.Item;
-import adventure.actions.Trigger.Event;
 
 public class FeedAction extends Verb {
     
@@ -12,18 +12,17 @@ public class FeedAction extends Verb {
     }
 
     @Override
-    public int perform(Actor actor, String[] args) {
+    public int perform(Person actor, String[] args) {
         return performOnActorWith(actor, args, "with", Context.ITEMS_HELD);
     }
     
     @Override
-    protected void onSuccess(Actor actor, Entity creature, Entity food) {
+    protected void onSuccess(Person actor, Entity creature, Entity food) {
         System.out.println("You " + getParticiple() + " " + creature.getName());
-        creature.trigger(Event.ATE, food);
     }
     
     @Override
-    protected VerbResult applyActorWith(Actor actor, Actor target, Item food) {
+    protected VerbResult applyActorWith(Person actor, Actor target, Item food) {
         return actor.feed(target, food);
     }
     

@@ -7,6 +7,7 @@ import adventure.Actor;
 import adventure.BooleanProperty;
 import adventure.Entity;
 import adventure.FloatProperty;
+import adventure.Person;
 import adventure.IntegerProperty;
 import adventure.Property;
 import adventure.PropertySet;
@@ -14,7 +15,7 @@ import adventure.PropertySet;
 public class StatisticsAction implements Action {
 
 	@Override
-	public int perform(Actor actor, String[] args) {
+	public int perform(Person actor, String[] args) {
 	    Entity target;
 	    if (args.length == 0) {
 	        target = actor;

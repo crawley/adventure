@@ -2,10 +2,10 @@ package adventure.actions;
 
 import java.util.List;
 
-import adventure.Actor;
 import adventure.Direction;
 import adventure.Entity;
 import adventure.Exit;
+import adventure.Person;
 import adventure.Item;
 import adventure.Location;
 import adventure.Vista;
@@ -14,7 +14,7 @@ import adventure.Wall;
 public class LookAction implements Action {
 
 	@Override
-	public int perform(Actor actor, String[] args) {
+	public int perform(Person actor, String[] args) {
 	    actor.showLocationAndActors();
 	    Location here = actor.getLocation();
 		List<Item> items = here.getItems();

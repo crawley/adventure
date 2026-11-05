@@ -1,11 +1,11 @@
 package adventure.actions;
 
-import adventure.Actor;
+import adventure.Person;
 
 public class HelpAction implements Action {
 
 	@Override
-	public int perform(Actor actor, String[] args) {
+	public int perform(Person actor, String[] args) {
 	    if (args.length == 0) {
 	        System.out.println("What action do you want help for?");
 	    } else if (args.length > 1) {

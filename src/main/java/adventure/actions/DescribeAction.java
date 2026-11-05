@@ -2,16 +2,16 @@ package adventure.actions;
 
 import java.util.List;
 
-import adventure.Actor;
 import adventure.Container;
 import adventure.Entity;
+import adventure.Person;
 import adventure.Item;
 import adventure.actions.Verb.Context;
 
 public class DescribeAction implements Action {
 
 	@Override
-	public int perform(Actor actor, String[] args) {
+	public int perform(Person actor, String[] args) {
 	    if (args.length == 0) {
 	        System.out.println("What do you want to be described?");
 	    } else if (args.length > 1) {

@@ -1,10 +1,10 @@
 package adventure.actions;
 
-import adventure.Actor;
+import adventure.Person;
 
 public interface Action {
 	
-	public int perform(Actor target, String[] args);
+	public int perform(Person target, String[] args);
 	
 	public String describe();
 
