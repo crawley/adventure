@@ -21,7 +21,9 @@ public abstract class Entity {
 
     protected final List<Trigger> triggers;
     protected final PropertySet properties;
+    
     private boolean destroyed;
+    private EntityList<?> memberOf; 
     
     protected static Map<String, Entity> allEntities = new HashMap<>();
 
@@ -50,6 +52,14 @@ public abstract class Entity {
             throw new EntityException("Entity with label '" + label + "' already exists");
         }
         allEntities.put(label,  this);
+    }
+
+    public EntityList<?> getMemberOf() {
+        return memberOf;
+    }
+
+    public void setMemberOf(EntityList<?> memberOf) {
+        this.memberOf = memberOf;
     }
 
     /**
@@ -203,6 +213,9 @@ public abstract class Entity {
     public void destroy() {
         destroyed = true;
         allEntities.remove(this.getLabel());
+        if (memberOf != null) {
+            memberOf.remove(this);
+        }
     }
 
     /**

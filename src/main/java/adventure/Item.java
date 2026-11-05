@@ -13,7 +13,6 @@ import adventure.actions.VerbResult.Outcome;
 
 public class Item extends Entity {
     private long flags;
-    private Container container;
     
     public static final long TAKEABLE = 0x1L;
     public static final long EDIBLE = 0x4L;
@@ -65,19 +64,6 @@ public class Item extends Entity {
         if (this.properties.lookup("hidden") == null) {
             this.properties.add(new BooleanProperty("hidden", false));
         }
-    }
-
-    public Container getContainer() {
-        return container;
-    }
-
-    public void setContainer(Container container) {
-        if (this.container != null && container != null) {
-            throw new StateInconsistencyException(
-                    getLabel() + " is already in a container ('"
-                    + this.container.getLabel() + "')");
-        }
-        this.container = container;
     }
 
     public long getFlags() {

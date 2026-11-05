@@ -25,7 +25,7 @@ public class Location extends Entity {
     }
 	
 	private final List<Vista> vistas;
-	private final ItemList items;
+	private final EntityList<Item> items;
 	private final LocationType type;
 
     public Location(LocationType type, String label, String name, 
@@ -33,7 +33,7 @@ public class Location extends Entity {
 		super(label, name, abbrev, description, null, null);
 		this.type = type;
 		this.vistas = new ArrayList<>();
-		this.items = new ItemList("here");
+		this.items = new EntityList<>("here");
 	}
 
 	public LocationType getType() {

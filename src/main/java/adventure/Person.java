@@ -9,8 +9,8 @@ import adventure.actions.VerbResult.Outcome;
 
 public class Person extends Actor {
     
-    private final List<Item> itemsInHand = new ItemList("in hand");
-    private final List<Item> itemsWorn = new ItemList("worn");
+    private final List<Item> itemsInHand = new EntityList<Item>("in hand");
+    private final List<Item> itemsWorn = new EntityList<Item>("worn");
     private final int NOS_HANDS = 2;
         
 	public Person(Kind kind, String label, String name, String abbrev,
