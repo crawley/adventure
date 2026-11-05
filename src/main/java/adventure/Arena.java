@@ -334,8 +334,12 @@ public class Arena {
             }
         } else if (obj instanceof String) {
             return ((String) obj).trim();
+        } else if (obj instanceof Number) {
+            return obj.toString();
         } else {
-            throw new ArenaException("Expected '" + tag + "' to be a simple attribute");
+            throw new ArenaException("Expected '" + tag 
+                    + "' to be a simple attribute (not a " 
+                    + obj.getClass() + ")");
         }
     }
 

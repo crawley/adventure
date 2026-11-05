@@ -302,9 +302,9 @@ creatures:
     properties:
       - name: hunger
         type: int
-        initial: "5"
-        min: "0"
-        max: "10"
+        initial: 5
+        min: 0
+        max: 10
     triggers:
       - events: TICK
         actions:
@@ -348,7 +348,7 @@ items:
         properties:
           - name: calories
             type: int
-            initial: "10"
+            initial: 10
         triggers:
           - events: CONSUMED
             actions:
@@ -484,7 +484,7 @@ items:
     properties:
       - name: calories
         type: int
-        initial: "10"
+        initial: 10
     triggers:
       - events: CONSUMED
         actions:
@@ -504,7 +504,7 @@ items:
     properties:
       - name: calories
         type: int
-        initial: "20"
+        initial: 20
     triggers:
       - events: CONSUMED
         actions:
@@ -531,7 +531,7 @@ items:
     properties:
       - name: calories
         type: int
-        initial: "10"
+        initial: 10
 
   - label: spam
     name: a can of potted meat
@@ -551,7 +551,7 @@ items:
     properties:
       - name: calories
         type: int
-        initial: "50"
+        initial: 50
 
   - label: spinach
     name: a can of spinach
@@ -571,7 +571,7 @@ items:
     properties:
       - name: calories
         type: int
-        initial: "100"
+        initial: 100
 
 associations:
   - relation: HAS_KEY
