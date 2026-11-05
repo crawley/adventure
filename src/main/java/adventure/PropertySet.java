@@ -16,7 +16,7 @@ public class PropertySet {
         Property current = props.get(property.getName());
         if (current != null) {
             if (property.getClass() != current.getClass()) {
-                throw new StateInconsistencyException(
+                throw new EntityException(
                         "Inconsistent type for added property '" 
                                 + property.getName() + "'");
             }

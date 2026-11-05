@@ -31,7 +31,7 @@ public class EntityList<T extends Entity> extends ArrayList<T> implements List<T
     @Override
     public boolean add(T elem) {
         if (elem.isDestroyed()) {
-            throw new StateInconsistencyException("Entity is destroyed");
+            throw new EntityException("Entity is destroyed");
         }
         EntityList<?> other = elem.getMemberOf();
         if (other != null) {
@@ -44,7 +44,7 @@ public class EntityList<T extends Entity> extends ArrayList<T> implements List<T
     @Override
     public void add(int pos, T elem) {
         if (elem.isDestroyed()) {
-            throw new StateInconsistencyException("Entity is destroyed");
+            throw new EntityException("Entity is destroyed");
         }
         EntityList<?> other = elem.getMemberOf();
         if (other != null) {
@@ -78,11 +78,11 @@ public class EntityList<T extends Entity> extends ArrayList<T> implements List<T
         } else if (other == this) {
             elem.setMemberOf(null);
             if (!super.remove(elem)) {
-                throw new StateInconsistencyException("Entity not found in internal list");
+                throw new EntityException("Entity not found in internal list");
             }
             return false;
         } else {
-            throw new StateInconsistencyException("Entity is in a different EntityList");
+            throw new EntityException("Entity is in a different EntityList");
         }
     }
 
@@ -97,16 +97,16 @@ public class EntityList<T extends Entity> extends ArrayList<T> implements List<T
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException("ItemList::retainAll");
+        throw new UnsupportedOperationException("EntityList::retainAll");
     }
 
     @Override
     public T set(int arg0, T arg1) {
-        throw new UnsupportedOperationException("ItemList::set");
+        throw new UnsupportedOperationException("EntityList::set");
     }
 
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
-        throw new UnsupportedOperationException("ItemList::sublist");
+        throw new UnsupportedOperationException("EntityList::sublist");
     }
 }
