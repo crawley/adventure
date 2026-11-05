@@ -2,6 +2,7 @@ package adventure;
 
 import java.util.List;
 
+import adventure.actions.Grammar;
 import adventure.actions.Trigger;
 import adventure.actions.Trigger.Event;
 import adventure.actions.VerbResult;
@@ -25,7 +26,6 @@ public class Person extends Actor {
 	            return new VerbResult(Outcome.ALREADY_DONE, item);
 	        } else {
 	            itemsWorn.add(item);
-	            itemsInHand.remove(item);
 	            return new VerbResult(3, item);
 	        }
 	    } else {
@@ -34,7 +34,6 @@ public class Person extends Actor {
 	}
 
     public VerbResult unwearItem(Item item) {
-        itemsWorn.remove(item);
         if (itemsInHand.size() >= NOS_HANDS) {
             getLocation().addItem(item);
             item.trigger(Event.DROPPED);
@@ -60,14 +59,12 @@ public class Person extends Actor {
             return new VerbResult(Outcome.NOT_POSSIBLE, item,
                     "your hands are full");
         } else {
-            getLocation().removeItem(item);
             itemsInHand.add(item);
             return new VerbResult(1, item);
         } 
     }
         
     public VerbResult dropItem(Item item) {
-        itemsInHand.remove(item);
         getLocation().addItem(item);
         return new VerbResult(1, item);
     }
@@ -105,9 +102,17 @@ public class Person extends Actor {
                         "the " + food.getAbbrev() 
                         + " needs to be opened first");
             } else {
-                itemsInHand.remove(food);
-                target.eat(food);
-                return new VerbResult(1, target, food);
+                getLocation().addItem(food);
+                if (target.eat(food)) {
+                    target.trigger(Event.ATE);
+                    food.trigger(Event.CONSUMED);
+                    return new VerbResult(1, target, food);
+                } else {
+                    target.trigger(Event.REFUSED);
+                    return new VerbResult(Outcome.NOT_POSSIBLE, target,
+                            Grammar.definiteName(target) + " refused "
+                            + Grammar.definiteName(target));
+                }
             }
         } else {
             return new VerbResult(Outcome.NOT_APPLICABLE, food,

@@ -4,7 +4,6 @@ import java.util.List;
 
 import adventure.actions.Grammar;
 import adventure.actions.Trigger;
-import adventure.actions.Trigger.Event;
 import adventure.actions.Triggered;
 
 public abstract class Actor extends Entity {
@@ -38,22 +37,23 @@ public abstract class Actor extends Entity {
     
 	protected boolean eat(Item food) {
         NumberProperty calories = food.getNumberProperty("calories");
-        if (calories != null) {
-            NumberProperty hunger = this.getNumberProperty("hunger");
-            if (hunger != null) {
-                hunger.decrement(calories.floatValue());
-                if (hunger.floatValue() == 0) {
-                    if (this == Arena.getInstance().getPlayer()) {
-                        System.out.println("You are satiated");
-                    } else {
-                        String name = Grammar.definiteName(this);
-                        System.out.println(
-                                Grammar.capitalize(name) + " is satiated");
-                    }
-                }
+        if (calories == null) {
+            return true;
+        }
+        NumberProperty hunger = this.getNumberProperty("hunger");
+        if (hunger == null) {
+            return true;
+        }
+        hunger.decrement(calories.floatValue());
+        if (hunger.floatValue() == 0) {
+            if (this == Arena.getInstance().getPlayer()) {
+                System.out.println("You are satiated");
+            } else {
+                String name = Grammar.definiteName(this);
+                System.out.println(
+                        Grammar.capitalize(name) + " is satiated");
             }
         }
-        this.trigger(Event.ATE);
         return true;
     }
     
@@ -68,7 +68,9 @@ public abstract class Actor extends Entity {
         case SAY:
             for (Entity actor: location.actors()) {
                 if (actor != this && action.trigger()) {
-                    System.out.println(this.getName() 
+                    String name = Grammar.definiteName(this);
+                    System.out.println(
+                            Grammar.capitalize(name)
                             + " says: " + action.getMessage());
                 }
             }
