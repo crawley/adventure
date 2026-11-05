@@ -2,8 +2,8 @@ package adventure.actions;
 
 import adventure.Direction;
 import adventure.Exit;
-import adventure.Person;
 import adventure.Item;
+import adventure.Person;
 
 public class WhereAction implements Action {
 

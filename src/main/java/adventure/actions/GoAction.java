@@ -2,9 +2,9 @@ package adventure.actions;
 
 import adventure.Direction;
 import adventure.Exit;
-import adventure.Person;
 import adventure.Item;
 import adventure.Location;
+import adventure.Person;
 
 public class GoAction implements Action {
 	

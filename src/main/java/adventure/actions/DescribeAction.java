@@ -4,8 +4,8 @@ import java.util.List;
 
 import adventure.Container;
 import adventure.Entity;
-import adventure.Person;
 import adventure.Item;
+import adventure.Person;
 import adventure.actions.Verb.Context;
 
 public class DescribeAction implements Action {

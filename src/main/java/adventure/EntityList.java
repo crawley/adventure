@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class EntityList<T extends Entity> extends ArrayList<T> implements List<T> {
     
-    private static final long serialVersionUID = 1691058264794808856L;
+    private static final long serialVersionUID = 6683899907063878283L;
     private final String name;
     
     public EntityList(String name) {
@@ -33,7 +33,7 @@ public class EntityList<T extends Entity> extends ArrayList<T> implements List<T
         if (elem.isDestroyed()) {
             throw new StateInconsistencyException("Entity is destroyed");
         }
-        EntityList<? super T> other = (EntityList<? super T>) elem.getMemberOf();
+        EntityList<?> other = elem.getMemberOf();
         if (other != null) {
             other.remove(elem);
         }

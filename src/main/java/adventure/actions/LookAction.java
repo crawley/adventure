@@ -5,9 +5,9 @@ import java.util.List;
 import adventure.Direction;
 import adventure.Entity;
 import adventure.Exit;
-import adventure.Person;
 import adventure.Item;
 import adventure.Location;
+import adventure.Person;
 import adventure.Vista;
 import adventure.Wall;
 

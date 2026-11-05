@@ -2,8 +2,8 @@ package adventure.actions;
 
 import adventure.Actor;
 import adventure.Entity;
-import adventure.Person;
 import adventure.Item;
+import adventure.Person;
 
 public class FeedAction extends Verb {
     

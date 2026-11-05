@@ -7,8 +7,8 @@ import adventure.Actor;
 import adventure.BooleanProperty;
 import adventure.Entity;
 import adventure.FloatProperty;
-import adventure.Person;
 import adventure.IntegerProperty;
+import adventure.Person;
 import adventure.Property;
 import adventure.PropertySet;
 

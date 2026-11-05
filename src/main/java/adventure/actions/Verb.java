@@ -7,8 +7,8 @@ import java.util.List;
 import adventure.Actor;
 import adventure.Container;
 import adventure.Entity;
-import adventure.Person;
 import adventure.Item;
+import adventure.Person;
 
 public abstract class Verb implements Action {
     
