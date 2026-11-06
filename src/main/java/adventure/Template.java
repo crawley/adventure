@@ -25,6 +25,11 @@ public class Template {
         this.kind = kind;
         this.label = label;
         this.supers = supers;
+        for (Template template: supers) {
+            if (template.kind != kind) {
+                throw new ArenaException("Template kind inconsistent with a super");
+            }
+        }
         this.triggers = triggers;
         this.properties = properties;
         if (allTemplates.get(label) != null) {
