@@ -14,10 +14,12 @@ public class Trigger {
     
     private final List<Event> events;
     private final List<Triggered> actions;
+    private final boolean override;
     
-    public Trigger(List<Event> events, List<Triggered> actions) {
+    public Trigger(List<Event> events, List<Triggered> actions, boolean override) {
         this.actions = actions;
         this.events = events;
+        this.override = override;
     }
 
     public List<Event> getEvents() {
@@ -26,5 +28,9 @@ public class Trigger {
 
     public List<Triggered> getActions() {
         return actions;
+    }
+
+    public boolean isOverride() {
+        return override;
     }
 }

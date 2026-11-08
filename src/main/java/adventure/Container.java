@@ -9,10 +9,10 @@ public class Container extends Item {
     private final EntityList<Item> contents;
 
     public Container(String label, String name, String abbrev, 
-            String description, long flags, 
+            String description, long flags, Template base,
             List<Trigger> triggers, PropertySet properties) {
         super(label, name, abbrev, description, flags, 
-                triggers, properties);
+                base, triggers, properties);
         contents = new EntityList<>(label + "contents");
     }
 

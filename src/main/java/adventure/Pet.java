@@ -7,9 +7,10 @@ import adventure.actions.Trigger;
 public class Pet extends Actor {
     
 	public Pet(Kind kind, String label, String name, String abbrev,
-	        String description, Location location, 
+	        String description, Location location, Template base,
 	        List<Trigger> triggers, PropertySet properties) {
-		super(kind, label, name, abbrev, description, location, triggers, properties);
+		super(kind, label, name, abbrev, description, location, 
+		        base, triggers, properties);
 	}
     
     protected boolean eat(Item food) {

@@ -16,9 +16,9 @@ public abstract class Actor extends Entity {
     private Location location;
     
 	public Actor(Kind kind, String label, String name, String abbrev,
-	        String description, Location location, 
+	        String description, Location location, Template base,
 	        List<Trigger> triggers, PropertySet properties) {
-		super(label, name, abbrev, description, triggers, properties);
+		super(label, name, abbrev, description, base, triggers, properties);
 		this.location = location;
 		this.kind = kind;
 	}

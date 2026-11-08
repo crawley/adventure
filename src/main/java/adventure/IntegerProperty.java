@@ -75,4 +75,9 @@ public class IntegerProperty extends NumberProperty {
     public boolean testMax() {
         return value == max;
     }
+    
+    @Override
+    public Property copy() {
+        return new FloatProperty(getName(), value, min, max);
+    }
 }

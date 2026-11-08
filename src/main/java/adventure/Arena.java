@@ -14,6 +14,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import adventure.Item.FlagDescriptor;
 import adventure.Location.LocationType;
+import adventure.Template.Kind;
 import adventure.actions.Trigger;
 import adventure.actions.Trigger.Event;
 import adventure.actions.Triggered;
@@ -63,14 +64,15 @@ public class Arena {
 		makeExit(to, from, portal, back, description);
 	}
 	
-	public Item makeItem(String kind, String location, String label, String name, String abbrev, 
-	        String description, long flags, List<Trigger> triggers, PropertySet props) {
+	public Item makeItem(String kind, String location, String label, String name, 
+	        String abbrev, String description, long flags, 
+	        Template base, List<Trigger> triggers, PropertySet props) {
 	    if (abbrev == null) {
 	        abbrev = label;
 	    }
 	    Item item = ("CONTAINER".equals(kind)) ?
-                new Container(label, name, abbrev, description, flags, triggers, props) :
-	            new Item(label, name, abbrev, description, flags, triggers, props);
+                new Container(label, name, abbrev, description, flags, base, triggers, props) :
+	            new Item(label, name, abbrev, description, flags, base, triggers, props);
 	    if (location != null) {
 	        String[] parts = location.split("#", 2);
 	        Location loc = parseLocation(parts[0]);
@@ -93,15 +95,17 @@ public class Arena {
 	}
 	
 	public Entity makeActor(String label, String kind, String location, 
-	        String name, String abbrev, String description, 
+	        String name, String abbrev, String description, Template base,
 	        List<Trigger> triggers, PropertySet props) {
 	    Location loc = parseLocation(location);
 	    Actor.Kind actorKind = Actor.Kind.valueOf(kind);
 	    Actor actor = switch (actorKind) {
 	    case PLAYER, NPC -> new Person(
-	            actorKind, label, name, abbrev, description, loc, triggers, props);
+	            actorKind, label, name, abbrev, description, loc, 
+	            base, triggers, props);
 	    case PET -> new Pet(
-	            actorKind, label, name, abbrev, description, loc, triggers, props);
+	            actorKind, label, name, abbrev, description, loc, 
+	            base, triggers, props);
 	    default -> null;
 	    };
 	    allActors.put(label, actor);
@@ -148,6 +152,10 @@ public class Arena {
 		
 		Arena arena = new Arena((String) loaded.get("start"));
 		
+		parseTemplates(loaded, "location_templates", Template.Kind.LOCATION);
+		parseTemplates(loaded, "actor_templates", Template.Kind.ACTOR);
+		parseTemplates(loaded, "item_templates", Template.Kind.ITEM);
+
 		List<Object> locations = (List<Object>) loaded.get("locations");
 		for (Object data: locations) {
 			Map<String, Object> locData = (Map<String, Object>) data;
@@ -217,6 +225,7 @@ public class Arena {
 	        Map<String, Object> creatureData = (Map<String, Object>) data;
 	        List<Trigger> triggers = parseTriggers(creatureData);
 	        PropertySet props = parseProperties(creatureData);
+	        Template base = parseBaseReference(creatureData);
 	        arena.makeActor(
 	                getString(creatureData, "label"), 
 	                getString(creatureData, "kind"), 
@@ -224,6 +233,7 @@ public class Arena {
 	                getString(creatureData, "name"), 
 	                getString(creatureData, "abbrev"), 
 	                getString(creatureData, "description"),
+                    base,
 	                triggers,
 	                props);
 	    }
@@ -239,6 +249,29 @@ public class Arena {
 	    
 		return arena;
 	}
+
+    @SuppressWarnings("unchecked")
+    private static void parseTemplates(Map<String, Object> data, 
+            String tag, Kind kind) {
+        List<Object> templates = (List<Object>) data.get(tag);
+        if (templates == null) {
+            return;
+        }
+        for (Object obj: templates) {
+            Map<String, Object> templateData = (Map<String, Object>) obj;
+            List<Trigger> triggers = parseTriggers(templateData);
+            PropertySet properties = parseProperties(templateData);
+            Template base = parseBaseReference(templateData);
+            String label = getString(templateData, "label");
+            new Template(kind, label, base, triggers, properties);
+        }
+    }
+
+    private static Template parseBaseReference(Map<String, Object> templateData) {
+        String name = getOptString(templateData, "base");
+        Template base = (name == null) ? null : Template.lookup(name);
+        return base;
+    }
 
     @SuppressWarnings("unchecked")
     private static PropertySet parseProperties(Map<String, Object> data) {
@@ -296,6 +329,7 @@ public class Arena {
         long flags = parseItemFlags(getOptString(itemData, "flags"));
         List<Trigger> triggers = parseTriggers(itemData);
         PropertySet props = parseProperties(itemData);
+        Template base = parseBaseReference(itemData);
         Item item = makeItem(
                 getOptString(itemData, "kind"), 
                 getOptString(itemData, "location"), 
@@ -303,7 +337,7 @@ public class Arena {
                 getString(itemData, "name"), 
                 getOptString(itemData, "abbrev"), 
                 getOptString(itemData, "description"), 
-                flags, triggers, props);
+                flags, base, triggers, props);
         if ("CONTAINER".equals(getOptString(itemData, "kind"))
                 && itemData.get("contents") != null) {
             List<Object> contents = (List<Object>) itemData.get("contents");
@@ -427,7 +461,8 @@ public class Arena {
                 }
                 List<Triggered> actions = parseActions(
                         (List<Object>) triggerData.get("actions"));
-                Trigger trigger = new Trigger(events, actions);
+                boolean override = getOptBoolean(triggerData, "override", false);
+                Trigger trigger = new Trigger(events, actions, override);
                 triggers.add(trigger);
             }
         }

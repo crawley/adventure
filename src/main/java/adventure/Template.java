@@ -14,21 +14,19 @@ public class Template {
     
     private final Kind kind;
     private final String label;
-    private final List<Template> supers;
+    private final Template base;
     private final List<Trigger> triggers;
     private final PropertySet properties;
 
     private static Map<String, Template> allTemplates = new HashMap<>();
     
-    public Template(Kind kind, String label, List<Template> supers, List<Trigger> triggers, PropertySet properties) {
+    public Template(Kind kind, String label, Template base, List<Trigger> triggers, PropertySet properties) {
         super();
         this.kind = kind;
         this.label = label;
-        this.supers = supers;
-        for (Template template: supers) {
-            if (template.kind != kind) {
-                throw new ArenaException("Template kind inconsistent with a super");
-            }
+        this.base = base;
+        if (base != null && base.kind != kind) {
+            throw new ArenaException("Template kind inconsistent with its base template");
         }
         this.triggers = triggers;
         this.properties = properties;
@@ -46,8 +44,8 @@ public class Template {
         return label;
     }
 
-    public List<Template> getSupers() {
-        return supers;
+    public Template getBase() {
+        return base;
     }
 
     public List<Trigger> getTriggers() {
@@ -59,6 +57,11 @@ public class Template {
     }
     
     public static Template lookup(String label) {
-        return allTemplates.get(label);
+        Template template = allTemplates.get(label);
+        if (template == null) {
+            throw new ArenaException("No template with label '" + label + "'");
+        } else {
+            return template;
+        }
     }
 }

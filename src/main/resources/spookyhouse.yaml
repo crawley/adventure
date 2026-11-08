@@ -200,7 +200,6 @@ locations:
       a small room with floor to ceiling shelves on three walls.
       There are empty boxes on the shelves.
         
-
 exits:
 
   - from: road
@@ -291,9 +290,62 @@ exits:
     to: pantry
     forwards: w
     backwards: e
-     
+    
+actor_templates:
+  - label: creature
+    properties:
+      - name: health
+        type: int
+        initial: 100
+        min: 0
+        max: 100
+      - name: hunger
+        type: int
+        initial: 5
+        min: 0
+        max: 10
+    triggers:
+      - events: TICK
+        actions:
+          - verb: INCREMENT
+            arg: hunger
+  - label: player
+    base: creature
+    properties:
+      - name: strength
+        type: int
+        initial: 15
+        min: 6
+        max: 18
+      - name: dexterity
+        type: int
+        initial: 15
+        min: 6
+        max: 18
+      - name: intelligence
+        type: int
+        initial: 15
+        min: 6
+        max: 18
+      - name: wisdom
+        type: int
+        initial: 15
+        min: 6
+        max: 18
+      - name: constitution
+        type: int
+        initial: 15
+        min: 6
+        max: 18
+      - name: charisma
+        type: int
+        initial: 15
+        min: 6
+        max: 18
+ 
 creatures:
   - label: cat
+    base: creature
     kind: PET
     name: Jasper
     abbrev: cat
@@ -308,8 +360,6 @@ creatures:
     triggers:
       - events: TICK
         actions:
-          - verb: INCREMENT
-            arg: hunger
           - verb: TEST_MAX
             arg: hunger
           - verb: SAY
@@ -325,14 +375,37 @@ creatures:
           - verb: SAY
             message: "Mraow!"
           - verb: CONSUME
-            
       - events: ATE
         actions:
           - verb: TEST_UNRELATED
             arg: LIKES
           - verb: MESSAGE
             message: The cat sniffs the food and backs away.
-    
+            
+item_templates:
+  - label: food
+    properties:
+      - name: calories
+        type: int
+        initial: 10
+    triggers:
+      - events: CONSUMED
+        actions:
+          - verb: MESSAGE
+            arg: The food is consumed.
+          - verb: DESTROY
+          
+  - label: cannedfood
+    base: food
+    triggers:
+      - events: CONSUMED
+        override: Y
+        actions:
+          - verb: SET_DESCRIPTION
+            arg: an empty can
+          - verb: SET_NAME
+            arg: an empty can
+
 items:
   - label: knapsack
     kind: CONTAINER
@@ -342,15 +415,13 @@ items:
     flags: WEARABLE MOVEABLE TAKEABLE
     contents:
       - label: sandwich
+        base: food
         name: a vegemite sandwich
         description: The sandwich looks fresh
         flags: MOVEABLE TAKEABLE EDIBLE
-        properties:
-          - name: calories
-            type: int
-            initial: 10
         triggers:
           - events: CONSUMED
+            override: Y
             actions:
               - verb: SET_DESCRIPTION
                 arg: an old sandwich wrapper
@@ -439,10 +510,6 @@ items:
       - name: locked
         type: boolean
         initial: Y
-
-    associations:
-      - association: HAS_KEY
-        item: chestkey
     
   - label: chestkey
     name: a rusty iron key
@@ -476,24 +543,15 @@ items:
     flags: MOVEABLE
     
   - label: catfood
+    base: cannedfood
     name: a can of cat food
     abbrev: can
     description: a can of a budget brand of catfood
     flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
-    properties:
-      - name: calories
-        type: int
-        initial: 10
-    triggers:
-      - events: CONSUMED
-        actions:
-          - verb: SET_DESCRIPTION
-            arg: an empty can
-          - verb: SET_NAME
-            arg: an empty can
     
   - label: tuna
+    base: cannedfood
     name: a can of tuna
     abbrev: can
     description: |
@@ -505,15 +563,9 @@ items:
       - name: calories
         type: int
         initial: 20
-    triggers:
-      - events: CONSUMED
-        actions:
-          - verb: SET_DESCRIPTION
-            arg: an empty can
-          - verb: SET_NAME
-            arg: an empty can
 
   - label: beans
+    base: cannedfood
     name: a can of baked beans
     abbrev: can
     description: |
@@ -521,19 +573,9 @@ items:
       It is only worth ...  a can of beans.
     flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
-    triggers:
-      - events: CONSUMED
-        actions:
-          - verb: SET_DESCRIPTION
-            arg: an empty can
-          - verb: SET_NAME
-            arg: an empty can
-    properties:
-      - name: calories
-        type: int
-        initial: 10
 
   - label: spam
+    base: cannedfood
     name: a can of potted meat
     abbrev: can
     description: |
@@ -541,19 +583,9 @@ items:
       The can's label shows a picture of a Viking chorus.
     flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
-    triggers:
-      - events: CONSUMED
-        actions:
-          - verb: SET_DESCRIPTION
-            arg: an empty can
-          - verb: SET_NAME
-            arg: an empty can
-    properties:
-      - name: calories
-        type: int
-        initial: 50
 
   - label: spinach
+    base: cannedfood
     name: a can of spinach
     abbrev: can
     description: |
@@ -561,13 +593,6 @@ items:
        The label shows a picture of a sailor.
     flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
-    triggers:
-      - events: CONSUMED
-        actions:
-          - verb: SET_DESCRIPTION
-            arg: an empty can
-          - verb: SET_NAME
-            arg: an empty can
     properties:
       - name: calories
         type: int

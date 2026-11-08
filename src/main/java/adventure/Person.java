@@ -15,9 +15,10 @@ public class Person extends Actor {
     private final int NOS_HANDS = 2;
         
 	public Person(Kind kind, String label, String name, String abbrev,
-	        String description, Location location, 
+	        String description, Location location, Template base,
 	        List<Trigger> triggers, PropertySet properties) {
-		super(kind, label, name, abbrev, description, location, triggers, properties);
+		super(kind, label, name, abbrev, description, location, 
+		        base, triggers, properties);
 	}
 
 	public VerbResult wearItem(Item item) {

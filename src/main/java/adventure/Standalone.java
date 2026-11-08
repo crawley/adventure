@@ -20,18 +20,15 @@ public class Standalone implements Runnable {
 
 	public Standalone(String fileName) {
 		try (InputStream is = ClassLoader.getSystemClassLoader()
-				.getResourceAsStream(fileName))
-		{
+				.getResourceAsStream(fileName)) {
 			arena = Arena.load(is);
 		} catch (IOException ex) {
 			throw new ArenaException("Can't find or read arena file '" +
 					fileName + "'", ex);
 		}
-		PropertySet props = new PropertySet();
-		props.add(new FloatProperty("hunger", 5, 0, 10));
 		player = new Person(Actor.Kind.PLAYER, "player", "player", 
 		        "player", "the player (you)", arena.getStart(), 
-		        null, props);
+		        Template.lookup("player"), null, null);
 		arena.setPlayer(player);
 	}
 

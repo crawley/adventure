@@ -15,6 +15,8 @@ public abstract class Property {
     
     public abstract double floatValue();
     
+    public abstract Property copy();
+    
     public String getName() {
         return name;
     }

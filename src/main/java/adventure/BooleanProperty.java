@@ -1,6 +1,7 @@
 package adventure;
 
-public class BooleanProperty extends Property {
+public class BooleanProperty extends Property 
+implements Cloneable {
     
     private boolean value;
 
@@ -30,5 +31,10 @@ public class BooleanProperty extends Property {
 
     public synchronized void setValue(boolean value) {
         this.value = value;
+    }
+
+    @Override
+    public Property copy() {
+        return new BooleanProperty(getName(), value);
     }
 }

@@ -81,4 +81,9 @@ public class FloatProperty extends NumberProperty {
         return value == max;
     }
 
+    @Override
+    public Property copy() {
+        return new FloatProperty(getName(), value, min, max);
+    }
+
 }

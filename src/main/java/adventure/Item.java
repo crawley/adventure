@@ -46,9 +46,9 @@ public class Item extends Entity {
     };
     
     public Item(String label, String name, String abbrev, 
-            String description, long flags, 
+            String description, long flags, Template base,
             List<Trigger> triggers, PropertySet properties) {
-        super(label, name, abbrev, description, triggers, properties);
+        super(label, name, abbrev, description, base, triggers, properties);
         this.flags = flags;
         
         // Add default and flag properties

@@ -10,7 +10,7 @@ import adventure.actions.Triggered;
 import adventure.actions.Triggered.Verb;
 
 public abstract class Entity {
-
+    
     public static final long MOVEABLE = 0x2L;
     private final String label;
     
@@ -19,6 +19,7 @@ public abstract class Entity {
     private String name;
     private String abbrev;
 
+    protected final Template base;
     protected final List<Trigger> triggers;
     protected final PropertySet properties;
     
@@ -39,19 +40,46 @@ public abstract class Entity {
      * @throws EntityException if the label is non-unique.
      */
     public Entity(String label, String name, String abbrev, String description, 
-            List<Trigger> triggers, PropertySet properties) {
+            Template base, List<Trigger> triggers, PropertySet properties) {
         super();
         this.label = label;
         this.name = name;
         this.abbrev = abbrev == null ? label : abbrev;
         this.description = description;
+        this.base = base;
         this.triggers = (triggers == null) ? new ArrayList<>() : triggers;
         this.properties = (properties == null) ? new PropertySet() : properties;
+        mergeBaseProperties(base);
 
         if (allEntities.containsKey(label)) {
             throw new EntityException("Entity with label '" + label + "' already exists");
         }
         allEntities.put(label,  this);
+    }
+
+    /**
+     * Merge in the properties from the base template chain.
+     * 
+     * @param base the base template.
+     */
+    private void mergeBaseProperties(Template base) {
+        while (base != null) {
+            PropertySet baseProps = base.getProperties();
+            for (String key: baseProps.keys()) {
+                Property baseProp = baseProps.lookup(key);
+                Property prop = properties.lookup(key);
+                if (prop == null) {
+                    properties.add(baseProp.copy());
+                } else {
+                    if (prop.getClass() != baseProp.getClass()) {
+                        throw new EntityException(
+                                "Type inconsistent with base property '"
+                                        + key + "'");
+                    }
+                }
+            }
+            base = base.getBase();
+        }
     }
 
     public EntityList<?> getMemberOf() {
@@ -131,6 +159,10 @@ public abstract class Entity {
         }
     }
 
+    public Template getBase() {
+        return base;
+    }
+
     public List<Trigger> getTriggers() {
         return triggers;
     }
@@ -140,14 +172,29 @@ public abstract class Entity {
     }
 
     public void trigger(Trigger.Event event, Entity target) {
-        for (Trigger trigger: triggers) {
-            if (!trigger.getEvents().contains(event)) {
-                continue;
-            }
-            for (Triggered action: trigger.getActions()) {
-                if (!doTrigger(action, target)) {
-                    break;
+        boolean override = false;
+        List<Trigger> triggers = this.triggers;
+        Template base = this.base;
+        while (triggers != null) {
+            for (Trigger trigger: triggers) {
+                if (!trigger.getEvents().contains(event)) {
+                    continue;
                 }
+                for (Triggered action: trigger.getActions()) {
+                    if (!doTrigger(action, target)) { 
+                        break;
+                    }
+                }
+                override |= trigger.isOverride();
+            }
+            if (override) {
+                break;
+            }
+            if (base != null) {
+                triggers = base.getTriggers();
+                base = base.getBase();
+            } else {
+                triggers = null;
             }
         }
     }

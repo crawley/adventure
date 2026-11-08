@@ -3,6 +3,7 @@ package adventure;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class PropertySet {
     
@@ -11,9 +12,9 @@ public class PropertySet {
     public PropertySet() {
         this.props = new TreeMap<>();
     }
-    
+
     public void add(Property property) {
-        Property current = props.get(property.getName());
+        Property current = lookup(property.getName());
         if (current != null) {
             if (property.getClass() != current.getClass()) {
                 throw new EntityException(
