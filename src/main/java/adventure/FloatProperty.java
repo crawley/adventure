@@ -44,6 +44,10 @@ public class FloatProperty extends NumberProperty {
             this.value = newValue;
         }
     }
+    
+    public void set(Number newValue) {
+        setValue(newValue.doubleValue());
+    }
 
     public double getMin() {
         return min;

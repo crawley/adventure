@@ -10,6 +10,8 @@ public abstract class NumberProperty  extends Property {
 
     public abstract void decrement(Number by);
     
+    public abstract void set(Number value);
+    
     public abstract boolean testMin();
 
     public abstract boolean testMax();

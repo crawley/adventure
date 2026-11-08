@@ -314,32 +314,32 @@ actor_templates:
     properties:
       - name: strength
         type: int
-        initial: 15
+        initial: 12
         min: 6
         max: 18
       - name: dexterity
         type: int
-        initial: 15
+        initial: 12
         min: 6
         max: 18
       - name: intelligence
         type: int
-        initial: 15
+        initial: 12
         min: 6
         max: 18
       - name: wisdom
         type: int
-        initial: 15
+        initial: 12
         min: 6
         max: 18
       - name: constitution
         type: int
-        initial: 15
+        initial: 12
         min: 6
         max: 18
       - name: charisma
         type: int
-        initial: 15
+        initial: 12
         min: 6
         max: 18
  
@@ -374,7 +374,6 @@ creatures:
             arg: LIKES
           - verb: SAY
             message: "Mraow!"
-          - verb: CONSUME
       - events: ATE
         actions:
           - verb: TEST_UNRELATED
@@ -405,6 +404,11 @@ item_templates:
             arg: an empty can
           - verb: SET_NAME
             arg: an empty can
+          - verb: MESSAGE
+            arg: The food is consumed.
+          - verb: SET_PROPERTY
+            arg: calories
+            arg2: 0
 
 items:
   - label: knapsack
@@ -429,6 +433,9 @@ items:
                 arg: some rubbish
               - verb: SET_ABBREV
                 arg: rubbish
+              - verb: SET_PROPERTY
+                arg: calories
+                arg2: 0
   
   - label: coatstand
     kind: CONTAINER

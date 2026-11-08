@@ -105,7 +105,7 @@ public class Person extends Actor {
             } else {
                 getLocation().addItem(food);
                 if (target.eat(food)) {
-                    target.trigger(Event.ATE);
+                    target.trigger(Event.ATE, food);
                     food.trigger(Event.CONSUMED);
                     return new VerbResult(1, target, food);
                 } else {

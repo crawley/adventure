@@ -254,9 +254,6 @@ public class Item extends Entity {
                 }
             }
             break;
-        case CONSUME:
-            this.trigger(Trigger.Event.CONSUMED);
-            break;
         case DESTROY:
             item.destroy();
             break;

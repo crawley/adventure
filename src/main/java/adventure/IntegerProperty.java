@@ -66,6 +66,10 @@ public class IntegerProperty extends NumberProperty {
         }
     }
     
+    public void set(Number newValue) {
+        setValue(newValue.intValue());
+    }
+    
     @Override
     public boolean testMin() {
         return value == min;

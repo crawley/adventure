@@ -29,8 +29,12 @@ implements Cloneable {
         return value;
     }
 
-    public synchronized void setValue(boolean value) {
-        this.value = value;
+    public synchronized void setValue(boolean newValue) {
+        this.value = newValue;
+    }
+
+    public void set(Boolean newValue) {
+        setValue(newValue.booleanValue());
     }
 
     @Override

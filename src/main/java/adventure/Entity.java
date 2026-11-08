@@ -142,14 +142,33 @@ public abstract class Entity {
             }
         }
     }
-
-    protected NumberProperty getNumberProperty(String name) {
+    
+    protected Boolean getBooleanArg2(Triggered action) {
+        String arg = action.getArg2();
+        if (arg == null) {
+            return null;
+        } 
+        switch (arg.trim().toUpperCase()) {
+        case "Y", "YES", "TRUE", "1": return true;
+        case "N", "NO", "FALSE", "0": return false;
+        default:
+            throw new TriggerException(
+                    "Action arg value ('" + arg + "') not a boolean");
+        }
+    }
+    
+    protected Property getProperty(String name) {
         Property prop = properties.lookup(name);
         if (prop == null) {
             throw new TriggerException(
                     "Can't find '" + name + "' property on '" +
                             getLabel() + "'");
         }
+        return prop;
+    }
+
+    protected NumberProperty getNumberProperty(String name) {
+        Property prop = getProperty(name);
         if (prop instanceof NumberProperty) {
             return (NumberProperty) prop;
         } else {
@@ -203,12 +222,20 @@ public abstract class Entity {
         Verb verb = action.getVerb();
         switch (verb) {
         case INCREMENT:
-            Number by = getNumericArg2(action);
-            getNumberProperty(action.getArg()).increment(by);
+            Number number = getNumericArg2(action);
+            getNumberProperty(action.getArg()).increment(number);
             break;
         case DECREMENT:
-            by = getNumericArg2(action);
-            getNumberProperty(action.getArg()).decrement(by);
+            number = getNumericArg2(action);
+            getNumberProperty(action.getArg()).decrement(number);
+            break;
+        case SET_PROPERTY:
+            Property prop = getProperty(action.getArg());
+            if (prop instanceof NumberProperty) {
+                ((NumberProperty) prop).set(getNumericArg2(action));
+            } else {
+                ((BooleanProperty) prop).set(getBooleanArg2(action));
+            }
             break;
         case TEST_MIN:
             return getNumberProperty(action.getArg()).testMin();
@@ -244,7 +271,6 @@ public abstract class Entity {
                 target.abbrev = action.getArg();
             }
             break;
-
         case MESSAGE:
             if (action.trigger() && action.getMessage() != null) {
                 System.out.println(action.getMessage());
