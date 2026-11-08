@@ -302,13 +302,14 @@ actor_templates:
       - name: hunger
         type: int
         initial: 5
-        min: 0
+        min: -5
         max: 10
     triggers:
       - events: TICK
         actions:
           - verb: INCREMENT
             arg: hunger
+            arg2: 0.1
   - label: player
     base: creature
     properties:
@@ -351,12 +352,6 @@ creatures:
     abbrev: cat
     description: a black cat
     location: kitchen
-    properties:
-      - name: hunger
-        type: int
-        initial: 5
-        min: 0
-        max: 10
     triggers:
       - events: TICK
         actions:
@@ -406,9 +401,8 @@ item_templates:
             arg: an empty can
           - verb: MESSAGE
             arg: The food is consumed.
-          - verb: SET_PROPERTY
-            arg: calories
-            arg2: 0
+          - verb: CLEAR_FLAG
+            arg: EDIBLE
 
 items:
   - label: knapsack
@@ -433,9 +427,8 @@ items:
                 arg: some rubbish
               - verb: SET_ABBREV
                 arg: rubbish
-              - verb: SET_PROPERTY
-                arg: calories
-                arg2: 0
+              - verb: CLEAR_FLAG
+                arg: EDIBLE
   
   - label: coatstand
     kind: CONTAINER

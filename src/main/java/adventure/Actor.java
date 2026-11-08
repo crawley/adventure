@@ -37,15 +37,24 @@ public abstract class Actor extends Entity {
     
 	protected boolean eat(Item food) {
         NumberProperty calories = food.getNumberProperty("calories");
-        if (calories == null) {
-            return true;
-        }
         NumberProperty hunger = this.getNumberProperty("hunger");
-        if (hunger == null) {
+        if (calories == null || hunger == null) {
             return true;
         }
-        hunger.decrement(calories.floatValue());
         if (hunger.floatValue() == 0) {
+            if (this == Arena.getInstance().getPlayer()) {
+                System.out.println("You are not hungry");
+            } else {
+                System.out.println("It is not hungry");
+            }
+            return false;
+        }
+        if (calories.intValue() == 0) {
+            if (this == Arena.getInstance().getPlayer()) {
+                System.out.println("That was not satisfying");
+            }
+        } else {
+            hunger.decrement(calories.floatValue()); 
             if (this == Arena.getInstance().getPlayer()) {
                 System.out.println("You are satiated");
             } else {
@@ -55,7 +64,7 @@ public abstract class Actor extends Entity {
             }
         }
         return true;
-    }
+	}
     
     @Override
     protected boolean doTrigger(Triggered action, Entity target) {
