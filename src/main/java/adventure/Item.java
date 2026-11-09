@@ -15,6 +15,7 @@ public class Item extends Entity {
     private long flags;
     
     public static final long TAKEABLE = 0x1L;
+    public static final long MOVEABLE = 0x2L;
     public static final long EDIBLE = 0x4L;
     public static final long WEARABLE = 0x8L;
     public static final long WIELDABLE = 0x10L;

@@ -11,7 +11,6 @@ import adventure.actions.Triggered.Verb;
 
 public abstract class Entity {
     
-    public static final long MOVEABLE = 0x2L;
     private final String label;
     
     // These can be changed by a trigger action ...
