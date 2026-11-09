@@ -199,6 +199,19 @@ locations:
     description: |
       a small room with floor to ceiling shelves on three walls.
       There are empty boxes on the shelves.
+      
+  - label: basementstairs
+    type: ROOM
+    name: the basement stairs
+    description:
+        the top of the basement stairs.
+        
+  - label: basement
+    type: ROOM
+    name: the basement
+    description: |
+        the basement is dark.
+        The floor is uneven, and you cannot see the walls.
         
 exits:
 
@@ -290,6 +303,16 @@ exits:
     to: pantry
     forwards: w
     backwards: e
+    
+  - from: corridor-e
+    to: basementstairs
+    forwards: s
+    backwards: n
+    
+  - from: basementstairs
+    to: basement
+    forwards: d
+    backwards: u
     
 actor_templates:
   - label: creature

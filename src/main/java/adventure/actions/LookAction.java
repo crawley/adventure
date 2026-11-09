@@ -39,7 +39,7 @@ public class LookAction implements Action {
 	            directions = new Direction[] {
 	                    Direction.n, Direction.ne, Direction.e, Direction.se, 
 	                    Direction.s, Direction.sw, Direction.w, Direction.nw, 
-	                    Direction.a, Direction.b}; 
+	                    Direction.u, Direction.d, Direction.a, Direction.b}; 
 	        } else {
 	            try {
 	               directions = Arrays.stream(args)
@@ -108,6 +108,8 @@ public class LookAction implements Action {
         return switch(direction) {
         case a -> "Above you";
         case b -> "Below you";
+        case u -> "Upwards";
+        case d -> "Downwards";
         default -> "To the " + direction.getName();
         };
     }
