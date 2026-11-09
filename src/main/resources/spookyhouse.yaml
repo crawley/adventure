@@ -442,6 +442,15 @@ items:
         flags: WEARABLE MOVEABLE TAKEABLE EDIBLE
         description: |
           The cap has the words "Make Arcadia Great Again" on the front.
+        triggers:
+          - events: WORN
+            actions:
+              - verb: MESSAGE
+                message: You look stupid
+          - events: UNWORN
+            actions:
+              - verb: MESSAGE
+                message: You look less stupid
           
   - label: kitchendrawer
     kind: CONTAINER
