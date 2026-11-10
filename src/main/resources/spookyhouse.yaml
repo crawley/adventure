@@ -494,6 +494,15 @@ items:
             actions:
               - verb: MESSAGE
                 message: You look less stupid
+          - events: CONSUMED
+            actions:
+              - verb: MESSAGE
+                message: You feel stupid
+              - verb: DESTROY
+        properties:
+          - name: calories
+            type: int
+            initial: 0
           
   - label: kitchendrawer
     kind: CONTAINER
