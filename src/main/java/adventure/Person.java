@@ -123,11 +123,18 @@ public class Person extends Actor {
 
     public void showLocationAndActors() {
         Location here = getLocation();
-        System.out.println("You are " + here.getType().getPreposition() 
-                + " " + here.getName());
-        for (Entity actor: here.actors()) {
-            if (actor != this) {
-                System.out.println("You see " + actor.getDescription());
+        if (here.isDark()) {
+            System.out.println("It is too dark to see where you are.");
+            if (here.actors().stream().anyMatch((a) -> a != this)) {
+                System.out.println("You sense something else is here.");
+            }
+        } else {
+            System.out.println("You are " + here.getType().getPreposition() 
+                    + " " + here.getName());
+            for (Entity actor: here.actors()) {
+                if (actor != this) {
+                    System.out.println("You see " + actor.getDescription());
+                }
             }
         }
     }

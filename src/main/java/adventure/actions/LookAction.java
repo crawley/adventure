@@ -17,6 +17,10 @@ public class LookAction implements Action {
 	@Override
 	public int perform(Person actor, String[] args) {
         Location here = actor.getLocation();
+        if (here.isDark()) {
+            System.out.println("It is too dark to see anything here.");
+            return 0;
+        }
 	    if (args.length == 0) {
 	        actor.showLocationAndActors();
 	        List<Item> items = here.getItems();
@@ -31,7 +35,9 @@ public class LookAction implements Action {
 	                        "  " + item.getAbbrev() + ": " + item.getName());
 	            }
 	        }
-	        System.out.println("This is " + Grammar.indefiniteDescription(here));
+	        if (here.getDescription() != null) {
+	            System.out.println("This is " + Grammar.indefiniteDescription(here));
+	        }
 	    } else {
 	        Direction[] directions;
 	        
@@ -67,7 +73,7 @@ public class LookAction implements Action {
 	            }
 	        }
 	    }
-		return 0;
+		return 1;
 	}
 	
 	private Direction directionForName(String name) {

@@ -39,22 +39,29 @@ public class DescribeAction implements Action {
 	private void describe(Item item, String word) {
 	    System.out.println(word + ": " + item.getName());
 	    if (item.getDescription() != null) {
-	        System.out.println("This is " + item.getDescription());
+	        System.out.println("This is " + 
+	                Grammar.indefiniteDescription(item));
 	    }
 	    if (item.hasStateFlags()) {
 	        if (item.isOpenable()) {
-	            System.out.println("  It is " + 
+	            System.out.print("  It is currently " + 
 	                    (item.isOpen() ? "open" : "closed"));
-	        }
-	        if (item.isLockable()) {
-	            System.out.println("  It is " + 
+	            if (!item.isOpen() && item.isLockable()) {
+	                System.out.print(" and " +
 	                    (item.isLocked() ? "locked" : "unlocked"));
+	            }
+	            System.out.println(".");
 	        }
+	        if (item.isSwitchable()) {
+                System.out.println("  It is currently switched " + 
+                        (item.isOn() ? "on." : "off."));
+            }
 	    }
 	    if (item instanceof Container) {
 	        if (item.isOpenable() && !item.isOpen()) {
 	            System.out.println(
-	                    "  You cannot see what is in " + item.getName());
+	                    "  You cannot see what is in " + 
+	                            Grammar.definiteName(item));
 	        } else {
 	            List<Item> contents = ((Container) item).getContents();
 	            if (contents.isEmpty()) {

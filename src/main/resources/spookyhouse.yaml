@@ -211,9 +211,22 @@ locations:
     name: the basement
     description: |
         the basement is damp and musty.
-        The floor is uneven, and you cannot see the walls.
+        The floor is uneven.
     flags: DARK
-        
+    walls:
+      - direction: e
+        name: east wall
+        description: the east wall of the basement.
+      - direction: w
+        name: west wall
+        description: the north wall of the basement.
+      - direction: s
+        name: south wall
+        description: the south wall of the basement.
+      - direction: n
+        name: north wall
+        description: the north wall of the basement.
+    
 exits:
 
   - from: road
@@ -436,6 +449,12 @@ items:
     location: porch
     flags: WEARABLE MOVEABLE TAKEABLE
     contents:
+      - label: headlamp
+        name: a head lamp
+        abbrev: lamp
+        description: a head mountable electric lamp.
+        flags: MOVEABLE TAKEABLE WEARABLE SWITCHABLE
+        
       - label: sandwich
         base: food
         name: a vegemite sandwich

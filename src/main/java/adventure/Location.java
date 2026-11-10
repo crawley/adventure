@@ -79,6 +79,10 @@ public class Location extends Entity {
 	public void removeItem(Entity item) {
 	    items.remove(item);
 	}
+	
+    public boolean isDark() {
+        return (getFlags() & DARK) != 0;
+    }
 
     public static Location lookupLocation(String label) {
         Entity entity = Entity.lookup(label);

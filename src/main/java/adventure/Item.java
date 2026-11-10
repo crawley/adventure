@@ -20,8 +20,9 @@ public class Item extends Entity {
     public static final long WIELDABLE = 0x10L;
     public static final long OPENABLE = 0x20L;
     public static final long LOCKABLE = 0x40L;
+    public static final long SWITCHABLE = 0x80L;
     
-    public static final long HAS_STATE_FLAGS = LOCKABLE | OPENABLE;
+    public static final long HAS_STATE_FLAGS = LOCKABLE | OPENABLE | SWITCHABLE;
     
     
     @SuppressWarnings("serial")
@@ -34,6 +35,7 @@ public class Item extends Entity {
             put("EDIBLE", new FlagDescriptor (EDIBLE));
             put("OPENABLE", new FlagDescriptor (OPENABLE, "open", false));
             put("LOCKABLE", new FlagDescriptor (LOCKABLE, "locked", false));
+            put("SWITCHABLE", new FlagDescriptor (SWITCHABLE, "on", false));
         }
     };
     
@@ -95,6 +97,18 @@ public class Item extends Entity {
     
     public void setOpen(boolean open) {
         ((BooleanProperty) this.properties.lookup("open")).setValue(open);
+    }
+    
+    public boolean isSwitchable() {
+        return (getFlags() & SWITCHABLE) != 0;
+    }
+
+    public boolean isOn() {
+        return this.properties.lookup("on").isTrue();
+    }
+    
+    public void setOn(boolean on) {
+        ((BooleanProperty) this.properties.lookup("on")).setValue(on);
     }
     
     public boolean hasStateFlags() {
