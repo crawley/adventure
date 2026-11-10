@@ -630,8 +630,8 @@ items:
     name: a can of baked beans
     abbrev: can
     description: |
-      this is a can of baked beans.
-      It is only worth ...  a can of beans.
+      a can of baked beans.
+      It is only worth ... a can of beans.
     flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
 
@@ -640,7 +640,7 @@ items:
     name: a can of potted meat
     abbrev: can
     description: |
-      this is a can of SPAM(tm).
+      a can of SPAM(tm).
       The can's label shows a picture of a Viking chorus.
     flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
@@ -650,8 +650,8 @@ items:
     name: a can of spinach
     abbrev: can
     description: |
-       this is a can of spinach.
-       The label shows a picture of a sailor.
+       a can of premium grade spinach.
+       The can's label shows a picture of a muscular sailor.
     flags: MOVEABLE OPENABLE TAKEABLE EDIBLE
     location: pantry
     properties:
