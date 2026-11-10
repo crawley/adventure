@@ -210,8 +210,9 @@ locations:
     type: ROOM
     name: the basement
     description: |
-        the basement is dark.
+        the basement is damp and musty.
         The floor is uneven, and you cannot see the walls.
+    flags: DARK
         
 exits:
 

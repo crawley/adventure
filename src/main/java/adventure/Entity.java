@@ -11,6 +11,15 @@ import adventure.actions.Triggered.Verb;
 
 public abstract class Entity {
     
+    public record FlagDescriptor (
+            long flag, 
+            String property,
+            boolean initial) {
+        public FlagDescriptor(long flag) {
+            this(flag, null, false);
+        }
+    }
+    
     private final String label;
     
     // These can be changed by a trigger action ...
@@ -83,6 +92,20 @@ public abstract class Entity {
             base = base.getBase();
         }
     }
+    
+    protected final void addFlagProperties(
+            Map<String, FlagDescriptor> descriptors) {
+        for (FlagDescriptor desc: descriptors.values()) {
+            if (desc.property() != null && ((this.flags & desc.flag()) != 0)) {
+                if (this.properties.lookup(desc.property()) == null) {
+                    BooleanProperty prop = new BooleanProperty(
+                            desc.property(), desc.initial());
+                    this.properties.add(prop);
+                }
+            }
+        }
+    }
+
 
     public EntityList<?> getMemberOf() {
         return memberOf;
@@ -126,6 +149,16 @@ public abstract class Entity {
 
     protected void setFlags(long flags) {
         this.flags = flags;
+    }
+    
+    protected synchronized void setFlag(long flag, boolean yes) {
+        long flags = getFlags();
+        if (yes) {
+            flags |= flag;
+        } else {
+            flags &= ~flag;
+        }
+        setFlags(flags);
     }
 
     public PropertySet getProperties() {

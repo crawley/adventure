@@ -3,7 +3,9 @@ package adventure;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import adventure.actions.Triggered;
 
@@ -23,6 +25,17 @@ public class Location extends Entity {
             return preposition;
         }
     }
+    
+    public static final long DARK = 0x1L;
+    public static final long HAS_LIGHT = 0x2L;
+        
+    @SuppressWarnings("serial")
+    public static final Map<String, FlagDescriptor> LOCATION_FLAGS = new HashMap<>(){
+        {
+            put("DARK", new FlagDescriptor (DARK));
+            put("HAS_LIGHT", new FlagDescriptor (HAS_LIGHT, "light_on", false));
+        }
+    };
 	
 	private final List<Vista> vistas;
 	private final EntityList<Item> items;

@@ -23,14 +23,6 @@ public class Item extends Entity {
     
     public static final long HAS_STATE_FLAGS = LOCKABLE | OPENABLE;
     
-    public record FlagDescriptor (
-            long flag, 
-            String property,
-            boolean initial) {
-        public FlagDescriptor(long flag) {
-            this(flag, null, false);
-        }
-    }
     
     @SuppressWarnings("serial")
     public static final Map<String, FlagDescriptor> ITEM_FLAGS = new HashMap<>(){
@@ -50,16 +42,8 @@ public class Item extends Entity {
             List<Trigger> triggers, PropertySet properties) {
         super(label, name, abbrev, description, flags, base, triggers, properties);
         
-        // Add default and flag properties
-        for (FlagDescriptor desc: ITEM_FLAGS.values()) {
-            if (desc.property != null && ((flags & desc.flag) != 0)) {
-                if (this.properties.lookup(desc.property) == null) {
-                    BooleanProperty prop = new BooleanProperty(
-                            desc.property, desc.initial);
-                    this.properties.add(prop);
-                }
-            }
-        }
+        addFlagProperties(ITEM_FLAGS);
+
         if (this.properties.lookup("hidden") == null) {
             this.properties.add(new BooleanProperty("hidden", false));
         }
@@ -113,16 +97,6 @@ public class Item extends Entity {
         ((BooleanProperty) this.properties.lookup("open")).setValue(open);
     }
     
-    private synchronized void setFlag(long flag, boolean yes) {
-        long flags = getFlags();
-        if (yes) {
-            flags |= flag;
-        } else {
-            flags &= ~flag;
-        }
-        setFlags(flags);
-    }
-
     public boolean hasStateFlags() {
         return (getFlags() & HAS_STATE_FLAGS) != 0;
     }
@@ -255,13 +229,13 @@ public class Item extends Entity {
             item.destroy();
             break;
         case SET_FLAG:
-            Long flag = ITEM_FLAGS.get(action.getArg()).flag;
+            Long flag = ITEM_FLAGS.get(action.getArg()).flag();
             if (flag != null) {
                 item.setFlag(flag.longValue(), true);
             }
             break;
         case CLEAR_FLAG:
-            flag = ITEM_FLAGS.get(action.getArg()).flag;
+            flag = ITEM_FLAGS.get(action.getArg()).flag();
             if (flag != null) {
                 item.setFlag(flag.longValue(), false);
             }

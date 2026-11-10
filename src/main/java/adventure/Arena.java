@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 import org.yaml.snakeyaml.Yaml;
 
-import adventure.Item.FlagDescriptor;
+import adventure.Entity.FlagDescriptor;
 import adventure.Location.LocationType;
 import adventure.Template.Kind;
 import adventure.actions.Trigger;
@@ -163,12 +163,17 @@ public class Arena {
 			String name = getString(locData, "name");
             String abbrev = getOptString(locData, "abbrev");
             String description = getString(locData, "description");
-	        if (arena.allLocations.get(label) != null) {
+            long flags = parseFlags(
+                    getOptString(locData, "flags"), "location", 
+                    Location.LOCATION_FLAGS);
+            if (arena.allLocations.get(label) != null) {
 	            throw new ArenaException(
 	                    "location '" + label + "' already exists");
 	        }
-	        LocationType kind = LocationType.valueOf(getString(locData, "type"));
-	        Location location = new Location(kind, label, name, abbrev, description, 0L);
+	        LocationType kind = 
+	                LocationType.valueOf(getString(locData, "type"));
+	        Location location = 
+	                new Location(kind, label, name, abbrev, description, flags);
 	        
 	        List<Map<String, Object>> wallData = 
 	                (List<Map<String, Object>>) locData.get("walls");
@@ -326,7 +331,9 @@ public class Arena {
     @SuppressWarnings("unchecked")
     private Item parseItem(Object data) {
         Map<String, Object> itemData = (Map<String, Object>) data;
-        long flags = parseItemFlags(getOptString(itemData, "flags"));
+        long flags = parseFlags(
+                getOptString(itemData, "flags"), "item", 
+                Item.ITEM_FLAGS);
         List<Trigger> triggers = parseTriggers(itemData);
         PropertySet props = parseProperties(itemData);
         Template base = parseBaseReference(itemData);
@@ -497,14 +504,16 @@ public class Arena {
                 .map(Event::valueOf).collect(Collectors.toList());
     }
 
-    private long parseItemFlags(String flagString) {
+    private static long parseFlags(String flagString, String kind,
+            Map<String, FlagDescriptor> descriptors) {
         long flags = 0L;
         if (flagString != null) {
             String[] words = flagString.split("\\s+");
             for (String word: words) {
-                FlagDescriptor flag = Item.ITEM_FLAGS.get(word.toUpperCase());
+                FlagDescriptor flag = descriptors.get(word.toUpperCase());
                 if (flag == null) {
-                    throw new ArenaException("Unknown flag '" + word + "'");
+                    throw new ArenaException(
+                            "Unknown " + kind + " flag '" + word + "'");
                 }
                 flags |= flag.flag();
             }
