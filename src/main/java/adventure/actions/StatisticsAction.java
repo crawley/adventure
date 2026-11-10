@@ -11,6 +11,7 @@ import adventure.IntegerProperty;
 import adventure.Person;
 import adventure.Property;
 import adventure.PropertySet;
+import adventure.StringProperty;
 
 public class StatisticsAction implements Action {
 
@@ -65,8 +66,10 @@ public class StatisticsAction implements Action {
 	                        (prop.isTrue() ? "TRUE" : "FALSE"));
 	            } else if (prop instanceof IntegerProperty) {
 	                System.out.println(prop.intValue());
-	            } else if (prop instanceof FloatProperty) {
-	                System.out.println(prop.floatValue());
+                } else if (prop instanceof FloatProperty) {
+                    System.out.println(prop.floatValue());
+                } else if (prop instanceof StringProperty) {
+                    System.out.println(prop.stringValue());
 	            } else {
 	                System.out.println("???");
 	            }

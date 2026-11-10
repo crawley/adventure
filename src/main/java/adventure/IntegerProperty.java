@@ -25,6 +25,11 @@ public class IntegerProperty extends NumberProperty {
     public double floatValue() {
         return getValue();
     }
+    
+    @Override
+    public String stringValue() {
+        return Integer.toString(getValue());
+    }
 
     public synchronized int getValue() {
         return value;

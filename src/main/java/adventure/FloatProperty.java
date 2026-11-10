@@ -25,6 +25,11 @@ public class FloatProperty extends NumberProperty {
     public double floatValue() {
         return getValue();
     }
+    
+    @Override
+    public String stringValue() {
+        return Double.toString(getValue());
+    }
 
     @Override
     public boolean isTrue() {

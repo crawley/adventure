@@ -19,6 +19,11 @@ implements Cloneable {
     public double floatValue() {
         return value ? 1.0 : 0.0;
     }
+    
+    @Override
+    public String stringValue() {
+        return value ? "Y" : "N";
+    }
 
     @Override
     public boolean isTrue() {

@@ -291,6 +291,9 @@ public class Arena {
                 if (type.equals("boolean")) {
                     prop = new BooleanProperty(name, 
                             getBoolean(propData, "initial"));
+                } else if (type.equals("string")) {
+                    prop = new StringProperty(name, 
+                            getString(propData, "initial"));
                 } else if (type.equals("int")) {
                     prop = new IntegerProperty(name, 
                             getInteger(propData, "initial"), 
