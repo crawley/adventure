@@ -17,6 +17,7 @@ public abstract class Entity {
     private String description;
     private String name;
     private String abbrev;
+    private long flags;
 
     protected final Template base;
     protected final List<Trigger> triggers;
@@ -34,17 +35,19 @@ public abstract class Entity {
      * @param name a name for the entity
      * @param abbrev a short tag for use in commands.  If null, default to the label.
      * @param description a description for the entity.
+     * @param flags
      * @param triggers 
      * @param properties the entity's initial property set
      * @throws EntityException if the label is non-unique.
      */
     public Entity(String label, String name, String abbrev, String description, 
-            Template base, List<Trigger> triggers, PropertySet properties) {
+            long flags, Template base, List<Trigger> triggers, PropertySet properties) {
         super();
         this.label = label;
         this.name = name;
         this.abbrev = abbrev == null ? label : abbrev;
         this.description = description;
+        this.flags = flags;
         this.base = base;
         this.triggers = (triggers == null) ? new ArrayList<>() : triggers;
         this.properties = (properties == null) ? new PropertySet() : properties;
@@ -117,6 +120,14 @@ public abstract class Entity {
         return description;
     }
     
+    protected long getFlags() {
+        return flags;
+    }
+
+    protected void setFlags(long flags) {
+        this.flags = flags;
+    }
+
     public PropertySet getProperties() {
         return properties;
     }

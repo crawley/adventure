@@ -15,9 +15,9 @@ public class Person extends Actor {
     private final int NOS_HANDS = 2;
         
 	public Person(Kind kind, String label, String name, String abbrev,
-	        String description, Location location, Template base,
+	        String description, long flags, Location location, Template base,
 	        List<Trigger> triggers, PropertySet properties) {
-		super(kind, label, name, abbrev, description, location, 
+		super(kind, label, name, abbrev, description, flags, location, 
 		        base, triggers, properties);
 	}
 

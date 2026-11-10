@@ -101,10 +101,10 @@ public class Arena {
 	    Actor.Kind actorKind = Actor.Kind.valueOf(kind);
 	    Actor actor = switch (actorKind) {
 	    case PLAYER, NPC -> new Person(
-	            actorKind, label, name, abbrev, description, loc, 
+	            actorKind, label, name, abbrev, description, 0L, loc, 
 	            base, triggers, props);
 	    case PET -> new Pet(
-	            actorKind, label, name, abbrev, description, loc, 
+	            actorKind, label, name, abbrev, description, 0L, loc, 
 	            base, triggers, props);
 	    default -> null;
 	    };
@@ -168,7 +168,7 @@ public class Arena {
 	                    "location '" + label + "' already exists");
 	        }
 	        LocationType kind = LocationType.valueOf(getString(locData, "type"));
-	        Location location = new Location(kind, label, name, abbrev, description);
+	        Location location = new Location(kind, label, name, abbrev, description, 0L);
 	        
 	        List<Map<String, Object>> wallData = 
 	                (List<Map<String, Object>>) locData.get("walls");

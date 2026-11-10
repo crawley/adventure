@@ -29,8 +29,8 @@ public class Location extends Entity {
 	private final LocationType type;
 
     public Location(LocationType type, String label, String name, 
-            String abbrev, String description) {
-		super(label, name, abbrev, description, null, null, null);
+            String abbrev, String description, long flags) {
+		super(label, name, abbrev, description, flags, null, null, null);
 		this.type = type;
 		this.vistas = new ArrayList<>();
 		this.items = new EntityList<>("here");

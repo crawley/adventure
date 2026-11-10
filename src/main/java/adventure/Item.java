@@ -12,7 +12,6 @@ import adventure.actions.VerbResult;
 import adventure.actions.VerbResult.Outcome;
 
 public class Item extends Entity {
-    private long flags;
     
     public static final long TAKEABLE = 0x1L;
     public static final long MOVEABLE = 0x2L;
@@ -49,8 +48,7 @@ public class Item extends Entity {
     public Item(String label, String name, String abbrev, 
             String description, long flags, Template base,
             List<Trigger> triggers, PropertySet properties) {
-        super(label, name, abbrev, description, base, triggers, properties);
-        this.flags = flags;
+        super(label, name, abbrev, description, flags, base, triggers, properties);
         
         // Add default and flag properties
         for (FlagDescriptor desc: ITEM_FLAGS.values()) {
@@ -67,24 +65,20 @@ public class Item extends Entity {
         }
     }
 
-    public long getFlags() {
-        return flags;
-    }
-
     public boolean isTakeable() {
-        return (flags & TAKEABLE) != 0;
+        return (getFlags() & TAKEABLE) != 0;
     }
 
     public boolean isMoveable() {
-        return (flags & MOVEABLE) != 0;
+        return (getFlags() & MOVEABLE) != 0;
     }
     
     public boolean isEdible() {
-        return (flags & EDIBLE) != 0;
+        return (getFlags() & EDIBLE) != 0;
     }
 
     public boolean isWearable() {
-        return (flags & WEARABLE) != 0;
+        return (getFlags() & WEARABLE) != 0;
     }
     
     public boolean isHidden() {
@@ -96,7 +90,7 @@ public class Item extends Entity {
     }
     
     public boolean isLockable() {
-        return (flags & LOCKABLE) != 0;
+        return (getFlags() & LOCKABLE) != 0;
     }
     
     public boolean isLocked() {
@@ -108,7 +102,7 @@ public class Item extends Entity {
     }
     
     public boolean isOpenable() {
-        return (flags & OPENABLE) != 0;
+        return (getFlags() & OPENABLE) != 0;
     }
 
     public boolean isOpen() {
@@ -119,16 +113,18 @@ public class Item extends Entity {
         ((BooleanProperty) this.properties.lookup("open")).setValue(open);
     }
     
-    private void setFlag(long flag, boolean yes) {
+    private synchronized void setFlag(long flag, boolean yes) {
+        long flags = getFlags();
         if (yes) {
             flags |= flag;
         } else {
             flags &= ~flag;
         }
+        setFlags(flags);
     }
 
     public boolean hasStateFlags() {
-        return (flags & HAS_STATE_FLAGS) != 0;
+        return (getFlags() & HAS_STATE_FLAGS) != 0;
     }
     
     public VerbResult moveItem() {
