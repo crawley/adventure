@@ -10,7 +10,7 @@ public class VerbResult {
     
     public enum Outcome {
         SUCCESS, NONE, NOT_FOUND, NOT_UNIQUE, NOT_APPLICABLE, 
-        ALREADY_DONE, NOT_POSSIBLE, NOT_ON_SELF
+        ALREADY_DONE, NOT_POSSIBLE, NOT_ON_SELF, CANNOT_SEE,
     }
 
     private final Outcome outcome;

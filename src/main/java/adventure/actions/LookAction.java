@@ -17,7 +17,7 @@ public class LookAction implements Action {
 	@Override
 	public int perform(Person actor, String[] args) {
         Location here = actor.getLocation();
-        if (here.isDark() && !actor.hasWorkingLight()) {
+        if (!actor.canSee()) {
             System.out.println("It is too dark to see anything here.");
             return 0;
         }
@@ -171,14 +171,17 @@ public class LookAction implements Action {
                         desc = portal.getName();
                     }
                 } else {
-                    desc = exit.getTo().getName();
+                    desc = "You see " + Grammar.definiteName(exit.getTo());
+                    if (exit.getTo().isDark()) {
+                        desc += ".  It is dark.";
+                    }
                 }
             }
         }
         System.out.print(desc);
         if (portal != null && portal.isOpenable()) {
             System.out.print(". The " + portal.getAbbrev() 
-                    + (portal.isOpen() ? " is open" : " is closed"));
+                    + (portal.isOpen() ? " is open" : " is closed."));
         }
         System.out.println();
     }

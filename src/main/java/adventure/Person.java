@@ -123,7 +123,7 @@ public class Person extends Actor {
 
     public void showLocationAndActors() {
         Location here = getLocation();
-        if (here.isDark() && !hasWorkingLight()) {
+        if (!canSee()) {
             System.out.println("It is too dark to see where you are.");
             if (here.actors().stream().anyMatch((a) -> a != this)) {
                 System.out.println("You sense something else is here.");

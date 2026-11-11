@@ -16,26 +16,39 @@ public class GoAction implements Action {
 
 	@Override
 	public int perform(Person actor, String[] args) {
+	    Location here = actor.getLocation();
 	    for (Exit exit: actor.getLocation().getExits()) {
 	        if (exit.matchesDirection(direction)) {
 	            Item portal = exit.getPortal();
 	            if (portal != null && !portal.isOpen()) {
-	                System.out.print("You cannot go " + direction.getName() + ": ");
-	                if (portal.isOpenable()) {
-	                    System.out.println(portal.getName() + " is closed");
+	                if (!actor.canSee()) {
+	                    System.out.println("You bump into something.");
 	                } else {
-	                    System.out.println("your way is blocked");
+	                    System.out.print("You cannot go " + direction.getName() + ": ");
+	                    if (portal.isOpenable()) {
+	                        System.out.println("the " + portal.getAbbrev() + " is closed");
+	                    } else {
+	                        System.out.println("your way is blocked");
+	                    }
 	                }
 	            } else {
 	                Location loc = exit.getTo();
 	                actor.setLocation(loc);
-	                System.out.println("You are " + loc.getType().getPreposition() 
-	                        + " " + loc.getName());
+	                if (loc.isDark() && !actor.hasWorkingLight()) {
+	                    System.out.println("It is too dark to see where you are.");
+	                } else {
+	                    System.out.println("You are " + loc.getType().getPreposition() 
+	                            + " " + loc.getName() + ".");
+	                }
 	            }
 				return 1;
 			}
 		}
-		System.out.println("You can't go " + direction.getName());
+	    if (here.isDark() && !actor.hasWorkingLight()) {
+	        System.out.println("You bump into something.");
+	    } else {
+		    System.out.println("You can't go " + direction.getName());
+	    }
 		return 0;
 	}
 	

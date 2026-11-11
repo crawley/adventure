@@ -52,6 +52,10 @@ public abstract class Actor extends Entity {
 	    }
 	    return true;
 	}
+	
+	public boolean canSee() {
+	    return !location.isDark() || hasWorkingLight();
+	}
     
 	protected boolean eat(Item food) {
         NumberProperty calories = food.getNumberProperty("calories");

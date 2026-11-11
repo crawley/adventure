@@ -2,6 +2,7 @@ package adventure.actions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import adventure.Actor;
@@ -18,23 +19,32 @@ public abstract class Verb implements Action {
         ACTORS_HERE, ACTORS_ANYWHERE;
         
         public List<Item> items(Person actor) {
-            return switch (this) {
-            case ITEMS_WORN -> actor.getItemsWorn();
-            case ITEMS_HELD -> actor.getItemsInHand();
-            case ITEMS_ON_FLOOR -> actor.getLocation().getItems();
-            case ITEMS_ON_WALLS -> actor.getLocation().wallItems();
-            case PORTALS -> actor.getLocation().portalItems();
-            default ->
-                new ArrayList<Item>();
-            };
+            switch (this) {
+            case ITEMS_WORN: 
+                return actor.getItemsWorn();
+            case ITEMS_HELD: 
+                return actor.getItemsInHand();
+            case ITEMS_ON_FLOOR: 
+                return actor.canSee() ? 
+                    actor.getLocation().getItems() : Collections.emptyList();
+            case ITEMS_ON_WALLS: 
+                return actor.canSee() ? 
+                    actor.getLocation().wallItems() : Collections.emptyList();
+            case PORTALS: 
+                return actor.canSee() ? 
+                    actor.getLocation().portalItems() : Collections.emptyList();
+            default: 
+                return Collections.emptyList();
+            }
         }
         
         public List<Actor> actors(Actor actor) {
-            return switch (this) {
-            case ACTORS_HERE -> actor.getLocation().actors();
-            default ->
-                new ArrayList<Actor>();
-            };
+            switch (this) {
+            case ACTORS_HERE:
+                return actor.getLocation().actors();
+            default:
+                return Collections.emptyList();
+            }
         }
     }
 
@@ -87,7 +97,7 @@ public abstract class Verb implements Action {
     protected VerbResult applyHere(Person actor, String word, String extra,
             Context ... contexts) {
         List<Item> items = resolve(word, actor, contexts);
-        VerbResult res = checkUnique(word, items);
+        VerbResult res = checkUnique(word, actor, items);
         if (res != null) {
             return res;
         } else if (extra == null) {
@@ -112,7 +122,7 @@ public abstract class Verb implements Action {
         List<Actor> actors = findActor(actor, word);
         VerbResult res = checkActor(actor, word, actors);
         List<Item> items = resolve(word2, actor, contexts);
-        res = checkUnique(word2, items);
+        res = checkUnique(word2, actor, items);
         if (res != null) {
             return res;
         } else {
@@ -121,7 +131,9 @@ public abstract class Verb implements Action {
     }
 
     private VerbResult checkActor(Person actor, String word, List<Actor> actors) {
-        if (actors.isEmpty()) {
+        if (actor.canSee()) {
+            return new VerbResult(VerbResult.Outcome.CANNOT_SEE);
+        } else if (actors.isEmpty()) {
             return new VerbResult(VerbResult.Outcome.NOT_FOUND, word);
         } else if (actors.size() > 1) {
             return new VerbResult(VerbResult.Outcome.NOT_UNIQUE, word, actors);
@@ -162,17 +174,17 @@ public abstract class Verb implements Action {
         VerbResult res;
         if (fromContainer) {
             item2s = resolve(word2, actor, contexts);
-            res = checkUnique(word2, item2s);
+            res = checkUnique(word2, actor, item2s);
             if (res == null) {
                 items = resolve(word, actor, item2s);
-                res = checkUnique(word, items);
+                res = checkUnique(word, actor, items);
             }
         } else {
             items = resolve(word, actor, contexts);
-            res = checkUnique(word, items);
+            res = checkUnique(word, actor, items);
             if (res == null) {
                 item2s = resolve(word2, actor, Context.ITEMS_HELD);
-                res = checkUnique(word2, item2s);
+                res = checkUnique(word2, actor, item2s);
             }
         }
         if (res != null) {
@@ -182,9 +194,13 @@ public abstract class Verb implements Action {
         }
     }
 
-    private VerbResult checkUnique(String word, List<Item> items) {
+    private VerbResult checkUnique(String word, Actor actor, List<Item> items) {
         if (items.isEmpty()) {
-            return new VerbResult(VerbResult.Outcome.NOT_FOUND, word);
+            if (actor.canSee()) {
+                return new VerbResult(VerbResult.Outcome.NOT_FOUND, word);
+            } else {
+                return new VerbResult(VerbResult.Outcome.CANNOT_SEE);
+            }
         } else if (items.size() > 1) {
             return new VerbResult(VerbResult.Outcome.NOT_UNIQUE, word, items);
         } else {
@@ -250,15 +266,14 @@ public abstract class Verb implements Action {
             Context ...contexts) {
         if (args.length == 0) {
             System.out.println("What do you want to " + verb + "?");
-            return 0;
         } else if (args.length > 1) {
             System.out.println("You can only " + 
                     verb + " one thing at a time");
-            return 0;
         } else {
             return processVerbResult(actor, 
                     applyHere(actor, args[0], null, contexts));
         }
+        return 0;
     }
     
     protected int performOnItemArg(Person actor, String[] args, 
@@ -273,14 +288,13 @@ public abstract class Verb implements Action {
     protected int performOnActor(Person actor, String[] args) {
         if (args.length == 0) {
             System.out.println("Who or what do you want to " + verb + "?");
-            return 0;
         } else if (args.length > 1) {
             System.out.println(
                     "You can only " + verb + " one being at a time");
-            return 0;
         } else {
             return processVerbResult(actor, applyActor(actor, args[0]));
         }
+        return 0;
     }
 
     protected int performOnItemWith(Person actor, String[] args,
@@ -292,11 +306,11 @@ public abstract class Verb implements Action {
             String label2 = null;
             if (args.length == 1) {
                 System.out.println("What do you want to " + 
-                        verb + " " + args[0] + " " + preposition +"?");
+                        verb + " " + args[0] + " " + preposition + "?");
             } else if (args[1].equals(preposition)) {
                 if (args.length == 2) {
                     System.out.println(verb + " " + args[0] + " " 
-                            + preposition + " what?");
+                            + preposition + " what?"); 
                 } else {
                     label2 = args[2];
                 }
@@ -332,8 +346,10 @@ public abstract class Verb implements Action {
             } else {
                 label2 = args[1];
             }
-            VerbResult res = applyActorWith(actor, label, label2, contexts);
-            return processVerbResult(actor, res);
+            if (label2 != null) {
+                VerbResult res = applyActorWith(actor, label, label2, contexts);
+                return processVerbResult(actor, res);
+            }
         }
         return 0;
     }
@@ -374,6 +390,9 @@ public abstract class Verb implements Action {
             break;
         case NOT_ON_SELF:
             System.out.println("You cannot " + verb + " yourself");
+            break;
+        case CANNOT_SEE:
+            System.out.println("You cannot do that in the dark.");
             break;
         default:
             break;
