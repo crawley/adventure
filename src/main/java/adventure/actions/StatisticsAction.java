@@ -62,8 +62,7 @@ public class StatisticsAction implements Action {
 	            Property prop = props.lookup(name);
 	            System.out.print("  " + name + " = ");
 	            if (prop instanceof BooleanProperty) {
-	                System.out.println( 
-	                        (prop.isTrue() ? "TRUE" : "FALSE"));
+	                System.out.println((prop.isTrue() ? "TRUE" : "FALSE"));
 	            } else if (prop instanceof IntegerProperty) {
 	                System.out.println(prop.intValue());
                 } else if (prop instanceof FloatProperty) {

@@ -87,6 +87,6 @@ public class IntegerProperty extends NumberProperty {
     
     @Override
     public Property copy() {
-        return new FloatProperty(getName(), value, min, max);
+        return new IntegerProperty(getName(), value, min, max);
     }
 }

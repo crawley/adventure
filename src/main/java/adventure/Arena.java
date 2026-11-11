@@ -287,27 +287,23 @@ public class Arena {
                 Map<String, Object> propData = (Map<String, Object>) obj;
                 String name = getString(propData, "name");
                 String type = getString(propData, "type");
-                Property prop;
-                if (type.equals("boolean")) {
-                    prop = new BooleanProperty(name, 
+                Property prop = switch (type) {
+                case "boolean" -> new BooleanProperty(name, 
                             getBoolean(propData, "initial"));
-                } else if (type.equals("string")) {
-                    prop = new StringProperty(name, 
+                case "string" -> new StringProperty(name, 
                             getString(propData, "initial"));
-                } else if (type.equals("int")) {
-                    prop = new IntegerProperty(name, 
+                case "int" -> new IntegerProperty(name, 
                             getInteger(propData, "initial"), 
                             getOptInteger(propData, "min", Integer.MIN_VALUE), 
                             getOptInteger(propData, "max", Integer.MAX_VALUE));
-                } else if (type.equals("float")) {
-                    prop = new FloatProperty(name, 
+                case "float" -> new FloatProperty(name, 
                             getFloat(propData, "initial"), 
                             getOptFloat(propData, "min", Float.MIN_VALUE), 
                             getOptFloat(propData, "max", Float.MAX_VALUE));
-                } else {
+                default ->
                     throw new ArenaException(
                             "property type '" + type + "' not recognized");
-                }
+                };
                 props.add(prop);
             }
         }
