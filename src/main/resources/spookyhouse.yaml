@@ -380,6 +380,9 @@ actor_templates:
         initial: 12
         min: 6
         max: 18
+      - name: light
+        type: string
+        initial: ""
  
 creatures:
   - label: cat
@@ -454,6 +457,18 @@ items:
         abbrev: lamp
         description: a head mountable electric lamp.
         flags: MOVEABLE TAKEABLE WEARABLE SWITCHABLE
+        triggers:
+          - events: WORN
+            actions:
+              - verb: SET_OTHER_PROPERTY
+                arg: light
+                arg2: headlamp
+          - events: UNWORN
+            actions:
+              - verb: SET_OTHER_PROPERTY
+                arg: light
+                arg2: ""
+
         
       - label: sandwich
         base: food

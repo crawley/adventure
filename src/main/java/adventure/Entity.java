@@ -199,7 +199,7 @@ public abstract class Entity {
                     "Action arg value ('" + arg + "') not a boolean");
         }
     }
-    
+        
     protected Property getProperty(String name) {
         Property prop = properties.lookup(name);
         if (prop == null) {
@@ -233,7 +233,7 @@ public abstract class Entity {
         trigger(event, null);
     }
 
-    public void trigger(Trigger.Event event, Entity target) {
+    public void trigger(Trigger.Event event, Entity other) {
         boolean override = false;
         List<Trigger> triggers = this.triggers;
         Template base = this.base;
@@ -243,7 +243,7 @@ public abstract class Entity {
                     continue;
                 }
                 for (Triggered action: trigger.getActions()) {
-                    if (!doTrigger(action, target)) { 
+                    if (!doTrigger(action, other)) { 
                         break;
                     }
                 }
@@ -261,7 +261,7 @@ public abstract class Entity {
         }
     }
     
-    protected boolean doTrigger(Triggered action, Entity target) {
+    protected boolean doTrigger(Triggered action, Entity other) {
         Verb verb = action.getVerb();
         switch (verb) {
         case INCREMENT:
@@ -274,11 +274,7 @@ public abstract class Entity {
             break;
         case SET_PROPERTY:
             Property prop = getProperty(action.getArg());
-            if (prop instanceof NumberProperty) {
-                ((NumberProperty) prop).set(getNumericArg2(action));
-            } else {
-                ((BooleanProperty) prop).set(getBooleanArg2(action));
-            }
+            doSetProperty(action, prop);
             break;
         case TEST_MIN:
             return getNumberProperty(action.getArg()).testMin();
@@ -286,10 +282,10 @@ public abstract class Entity {
             return getNumberProperty(action.getArg()).testMax();
         case TEST_RELATED:
             return Arena.getInstance().getAssociations()
-                    .isRelated(action.getArg(), this, target);
+                    .isRelated(action.getArg(), this, other);
         case TEST_UNRELATED:
             return !(Arena.getInstance().getAssociations()
-                    .isRelated(action.getArg(), this, target));
+                    .isRelated(action.getArg(), this, other));
         case SET_DESCRIPTION:
             this.description = action.getArg();
             break;
@@ -299,20 +295,24 @@ public abstract class Entity {
         case SET_ABBREV:
             this.abbrev = action.getArg();
             break;
-        case SET_TARGET_DESCRIPTION:
-            if (target != null) {
-                target.description = action.getArg();
+        case SET_OTHER_DESCRIPTION:
+            if (other != null) {
+                other.description = action.getArg();
             }
             break;
-        case SET_TARGET_NAME:
-            if (target != null) {
-                target.name = action.getArg();
+        case SET_OTHER_NAME:
+            if (other != null) {
+                other.name = action.getArg();
             }
             break;
-        case SET_TARGET_ABBREV:
-            if (target != null) {
-                target.abbrev = action.getArg();
+        case SET_OTHER_ABBREV:
+            if (other != null) {
+                other.abbrev = action.getArg();
             }
+            break;
+        case SET_OTHER_PROPERTY:
+            prop = other.properties.lookup(action.getArg());
+            doSetProperty(action, prop);
             break;
         case MESSAGE:
             if (action.trigger() && action.getMessage() != null) {
@@ -324,6 +324,18 @@ public abstract class Entity {
                     "Verb '" + verb + "' not implemented");
         }
         return true;
+    }
+
+    private void doSetProperty(Triggered action, Property prop) {
+        if (prop instanceof NumberProperty) {
+            ((NumberProperty) prop).set(getNumericArg2(action));
+        } else if (prop instanceof StringProperty) {
+            ((StringProperty) prop).set(action.getArg2());
+        } else if (prop instanceof BooleanProperty) {
+            ((BooleanProperty) prop).set(getBooleanArg2(action));
+        } else {
+            throw new UnsupportedOperationException("set property for " + prop.getClass());
+        }
     }
 
     public void destroy() {

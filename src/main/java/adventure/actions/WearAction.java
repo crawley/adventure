@@ -28,7 +28,8 @@ public class WearAction extends Verb {
     
     @Override
     protected void onSuccess(Person actor, Entity item, Entity unused) {
-        System.out.println("You are now " + getAdjective() + " " + item.getName());
-        item.trigger(Event.WORN);
+        System.out.println("You are now " + getAdjective() + " " 
+                + Grammar.definiteName(item));
+        item.trigger(Event.WORN, actor);
     }
 }

@@ -19,7 +19,8 @@ public class UnlockAction extends Verb {
     
     @Override
     protected void onSuccess(Person actor, Entity item, Entity unused) {
-        System.out.println("You " + getParticiple() + " " + item.getName());
+        System.out.println("You " + getParticiple() + " " 
+                + Grammar.definiteName(item));
         item.trigger(Event.UNLOCKED);
     }
     

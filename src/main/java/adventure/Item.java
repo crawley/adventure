@@ -195,7 +195,20 @@ public class Item extends Entity {
         }
     }
     
-    protected boolean doTrigger(Triggered action, Entity target) {
+    public VerbResult switchItem(String arg) {
+        if (!this.isSwitchable()) {
+            return new VerbResult(Outcome.NOT_APPLICABLE, this);
+        } 
+        boolean on = arg.equals("on");
+        if (this.isOn() == on) {
+            return new VerbResult(Outcome.ALREADY_DONE, this);
+        } else {
+            this.setOn(on);
+            return new VerbResult(1, this);
+        }
+    }
+    
+    protected boolean doTrigger(Triggered action, Entity other) {
         Verb verb = action.getVerb();
         Item item = lookupItem(action.getTarget());
         if (item == null) {
@@ -255,7 +268,7 @@ public class Item extends Entity {
             }
             break;
         default:
-            return super.doTrigger(action, target);
+            return super.doTrigger(action, other);
         }
         return true;
     }

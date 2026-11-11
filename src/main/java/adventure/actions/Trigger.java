@@ -9,7 +9,7 @@ public class Trigger {
         MOVED, SEARCHED, OPENED, CLOSED, DROPPED, 
         WORN, UNWORN, TAKEN, LOCKED, UNLOCKED, 
         ADDED, REMOVED, CONSUMED, 
-        PETTED, ATE, REFUSED
+        PETTED, ATE, REFUSED, SWITCHED
     }
     
     private final List<Event> events;

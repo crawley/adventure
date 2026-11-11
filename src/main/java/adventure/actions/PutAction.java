@@ -21,7 +21,8 @@ public class PutAction extends Verb {
     @Override
     protected void onSuccess(Person actor, Entity item, Entity item2) {
         System.out.println("You " + getParticiple() + " " 
-                + item.getName() + " into " + item2.getName());
+                + Grammar.definiteName(item) + " into " + " " 
+                + Grammar.definiteName(item2));
         item.trigger(Event.ADDED);
     }
     

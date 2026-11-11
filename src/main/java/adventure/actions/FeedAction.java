@@ -18,7 +18,8 @@ public class FeedAction extends Verb {
     
     @Override
     protected void onSuccess(Person actor, Entity creature, Entity food) {
-        System.out.println("You " + getParticiple() + " " + creature.getName());
+        System.out.println("You " + getParticiple() + " " 
+                + Grammar.definiteName(creature));
     }
     
     @Override

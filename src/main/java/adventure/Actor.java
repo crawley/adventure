@@ -34,6 +34,24 @@ public abstract class Actor extends Entity {
 	public void setLocation(Location location) {
 		this.location = location;
 	}
+	
+	public boolean hasWorkingLight() {
+	    StringProperty prop = (StringProperty) properties.lookup("light");
+	    if (prop == null)
+	        return false;
+	    String name = prop.getValue().trim();
+	    if (name.isEmpty()) {
+	        return false;
+	    }
+	    Item item = Item.lookupItem(name);
+	    if (item.properties.lookup("light") == null) {
+	        return false;
+	    }
+	    if (item.isSwitchable() && !item.isOn()) {
+	        return false;
+	    }
+	    return true;
+	}
     
 	protected boolean eat(Item food) {
         NumberProperty calories = food.getNumberProperty("calories");
@@ -67,7 +85,7 @@ public abstract class Actor extends Entity {
 	}
     
     @Override
-    protected boolean doTrigger(Triggered action, Entity target) {
+    protected boolean doTrigger(Triggered action, Entity other) {
         switch (action.getVerb()) {
         case THINK:
             if (this.getLabel().equals("self") && action.trigger()) {
@@ -85,7 +103,7 @@ public abstract class Actor extends Entity {
             }
             break;
         default:
-            return super.doTrigger(action, target);
+            return super.doTrigger(action, other);
         }
         return true;
     }

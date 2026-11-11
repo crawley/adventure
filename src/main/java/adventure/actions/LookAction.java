@@ -17,7 +17,7 @@ public class LookAction implements Action {
 	@Override
 	public int perform(Person actor, String[] args) {
         Location here = actor.getLocation();
-        if (here.isDark()) {
+        if (here.isDark() && !actor.hasWorkingLight()) {
             System.out.println("It is too dark to see anything here.");
             return 0;
         }

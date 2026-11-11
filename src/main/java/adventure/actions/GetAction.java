@@ -22,7 +22,8 @@ public class GetAction extends Verb {
     @Override
     protected void onSuccess(Person actor, Entity item, Entity entity) {
         System.out.println("You " + getParticiple() + " " 
-                + item.getName() + " from " + entity.getName());
+                + Grammar.definiteName(item) + " from " 
+                + Grammar.definiteName(entity));
         item.trigger(Event.REMOVED);
         item.trigger(Event.TAKEN);
     }

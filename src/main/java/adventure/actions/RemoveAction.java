@@ -28,7 +28,8 @@ public class RemoveAction extends Verb {
     
     @Override
     protected void onSuccess(Person actor, Entity item, Entity unused) {
-        System.out.println("You " + getParticiple() + " " + item.getName());
-        item.trigger(Event.UNWORN);
+        System.out.println("You " + getParticiple() + " " 
+                + Grammar.definiteName(item));
+        item.trigger(Event.UNWORN, actor);
     }
 }

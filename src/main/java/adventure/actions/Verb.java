@@ -57,6 +57,12 @@ public abstract class Verb implements Action {
         throw new UnsupportedOperationException(
                 "applyWith not supported for " + this.getClass());
     }
+    
+
+    protected VerbResult applyArg(Person actor, Item item, String arg) {
+        throw new UnsupportedOperationException(
+                "applyArg not supported for " + this.getClass());
+    }
 
     protected VerbResult applyActor(Person actor, Actor target) {
         throw new UnsupportedOperationException(
@@ -78,14 +84,16 @@ public abstract class Verb implements Action {
      * @param contexts resolve word in these contexts
      * @return the VerbResult that gives the outcome, etcetera.
      */
-    protected VerbResult applyHere(Person actor, String word, 
+    protected VerbResult applyHere(Person actor, String word, String extra,
             Context ... contexts) {
         List<Item> items = resolve(word, actor, contexts);
         VerbResult res = checkUnique(word, items);
         if (res != null) {
             return res;
-        } else {
+        } else if (extra == null) {
             return apply(actor, items.get(0));
+        } else {
+            return applyArg(actor, items.get(0), extra);
         }
     }
     
@@ -248,8 +256,18 @@ public abstract class Verb implements Action {
                     verb + " one thing at a time");
             return 0;
         } else {
-            return processVerbResult(actor, applyHere(actor, args[0], contexts));
+            return processVerbResult(actor, 
+                    applyHere(actor, args[0], null, contexts));
         }
+    }
+    
+    protected int performOnItemArg(Person actor, String[] args, 
+            Context ...contexts) {
+        if (args.length != 2) {
+            throw new AssertionError("args.length not 2");
+        }
+        return processVerbResult(actor, 
+                applyHere(actor, args[0], args[1], contexts));
     }
     
     protected int performOnActor(Person actor, String[] args) {
@@ -377,6 +395,5 @@ public abstract class Verb implements Action {
 
     protected void onSuccess(Person actor, Entity entity, Entity entity2) {
         // do nothing
-    }
-    
+    }    
 }
