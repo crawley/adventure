@@ -21,6 +21,7 @@ public class Item extends Entity {
     public static final long OPENABLE = 0x20L;
     public static final long LOCKABLE = 0x40L;
     public static final long SWITCHABLE = 0x80L;
+    public static final long LIGHT = 0x100L;
     
     public static final long HAS_STATE_FLAGS = LOCKABLE | OPENABLE | SWITCHABLE;
     
@@ -36,6 +37,7 @@ public class Item extends Entity {
             put("OPENABLE", new FlagDescriptor (OPENABLE, "open", false));
             put("LOCKABLE", new FlagDescriptor (LOCKABLE, "locked", false));
             put("SWITCHABLE", new FlagDescriptor (SWITCHABLE, "on", false));
+            put("LIGHT", new FlagDescriptor (LIGHT));
         }
     };
     
@@ -65,6 +67,10 @@ public class Item extends Entity {
 
     public boolean isWearable() {
         return (getFlags() & WEARABLE) != 0;
+    }
+    
+    public boolean isaLight() {
+        return (getFlags() & LIGHT) != 0;
     }
     
     public boolean isHidden() {

@@ -450,7 +450,7 @@ items:
     name: your knapsack
     description: a nondescript grey canvas knapsack.
     location: porch
-    flags: WEARABLE MOVEABLE TAKEABLE
+    flags: WEARABLE MOVEABLE TAKEABLE LIGHT
     contents:
       - label: headlamp
         name: a head lamp
@@ -468,7 +468,6 @@ items:
               - verb: SET_OTHER_PROPERTY
                 arg: light
                 arg2: ""
-
         
       - label: sandwich
         base: food

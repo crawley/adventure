@@ -44,7 +44,7 @@ public abstract class Actor extends Entity {
 	        return false;
 	    }
 	    Item item = Item.lookupItem(name);
-	    if (item.properties.lookup("light") == null) {
+	    if (item.isaLight()) {
 	        return false;
 	    }
 	    if (item.isSwitchable() && !item.isOn()) {
