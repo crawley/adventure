@@ -3,14 +3,16 @@ package adventure;
 public class Vista {
     private final Direction[] directions;
     private final String description;
+    private final boolean farAway;
 
-    public Vista(Direction[] directions, String description) {
+    public Vista(Direction[] directions, String description, boolean farAway) {
         this.directions = directions;
         this.description = description;
+        this.farAway = farAway;
     }
 
-    public Vista(Direction direction, String description) {
-        this(new Direction[] {direction}, description);
+    public Vista(Direction direction, String description, boolean farAway) {
+        this(new Direction[] {direction}, description, farAway);
     }
 
     public Direction[] getDirections() {
@@ -19,6 +21,10 @@ public class Vista {
 
     public String getDescription() {
         return description;
+    }
+
+    public boolean isFarAway() {
+        return farAway;
     }
 
     public boolean matchesDirection(Direction direction) {

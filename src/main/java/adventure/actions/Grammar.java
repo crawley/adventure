@@ -4,6 +4,7 @@ import adventure.Entity;
 
 /**
  * Helper methods for massaging text into vaguely plausible English.
+ * (I confess, it is string bashing ... not grammar.)
  */
 public class Grammar {
 
@@ -37,7 +38,7 @@ public class Grammar {
      * @param phrase a phrase to be massaged.
      * @return the massaged phrase
      */
-    private static String definiteForm(String phrase) {
+    public static String definiteForm(String phrase) {
         // TODO - account for existing article capitalization
         if (phrase.startsWith("a ")) {
             return "the" + phrase.substring(1, phrase.length());
@@ -64,7 +65,7 @@ public class Grammar {
      * @param phrase a phrase to be massaged.
      * @return the massaged phrase
      */
-    private static String indefiniteForm(String phrase) {
+    public static String indefiniteForm(String phrase) {
         // TODO - account for existing article capitalization
         if (phrase.startsWith("the ")) {
             String rest = phrase.substring(4, phrase.length());

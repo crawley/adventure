@@ -17,11 +17,11 @@ public class LookAction implements Action {
 	@Override
 	public int perform(Person actor, String[] args) {
         Location here = actor.getLocation();
-        if (!actor.canSee()) {
-            System.out.println("It is too dark to see anything here.");
-            return 0;
-        }
 	    if (args.length == 0) {
+	        if (!actor.canSee()) {
+	            System.out.println("It is too dark to see anything around you.");
+	            return 0;
+	        }
 	        actor.showLocationAndActors();
 	        List<Item> items = here.getItems();
 	        boolean firstItem = true;
@@ -61,7 +61,9 @@ public class LookAction implements Action {
 	            seen |= lookInDirection(here, direction);
 	        }
 	        if (!seen) {
-	            if (args[0].equals("all")) {
+	            if (!actor.canSee()) {
+	                System.out.println("It is too dark to see anything here.");
+	            } else if (args[0].equals("all")) {
 	                System.out.println("There is nothing to see here.  Move along.");
 	            } else {
 	                System.out.print("There is nothing to see ");
@@ -91,23 +93,29 @@ public class LookAction implements Action {
         List<Vista> vistas = here.getVistas().stream()
                 .filter((w) -> w.mainDirection().equals(direction))
                 .toList();
-        if (!vistas.isEmpty()) {
-            System.out.print(describeDirection(direction) + " you see ");
-            Wall wall = null;
-            for (Vista vista: vistas) {
-                if (vista instanceof Exit) {
-                    describeExit((Exit) vista, wall);
-                } else if (vista instanceof Wall) {
-                    wall = (Wall) vista;
-                    describeWall(wall);
-                } else {
-                    describeVista(vista);
-                }
+        boolean seen = false;
+        Wall wall = null;
+        for (Vista vista: vistas) {
+            String description;
+            if (vista instanceof Exit) {
+                description = describeExit((Exit) vista, wall);
+            } else if (vista instanceof Wall) {
+                wall = (Wall) vista;
+                description = describeWall(wall);
+            } else {
+                description = describeVista(vista);
             }
-            return true;
-        } else {
-            return false;
+            if (description != null && !description.isEmpty()) {
+                if (!seen) {
+                    System.out.print(describeDirection(direction) + " you see ");
+                    seen = true;
+                } else {
+                    System.out.print("There is ");
+                }
+                System.out.println(description);
+            }
         }
+        return seen;
     }
 	
     private String describeDirection(Direction direction) {
@@ -120,39 +128,35 @@ public class LookAction implements Action {
         };
     }
 
-    private void describeVista(Vista vista) {
+    private String describeVista(Vista vista) {
         String desc = vista.getDescription();
         if (desc == null) {
             desc = "an endless vista";
         }
-        System.out.println(desc);
+        return desc;
     }
 
-    private void describeWall(Wall wall) {
+    private String describeWall(Wall wall) {
         String desc = wall.getDescription();
         if (desc == null) {
             desc = wall.getName();
         } if (desc == null) {
             desc = "a wall";
         } 
-        System.out.print(desc);
         List<Item> items = wall.getItemsOnWall();
         if (!items.isEmpty()) {
-            System.out.println(". On the wall are the following:");
+            desc += ". On the wall are the following:";
             for (Entity item: items) {
-                System.out.println("   " + item.getAbbrev() 
-                + ": " + item.getName());
+                desc += "\n   " + item.getAbbrev() + ": " + item.getName();
             }
-        } else {
-            System.out.println();
-        }
+        } 
+        return desc;
     }
 
-    private void describeExit(Exit exit, Wall wall) {
+    private String describeExit(Exit exit, Wall wall) {
         String desc;
         Item portal = exit.getPortal();
         if (wall != null) {
-            System.out.print("In the wall there is ");
             if (portal != null) {
                 desc = "a " + portal.getAbbrev();
             } else {
@@ -160,6 +164,9 @@ public class LookAction implements Action {
             }
             if (portal == null || !portal.isOpenable() || portal.isOpen()) {
                 desc += " to " + exit.getTo().getName();
+            }
+            if (!wall.isFarAway()) {
+                desc += " in the wall";  // TODO - add direction
             }
         } else {
             desc = exit.getDescription();
@@ -171,19 +178,22 @@ public class LookAction implements Action {
                         desc = portal.getName();
                     }
                 } else {
-                    desc = "You see " + Grammar.definiteName(exit.getTo());
+                    desc = Grammar.definiteName(exit.getTo());
                     if (exit.getTo().isDark()) {
-                        desc += ".  It is dark.";
+                        desc += ".  It is dark";
                     }
                 }
+                // TODO - add direction
             }
+            desc = Grammar.indefiniteForm(desc);
         }
-        System.out.print(desc);
         if (portal != null && portal.isOpenable()) {
-            System.out.print(". The " + portal.getAbbrev() 
-                    + (portal.isOpen() ? " is open" : " is closed."));
+            desc += ". The " + portal.getAbbrev() 
+                    + (portal.isOpen() ? " is open" : " is closed.");
+        } else {
+            desc += ".";
         }
-        System.out.println();
+        return desc;
     }
 
     @Override

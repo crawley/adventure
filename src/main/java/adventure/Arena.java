@@ -183,7 +183,8 @@ public class Arena {
 	                        new Wall(Direction.valueOf(
 	                                getString(wall, "direction")),
 	                                getString(wall, "name"), 
-	                                getString(wall, "description")));
+	                                getString(wall, "description"),
+	                                getOptBoolean(wall, "far", false)));
 	            }
 	        }
 
@@ -196,7 +197,8 @@ public class Arena {
 	                for (Direction direction: directions) {
 	                    location.addVista(
 	                            new Vista(direction, 
-	                                    getString(vista, "description")));
+	                                    getString(vista, "description"),
+	                                    getOptBoolean(vista, "far", false)));
 	                }
 	            }
 	        }

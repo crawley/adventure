@@ -6,7 +6,7 @@ public class Exit extends Vista {
 
     public Exit(Direction[] directions, Item portal, Location to,
             String description) {
-        super(directions, description);
+        super(directions, description, false);
         this.portal = portal;
         this.to = to;
     }

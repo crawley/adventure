@@ -110,17 +110,20 @@ locations:
     walls:
       - direction: e
         name: east wall
+        far: Y
         description: |
           the east end of the corridor.
           There is a small window in the wall.
       - direction: w
         name: west wall
+        far: Y
         description: |
           the west end of the corridor.
           There is a small window in the wall.
       - direction: s
-        name: south wall
-        description: the south side of the corridor
+        name: the front door
+        far: Y
+        description: the entrance hallway and front door
       - direction: n
         name: north wall
         description: the north side of the corridor
@@ -202,10 +205,17 @@ locations:
       
   - label: basementstairs
     type: ROOM
-    name: the basement stairs
+    name: a staircase
     description:
-        the top of the basement stairs.
+        the top of the basement staircase.
         
+  - label: basementstairs2
+    type: ROOM
+    name: a staircase
+    description:
+        the bottom of the basement staircase.
+    flags: DARK
+
   - label: basement
     type: ROOM
     name: the basement
@@ -324,10 +334,15 @@ exits:
     backwards: n
     
   - from: basementstairs
-    to: basement
+    to: basementstairs2
     forwards: d
     backwards: u
-    
+      
+  - from: basementstairs2
+    to: basement
+    forwards: s
+    backwards: n
+        
 actor_templates:
   - label: creature
     properties:
