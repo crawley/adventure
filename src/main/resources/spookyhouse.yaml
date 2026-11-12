@@ -352,7 +352,7 @@ actor_templates:
         min: 0
         max: 100
       - name: hunger
-        type: int
+        type: float
         initial: 5
         min: -5
         max: 10
