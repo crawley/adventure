@@ -12,7 +12,7 @@ import adventure.actions.Triggered;
 public class Location extends Entity {
     
     public enum LocationType {
-        ROOM("in"), PASSAGEWAY("in"), PLATFORM("on"), 
+        ROOM("in"), PASSAGEWAY("in"), PLATFORM("on"), STAIRS("on"),
         PATH("on"), AREA1("in"), AREA2("on");
         
         private final String preposition;

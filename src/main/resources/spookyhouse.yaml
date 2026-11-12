@@ -204,13 +204,13 @@ locations:
       There are empty boxes on the shelves.
       
   - label: basementstairs
-    type: ROOM
+    type: STAIRS
     name: a staircase
     description:
         the top of the basement staircase.
         
   - label: basementstairs2
-    type: ROOM
+    type: STAIRS
     name: a staircase
     description:
         the bottom of the basement staircase.
