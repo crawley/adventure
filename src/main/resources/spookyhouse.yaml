@@ -352,16 +352,16 @@ actor_templates:
         min: 0
         max: 100
       - name: hunger
-        type: float
-        initial: 5
-        min: -5
-        max: 10
+        type: int
+        initial: 50
+        min: -50
+        max: 100
     triggers:
       - events: TICK
         actions:
           - verb: INCREMENT
             arg: hunger
-            arg2: 0.1
+            arg2: 1
   - label: player
     base: creature
     properties:
