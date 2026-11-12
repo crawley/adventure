@@ -58,7 +58,7 @@ public class LookAction implements Action {
 	        }
 	        boolean seen = false;
 	        for (Direction direction: directions) {
-	            seen |= lookInDirection(here, direction);
+	            seen |= lookInDirection(here, direction, actor.hasWorkingLight());
 	        }
 	        if (!seen) {
 	            if (!actor.canSee()) {
@@ -89,21 +89,29 @@ public class LookAction implements Action {
 	    throw new IllegalArgumentException(name);
 	}
 
-    private boolean lookInDirection(Location here, Direction direction) {
+    private boolean lookInDirection(Location here, Direction direction, 
+            boolean hasLight) {
         List<Vista> vistas = here.getVistas().stream()
                 .filter((w) -> w.mainDirection().equals(direction))
                 .toList();
         boolean seen = false;
         Wall wall = null;
         for (Vista vista: vistas) {
-            String description;
+            String description = null;
             if (vista instanceof Exit) {
-                description = describeExit((Exit) vista, wall);
+                Exit exit = ((Exit) vista);
+                if (!here.isDark() || hasLight || !exit.getTo().isDark()) {
+                    description = describeExit(exit, wall);
+                }
             } else if (vista instanceof Wall) {
                 wall = (Wall) vista;
-                description = describeWall(wall);
+                if (!here.isDark() || hasLight) {
+                    description = describeWall(wall);
+                }
             } else {
-                description = describeVista(vista);
+                if (!here.isDark() || hasLight) {
+                    description = describeVista(vista);
+                }
             }
             if (description != null && !description.isEmpty()) {
                 if (!seen) {
@@ -163,7 +171,11 @@ public class LookAction implements Action {
                 desc = "an exit";
             }
             if (portal == null || !portal.isOpenable() || portal.isOpen()) {
-                desc += " to " + exit.getTo().getName();
+                if (exit.getTo().isDark()) {
+                    desc += " to a dark area";
+                } else {
+                    desc += " to " + exit.getTo().getName();
+                }
             }
             if (!wall.isFarAway()) {
                 desc += " in the wall";  // TODO - add direction
@@ -178,9 +190,10 @@ public class LookAction implements Action {
                         desc = portal.getName();
                     }
                 } else {
-                    desc = Grammar.definiteName(exit.getTo());
                     if (exit.getTo().isDark()) {
-                        desc += ".  It is dark";
+                        desc = "a dark area";
+                    } else {
+                        desc = exit.getTo().getName();
                     }
                 }
                 // TODO - add direction
