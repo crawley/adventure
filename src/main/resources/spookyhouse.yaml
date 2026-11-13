@@ -332,6 +332,12 @@ exits:
     to: basementstairs
     forwards: s
     backwards: n
+    portal:
+      label: basementdoor
+      name: the basement door
+      abbrev: door
+      description: an plain door
+      flags: OPENABLE
     
   - from: basementstairs
     to: basementstairs2
