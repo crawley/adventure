@@ -16,7 +16,7 @@ public class SwitchAction extends Verb {
         if (args.length == 2) {
             if (args[1].equals("on") || args[1].equals("off")) {
                 return performOnItemArg(actor, args, 
-                        Context.ITEMS_HELD, Context.ITEMS_HELD, 
+                        Context.ITEMS_HELD, Context.ITEMS_WORN, 
                         Context.ITEMS_ON_FLOOR, Context.PORTALS, 
                         Context.ITEMS_ON_WALLS);
             } else {
