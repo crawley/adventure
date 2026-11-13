@@ -28,12 +28,14 @@ public class Location extends Entity {
     
     public static final long DARK = 0x1L;
     public static final long HAS_LIGHT = 0x2L;
+    public static final long BLOCKED = 0x4L;
         
     @SuppressWarnings("serial")
     public static final Map<String, FlagDescriptor> LOCATION_FLAGS = new HashMap<>(){
         {
             put("DARK", new FlagDescriptor (DARK));
             put("HAS_LIGHT", new FlagDescriptor (HAS_LIGHT, "light_on", false));
+            put("BLOCKED", new FlagDescriptor (BLOCKED));
         }
     };
 	
@@ -82,6 +84,10 @@ public class Location extends Entity {
 	
     public boolean isDark() {
         return (getFlags() & DARK) != 0;
+    }
+    
+    public boolean isBlocked() {
+        return (getFlags() & BLOCKED) != 0;
     }
 
     public static Location lookupLocation(String label) {

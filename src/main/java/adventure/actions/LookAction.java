@@ -189,16 +189,18 @@ public class LookAction implements Action {
                     } else {    
                         desc = portal.getName();
                     }
+                    desc = Grammar.indefiniteForm(desc);
                 } else {
                     if (exit.getTo().isDark()) {
                         desc = "a dark area";
                     } else {
-                        desc = exit.getTo().getName();
+                        desc = Grammar.definiteForm(exit.getTo().getName());
                     }
                 }
                 // TODO - add direction
+            } else {
+                desc = Grammar.definiteForm(exit.getTo().getName());
             }
-            desc = Grammar.indefiniteForm(desc);
         }
         if (portal != null && portal.isOpenable()) {
             desc += ". The " + portal.getAbbrev() 

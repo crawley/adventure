@@ -45,6 +45,40 @@ locations:
     type: PLATFORM
     name: the front porch
     description: the front porch of the Spooky House
+    
+  - label: housecorner-se
+    type: PATH
+    name: the southeast corner
+    description: the southeast corner of the Spooky House
+      
+  - label: housecorner-sw
+    type: PATH
+    name: the southwest corner
+    description: the southest corner of the Spooky House
+     
+  - label: housecorner-nw
+    type: PATH
+    name: the northwest corner
+    description: the northwest corner of the Spooky House
+          
+  - label: housecorner-ne
+    type: PATH
+    name: the northeast corner
+    description: the northeast corner of the Spooky House
+    
+  - label: briarpatch
+    type: AREA1
+    name: a briar patch
+    description: |
+      there is a tangled mass of brambles up against the north side of the building.
+      You will need a machette or cutlass to force your way through.
+    flags: BLOCKED
+    
+  - label: gardenshed
+    type: ROOM
+    name: the garden shed
+    description:
+      the shed contains gardening equipment and supplies.
 
   - label: hallway
     type: PASSAGEWAY
@@ -266,7 +300,32 @@ exits:
     to: porch
     forwards: n
     backwards: s
+    
+  - from: porch
+    to: housecorner-se
+    forwards: e
+    backwards: w
+    
+  - from: porch
+    to: housecorner-sw
+    forwards: w
+    backwards: e
+    
+  - from: housecorner-se
+    to: housecorner-ne
+    forwards: n
+    backwards: s
 
+  - from: housecorner-sw
+    to: housecorner-nw
+    forwards: n
+    backwards: s
+    
+  - from: housecorner-ne
+    to: gardenshed
+    forwards: n
+    backwards: s
+ 
   - from: porch
     to: hallway
     portal:
@@ -693,6 +752,26 @@ items:
       - name: calories
         type: int
         initial: 100
+
+  - label: machette
+    name: a rusty machette
+    flags: MOVEABLE TAKEABLE WIELDABLE
+    location: gardenshed
+    
+  - label: whetstone
+    name: a whetstone for sharpening tools
+    flags: MOVEABLE TAKEABLE
+    location: gardenshed
+    
+  - label: sprayer
+    name: a hand operated garden sprayer
+    flags: MOVEABLE TAKEABLE
+    location: gardenshed
+    
+  - label: facemask
+    name: a mask that protects the mouth, nose and eyes
+    flags: MOVEABLE TAKEABLE WEARABLE
+    location: gardenshed
 
 associations:
   - relation: HAS_KEY
