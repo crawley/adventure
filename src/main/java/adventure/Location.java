@@ -2,7 +2,9 @@ package adventure;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +61,22 @@ public class Location extends Entity {
         return vistas;
     }
     
-    public void addVista(Vista vista) {
-        vistas.add(vista);
+    public void addVista(Vista newVista) {
+        EnumSet<Direction> newDirections = 
+                EnumSet.copyOf(Arrays.asList(newVista.getDirections()));
+        for (Vista vista: vistas) {
+            if (vista.getClass() == newVista.getClass()) {
+                for (Direction direction: vista.getDirections()) {
+                    if (newDirections.contains(direction)) {
+                        throw new ArenaException(
+                                "Duplicate " + newVista.getClass().getSimpleName()
+                                + " for direction " + direction 
+                                + " in vistas for location '" + getLabel() + "'");
+                    }
+                }
+            }
+        }
+        vistas.add(newVista);
     }
 
     public List<Exit> getExits() {
