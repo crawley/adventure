@@ -275,6 +275,7 @@ exits:
 
   - from: road
     to: path
+    type: GATEWAY
     portal:
       label: frontgate
       name: the front gate
@@ -298,36 +299,65 @@ exits:
  
   - from: path
     to: porch
+    type: STEP
     forwards: n
     backwards: s
     
   - from: porch
     to: housecorner-se
+    type: PATH
     forwards: e
     backwards: w
     
   - from: porch
     to: housecorner-sw
+    type: PATH
     forwards: w
     backwards: e
     
   - from: housecorner-se
     to: housecorner-ne
+    type: PATH
     forwards: n
     backwards: s
 
   - from: housecorner-sw
     to: housecorner-nw
+    type: PATH
     forwards: n
     backwards: s
     
   - from: housecorner-ne
     to: gardenshed
+    type: PATH
     forwards: n
     backwards: s
+    
+  - from: housecorner-ne
+    to: briarpatch
+    type: PATH
+    forwards: w
+    backwards: e
+    portal:
+      label: briarpath1
+      name: a path blocked with briars
+      abbrev: briars
+      flags: BLOCKED
+      
+  - from: housecorner-nw
+    to: briarpatch
+    type: PATH
+    forwards: e
+    backwards: w
+    portal:
+      label: briarpath2
+      name: a path blocked with briars
+      abbrev: briars
+      flags: BLOCKED
  
   - from: porch
     to: hallway
+    type: DOORWAY
     portal:
       label: frontdoor
       name: the front door
@@ -339,31 +369,37 @@ exits:
 
   - from: hallway
     to: dining
+    type: DOORWAY
     forwards: e
     backwards: w
 
   - from: hallway
     to: sitting
+    type: DOORWAY
     forwards: w
     backwards: e
     
   - from: hallway
     to: corridor
+    type: DOORWAY
     forwards: n
     backwards: s
 
   - from: corridor
     to: corridor-e
+    type: PASSAGEWAY
     forwards: e
     backwards: w
     
   - from: corridor
     to: corridor-w
+    type: PASSAGEWAY
     forwards: w
     backwards: e
     
   - from: corridor-e
     to: kitchen
+    type: DOORWAY
     portal:
       label: kitchendoor
       name: the kitchen door
@@ -384,11 +420,13 @@ exits:
 
   - from: kitchen
     to: pantry
+    type: DOORWAY
     forwards: w
     backwards: e
     
   - from: corridor-e
     to: basementstairs
+    type: DOORWAY
     forwards: s
     backwards: n
     portal:
@@ -400,11 +438,13 @@ exits:
     
   - from: basementstairs
     to: basementstairs2
-    forwards: d
-    backwards: u
+    type: STAIRWAY
+    forwards: d s
+    backwards: u n
       
   - from: basementstairs2
     to: basement
+    type: STEP
     forwards: s
     backwards: n
         

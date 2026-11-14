@@ -65,14 +65,15 @@ public class Location extends Entity {
         EnumSet<Direction> newDirections = 
                 EnumSet.copyOf(Arrays.asList(newVista.getDirections()));
         for (Vista vista: vistas) {
-            if (vista.getClass() == newVista.getClass()) {
-                for (Direction direction: vista.getDirections()) {
-                    if (newDirections.contains(direction)) {
-                        throw new ArenaException(
-                                "Duplicate " + newVista.getClass().getSimpleName()
-                                + " for direction " + direction 
-                                + " in vistas for location '" + getLabel() + "'");
-                    }
+            if (vista.getClass() != newVista.getClass()) {
+                continue;
+            }
+            for (Direction direction: vista.getDirections()) {
+                if (newDirections.contains(direction)) {
+                    throw new ArenaException(
+                            "Duplicate " + newVista.getClass().getSimpleName()
+                            + " for direction " + direction 
+                            + " in vistas for location '" + getLabel() + "'");
                 }
             }
         }

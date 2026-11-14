@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import org.yaml.snakeyaml.Yaml;
 
 import adventure.Entity.FlagDescriptor;
+import adventure.Exit.ExitType;
 import adventure.Location.LocationType;
 import adventure.Template.Kind;
 import adventure.actions.Trigger;
@@ -42,12 +43,12 @@ public class Arena {
 		theArena = this;
 	}
 	
-	public void makeExit(String fromLabel, String toLabel, Item portal, String directions,
-	        String description) {
+	public void makeExit(ExitType type, String fromLabel, String toLabel, 
+	        Item portal, String directions, String description) {
 		Location fromLoc = parseLocation(fromLabel);
 		Location toLoc = parseLocation(toLabel);
         Direction[] dirs = parseDirections(directions);
-        Vista exit = new Exit(dirs, portal, toLoc, description);
+        Vista exit = new Exit(type, dirs, portal, toLoc, description);
         fromLoc.addVista(exit);
 	}
 
@@ -58,10 +59,10 @@ public class Arena {
         return dirs;
     }
     
-    public void makeExits(String from, String to, Item portal,
+    public void makeExits(ExitType type, String from, String to, Item portal,
 	        String forward, String back, String description) {
-		makeExit(from, to, portal, forward, description);
-		makeExit(to, from, portal, back, description);
+		makeExit(type, from, to, portal, forward, description);
+		makeExit(type, to, from, portal, back, description);
 	}
 	
 	public Item makeItem(String kind, String location, String label, String name, 
@@ -209,15 +210,18 @@ public class Arena {
 		for (Object data: exits) {
 			Map<String, Object> exitData = (Map<String, Object>) data;
             Item portal = arena.parsePortal(exitData);
+            ExitType type = ExitType.valueOf(getString(exitData, "type"));
+
 			if (exitData.containsKey("backwards")) {
-				arena.makeExits(getString(exitData, "from"), 
+				arena.makeExits(type,
+				        getString(exitData, "from"), 
 				        getString(exitData, "to"), 
 						portal,
 						getString(exitData, "forwards"),
 						getString(exitData, "backwards"),
 						getOptString(exitData, "description"));
 			} else {
-				arena.makeExit(getString(exitData, "from"), 
+				arena.makeExit(type, getString(exitData, "from"), 
 				        getString(exitData, "to"), 
 					    portal, 
 					    getString(exitData, "forwards"),

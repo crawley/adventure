@@ -20,7 +20,7 @@ public class GoAction implements Action {
 	    for (Exit exit: actor.getLocation().getExits()) {
 	        if (exit.matchesDirection(direction)) {
 	            Item portal = exit.getPortal();
-	            if (portal != null && !portal.isOpen()) {
+	            if (portal != null && (!portal.isOpen() || portal.isBlocked())) {
 	                if (!actor.canSee()) {
 	                    System.out.println("You bump into something.");
 	                } else {
@@ -33,12 +33,17 @@ public class GoAction implements Action {
 	                }
 	            } else {
 	                Location loc = exit.getTo();
-	                actor.setLocation(loc);
-	                if (loc.isDark() && !actor.hasWorkingLight()) {
-	                    System.out.println("It is too dark to see where you are.");
+	                if (loc.isBlocked()) {
+	                    System.out.print("You cannot enter " + Grammar.definiteName(loc) 
+	                    + ": access to that area is blocked.");
 	                } else {
-	                    System.out.println("You are " + loc.getType().getPreposition() 
-	                            + " " + loc.getName() + ".");
+	                    actor.setLocation(loc);
+	                    if (loc.isDark() && !actor.hasWorkingLight()) {
+	                        System.out.println("It is too dark to see where you are.");
+	                    } else {
+	                        System.out.println("You are " + loc.getType().getPreposition() 
+	                                + " " + loc.getName() + ".");
+	                    }
 	                }
 	            }
 				return 1;

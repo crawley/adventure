@@ -22,6 +22,8 @@ public class Item extends Entity {
     public static final long LOCKABLE = 0x40L;
     public static final long SWITCHABLE = 0x80L;
     public static final long LIGHT = 0x100L;
+    public static final long BLOCKED = 0x200L;
+
     
     public static final long HAS_STATE_FLAGS = LOCKABLE | OPENABLE | SWITCHABLE;
     
@@ -38,6 +40,7 @@ public class Item extends Entity {
             put("LOCKABLE", new FlagDescriptor (LOCKABLE, "locked", false));
             put("SWITCHABLE", new FlagDescriptor (SWITCHABLE, "on", false));
             put("LIGHT", new FlagDescriptor (LIGHT));
+            put("BLOCKED", new FlagDescriptor (BLOCKED));
         }
     };
     
@@ -74,11 +77,19 @@ public class Item extends Entity {
     }
     
     public boolean isHidden() {
-        return this.properties.lookup("hidden").isTrue();
+        Property prop = this.properties.lookup("hidden");
+        return prop != null && prop.isTrue();
     }
     
     public void setHidden(boolean hidden) {
-        ((BooleanProperty) this.properties.lookup("hidden")).setValue(hidden);
+        Property prop = this.properties.lookup("hiidden");
+        if (prop != null) {
+            ((BooleanProperty) prop).setValue(hidden);
+        }
+    }
+    
+    public boolean isBlocked() {
+        return (getFlags() & BLOCKED) != 0;
     }
     
     public boolean isLockable() {
@@ -86,11 +97,15 @@ public class Item extends Entity {
     }
     
     public boolean isLocked() {
-        return this.properties.lookup("locked").isTrue();
+        Property prop = this.properties.lookup("locked");
+        return prop != null && prop.isTrue();
     }
     
     public void setLocked(boolean locked) {
-        ((BooleanProperty) this.properties.lookup("locked")).setValue(locked);
+        Property prop = this.properties.lookup("locked");
+        if (prop != null) {
+            ((BooleanProperty) prop).setValue(locked);
+        }
     }
     
     public boolean isOpenable() {
@@ -98,11 +113,15 @@ public class Item extends Entity {
     }
 
     public boolean isOpen() {
-        return this.properties.lookup("open").isTrue();
+        Property prop = this.properties.lookup("open");
+        return prop != null && prop.isTrue();
     }
     
     public void setOpen(boolean open) {
-        ((BooleanProperty) this.properties.lookup("open")).setValue(open);
+        Property prop = this.properties.lookup("open");
+        if (prop != null) {
+            ((BooleanProperty) prop).setValue(open);
+        }
     }
     
     public boolean isSwitchable() {
