@@ -155,7 +155,7 @@ public abstract class ActionBase implements Action {
      * @return A list of the items that 'word' resolved to.
      */
     public static List<Item> resolveItems(
-            String word, Person actor, Context[] contexts) {
+            String word, Person actor, Context ...contexts ) {
         List<List<Item>> lists = Arrays.stream(contexts)
                 .map((c) -> c.items(actor))
                 .toList();

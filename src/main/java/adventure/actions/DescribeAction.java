@@ -6,11 +6,14 @@ import adventure.Container;
 import adventure.Entity;
 import adventure.Item;
 import adventure.Person;
-import adventure.actions.Verb.Context;
 
-public class DescribeAction implements Action {
+public class DescribeAction extends ActionBase {
+    
+	public DescribeAction() {
+        super("describe", "described", "described");
+    }
 
-	@Override
+    @Override
 	public int perform(Person actor, String[] args) {
 	    if (args.length == 0) {
 	        System.out.println("What do you want to be described?");
@@ -18,11 +21,13 @@ public class DescribeAction implements Action {
             System.out.println("One thing at a time!");
         } else {
             String word = args[0];
-            List<Item> items = Verb.resolve(
+            List<Item> items = ActionBase.resolveItems(
                     word, actor, Context.ITEMS_ON_FLOOR, Context.PORTALS, 
                     Context.ITEMS_ON_WALLS, Context.ITEMS_HELD, Context.ITEMS_WORN);
-            if (items.isEmpty()) {
-                System.out.println("Cannot see a " + word);
+            if (!actor.canSee()) {
+                System.out.println("You cannot see anything!");
+            } else if (items.isEmpty()) {
+                System.out.println("You cannot see a " + word);
             } else if (items.size() == 1) {
                 describe(items.get(0), word);
             } else {
