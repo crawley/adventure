@@ -183,14 +183,14 @@ public class Item extends Entity {
         }
     }
     
-    public VerbResult closeItem() {
+    public ActionResult closeItem() {
         if (!this.isOpenable()) {
-            return new VerbResult(Outcome.NOT_APPLICABLE, this);
+            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
         } else if (!this.isOpen()) {
-            return new VerbResult(Outcome.ALREADY_DONE, this);
+            return new ActionResult(ActionResult.Outcome.ALREADY_DONE);
         } else {
             this.setOpen(false);
-            return new VerbResult(1, this);
+            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
         }
     }
 

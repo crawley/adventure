@@ -7,6 +7,7 @@ import adventure.Item;
 import adventure.Location;
 import adventure.Person;
 import adventure.actions.ActionResult.Outcome;
+import adventure.actions.Trigger.Event;
 
 public class ClearAction extends ActionBase {
     
@@ -20,7 +21,6 @@ public class ClearAction extends ActionBase {
         Entity target = null;
         try {
             String[] words = parse2(args, "with");
-            assert words.length == 2;
             Direction direction = parseDirection(words[0]);
             Exit exit = actor.getLocation().exit(direction);
             Item tool = resolveItem(actor, words[1], Context.ITEMS_HELD);
@@ -37,8 +37,11 @@ public class ClearAction extends ActionBase {
                     res = loc.clearWith(tool);
                     target = loc;
                 }
-                System.out.println("You " + getParticiple() + " " 
-                        + Grammar.definiteName(target));
+                if (res.isSuccess()) {
+                    System.out.println("You " + getParticiple() + " " 
+                            + Grammar.definiteName(target));
+                    target.trigger(Event.CLEARED);
+                }
             }
         } catch (SyntaxException ex) {
             res = ex.getActionResult();

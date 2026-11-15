@@ -1,11 +1,10 @@
 package adventure.actions;
 
-import adventure.Entity;
 import adventure.Item;
 import adventure.Person;
 import adventure.actions.Trigger.Event;
 
-public class CloseAction extends Verb {
+public class CloseAction extends ActionBase {
    
     public CloseAction() {
         super("close", "closed", "closed");
@@ -13,26 +12,26 @@ public class CloseAction extends Verb {
 
     @Override
     public int perform(Person actor, String[] args) {
-        return performOnItem(actor, args, 
-                Context.ITEMS_ON_FLOOR, Context.ITEMS_ON_WALLS, Context.PORTALS);
+        ActionResult res;
+        Item portal = null;
+        try {
+            String[] words = parse1(args);
+            portal = resolveItem(actor, words[0], 
+                    Context.ITEMS_ON_FLOOR, Context.ITEMS_ON_WALLS, Context.PORTALS);
+            res = portal.closeItem();
+            if (res.isSuccess()) {
+                System.out.println("You " + getParticiple() + " " 
+                        + Grammar.definiteName(portal));
+                portal.trigger(Event.CLOSED);
+            }
+        } catch (SyntaxException ex) {
+            res = ex.getActionResult();
+        }
+        return res.process(actor, portal, this);
     }
     
     @Override
     public String describe() {
         return "Close an object";
-    }
-
-    @Override
-    public VerbResult apply(Person actor, Item item) {
-        return item.closeItem();
-    }
-    
-    
-    
-    @Override
-    protected void onSuccess(Person actor, Entity item, Entity unused) {
-        System.out.println("You " + getParticiple() + " " 
-                + Grammar.definiteName(item));
-        item.trigger(Event.CLOSED);
     }
 }

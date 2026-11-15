@@ -36,12 +36,20 @@ public class ActionResult {
         this(outcome, 0, null, null, null);
     }
 
+    public ActionResult(Outcome outcome, int timeTaken) {
+        this(outcome, timeTaken, null, null, null);
+    }
+
     public ActionResult(Outcome outcome, String word, List<? extends Entity> alternatives) {
         this(outcome, 0, null, word, alternatives);
     }
 
     public Outcome getOutcome() {
         return outcome;
+    }
+    
+    public boolean isSuccess() {
+        return outcome == Outcome.SUCCESS;
     }
 
     public String getMessage() {
@@ -101,4 +109,5 @@ public class ActionResult {
         }
         return timeTaken;
     }
+
 }
