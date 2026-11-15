@@ -72,7 +72,10 @@ locations:
     description: |
       there is a tangled mass of brambles up against the north side of the building.
       You will need a machette or cutlass to force your way through.
-    flags: BLOCKED
+    properties:
+      - name: blocked
+        type: boolean
+        initial: Y
     
   - label: gardenshed
     type: ROOM
@@ -342,7 +345,10 @@ exits:
       label: briarpath1
       name: a path blocked with briars
       abbrev: briars
-      flags: BLOCKED
+      properties:
+        - name: blocked
+          type: boolean
+          initial: Y
       
   - from: housecorner-nw
     to: briarpatch
@@ -353,7 +359,10 @@ exits:
       label: briarpath2
       name: a path blocked with briars
       abbrev: briars
-      flags: BLOCKED
+      properties:
+        - name: blocked
+          type: boolean
+          initial: Y
  
   - from: porch
     to: hallway

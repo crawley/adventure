@@ -202,12 +202,16 @@ public class LookAction implements Action {
                 desc = Grammar.definiteForm(exit.getTo().getName());
             }
         }
-        if (portal != null && portal.isOpenable()) {
-            desc += ". The " + portal.getAbbrev() 
-                    + (portal.isOpen() ? " is open" : " is closed.");
-        } else {
-            desc += ".";
+        if (portal != null) {
+            if (portal.isOpenable()) {
+                desc += ". The " + portal.getAbbrev() 
+                + (portal.isOpen() ? " is open" : " is closed");
+            } else if (portal.isBlocked()) {
+                desc += ". The " + portal.getAbbrev() 
+                + ". The " + portal.getAbbrev() + " is blocked";
+            } 
         }
+        desc += ".";
         return desc;
     }
 

@@ -31,6 +31,7 @@ public class Actions {
         actions.put("get", new GetAction());
         actions.put("pet", new PetAction());
         actions.put("eat", new EatAction());
+        actions.put("clear", new ClearAction());
         actions.put("feed", new FeedAction());
         actions.put("switch", new SwitchAction());
         aliases.put("turn", "switch");

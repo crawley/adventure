@@ -165,6 +165,10 @@ public abstract class Entity {
         return properties;
     }
     
+    public boolean isHidden() {
+        return false;
+    }
+    
     public boolean isDestroyed() {
         return destroyed;
     }

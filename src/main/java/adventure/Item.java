@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import adventure.actions.ActionResult;
 import adventure.actions.Grammar;
 import adventure.actions.Trigger;
 import adventure.actions.Triggered;
@@ -22,9 +23,7 @@ public class Item extends Entity {
     public static final long LOCKABLE = 0x40L;
     public static final long SWITCHABLE = 0x80L;
     public static final long LIGHT = 0x100L;
-    public static final long BLOCKED = 0x200L;
 
-    
     public static final long HAS_STATE_FLAGS = LOCKABLE | OPENABLE | SWITCHABLE;
     
     
@@ -40,7 +39,6 @@ public class Item extends Entity {
             put("LOCKABLE", new FlagDescriptor (LOCKABLE, "locked", false));
             put("SWITCHABLE", new FlagDescriptor (SWITCHABLE, "on", false));
             put("LIGHT", new FlagDescriptor (LIGHT));
-            put("BLOCKED", new FlagDescriptor (BLOCKED));
         }
     };
     
@@ -89,7 +87,15 @@ public class Item extends Entity {
     }
     
     public boolean isBlocked() {
-        return (getFlags() & BLOCKED) != 0;
+        Property prop = this.properties.lookup("blocked");
+        return prop != null && prop.isTrue();
+    }
+    
+    public void setBlocked(boolean blocked) {
+        Property prop = this.properties.lookup("blocked");
+        if (prop != null) {
+            ((BooleanProperty) prop).setValue(blocked);
+        }
     }
     
     public boolean isLockable() {
@@ -307,6 +313,17 @@ public class Item extends Entity {
             return (Item) entity;
         } else {
             throw new EntityException("Entity with label '" + label + "' is not an item");
+        }
+    }
+
+    public ActionResult clearWith(Item tool) {
+        if (properties.lookup("blocked") == null) {
+            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
+        } else if (!isBlocked()) {
+            return new ActionResult(ActionResult.Outcome.ALREADY_DONE);
+        } else {
+            setBlocked(false);
+            return new ActionResult(ActionResult.Outcome.SUCCESS);
         }
     }
 }

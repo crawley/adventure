@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import adventure.actions.ActionResult;
+import adventure.actions.ActionResult.Outcome;
 import adventure.actions.Triggered;
 
 public class Location extends Entity {
@@ -30,14 +32,12 @@ public class Location extends Entity {
     
     public static final long DARK = 0x1L;
     public static final long HAS_LIGHT = 0x2L;
-    public static final long BLOCKED = 0x4L;
         
     @SuppressWarnings("serial")
     public static final Map<String, FlagDescriptor> LOCATION_FLAGS = new HashMap<>(){
         {
             put("DARK", new FlagDescriptor (DARK));
             put("HAS_LIGHT", new FlagDescriptor (HAS_LIGHT, "light_on", false));
-            put("BLOCKED", new FlagDescriptor (BLOCKED));
         }
     };
 	
@@ -104,8 +104,16 @@ public class Location extends Entity {
     }
     
     public boolean isBlocked() {
-        return (getFlags() & BLOCKED) != 0;
+        Property prop = this.properties.lookup("blocked");
+        return prop != null && prop.isTrue();
     }
+    
+    public void setBlocked(boolean blocked) {
+        Property prop = this.properties.lookup("blocked");
+        if (prop != null) {
+            ((BooleanProperty) prop).setValue(blocked);
+        }
+    }    
 
     public static Location lookupLocation(String label) {
         Entity entity = Entity.lookup(label);
@@ -145,5 +153,24 @@ public class Location extends Entity {
     @Override
     protected boolean doTrigger(Triggered action, Entity target) {
         throw new UnsupportedOperationException("No location triggers");
+    }
+
+    public ActionResult clearWith(Item tool) {
+        if (properties.lookup("blocked") == null) {
+            return new ActionResult(Outcome.NOT_APPLICABLE);
+        } else if (!isBlocked()) {
+            return new ActionResult(Outcome.ALREADY_DONE);
+        } else {
+            setBlocked(false);
+            return new ActionResult(Outcome.SUCCESS);
+        }
+    }
+
+    public Exit exit(Direction direction) {
+        return vistas.stream()
+                .filter((v) -> v instanceof Exit)
+                .map((v) -> (Exit) v)
+                .findFirst()
+                .orElse(null);
     }
  }
