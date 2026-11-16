@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import adventure.actions.ActionResult;
+import adventure.actions.ActionResult.Outcome;
 import adventure.actions.Grammar;
 import adventure.actions.Trigger;
 import adventure.actions.Triggered;
 import adventure.actions.Triggered.Verb;
-import adventure.actions.VerbResult;
-import adventure.actions.VerbResult.Outcome;
 
 public class Item extends Entity {
     
@@ -146,95 +145,106 @@ public class Item extends Entity {
         return (getFlags() & HAS_STATE_FLAGS) != 0;
     }
     
-    public VerbResult moveItem() {
+    public ActionResult moveItem() {
         if (this.isMoveable()) {
-            return new VerbResult(1, this);
+            return new ActionResult(Outcome.SUCCESS, 1);
         } else {
-            return new VerbResult(Outcome.NOT_APPLICABLE, this);
+            return new ActionResult(Outcome.NOT_APPLICABLE);
         }
     }
     
     public ActionResult openItemWith(Item opener) {
         Arena arena = Arena.getInstance();
         if (!this.isOpenable()) {
-            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
+            return new ActionResult(Outcome.NOT_APPLICABLE);
         } else if (this.isOpen()) {
-            return new ActionResult(ActionResult.Outcome.ALREADY_DONE);
+            return new ActionResult(Outcome.ALREADY_DONE);
         } else if (this.isLockable() && this.isLocked()) {
-            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE, 
+            return new ActionResult(Outcome.NOT_POSSIBLE, 
                     "it is locked");
         } else if (opener == null
                 && arena.getAssociations().isRelated(
                         "HAS_OPENER", this, null)) {
-            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE,
+            return new ActionResult(Outcome.NOT_POSSIBLE,
                     "you need a tool to open it");
         } else if (opener != null 
                 && !arena.getAssociations().isRelated(
                         "HAS_OPENER", this, opener)) {
-            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE,
+            return new ActionResult(Outcome.NOT_POSSIBLE,
                     "you cannot open it with " + Grammar.indefiniteName(opener));
         } else {
             this.setOpen(true);
-            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
+            return new ActionResult(Outcome.SUCCESS, 1);
         }
     }
     
     public ActionResult closeItem() {
         if (!this.isOpenable()) {
-            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
+            return new ActionResult(Outcome.NOT_APPLICABLE);
         } else if (!this.isOpen()) {
-            return new ActionResult(ActionResult.Outcome.ALREADY_DONE);
+            return new ActionResult(Outcome.ALREADY_DONE);
         } else {
             this.setOpen(false);
-            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
+            return new ActionResult(Outcome.SUCCESS, 1);
         }
     }
 
     public ActionResult lockItem(Entity key) {
         Arena arena = Arena.getInstance();
         if (!this.isLockable()) {
-            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
+            return new ActionResult(Outcome.NOT_APPLICABLE);
         } else if (this.isLocked()) {
-            return new ActionResult(ActionResult.Outcome.ALREADY_DONE);
+            return new ActionResult(Outcome.ALREADY_DONE);
         } else if (!arena.getAssociations().isRelated("HAS_KEY", this, key)) {
-            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE,
+            return new ActionResult(Outcome.NOT_POSSIBLE,
                     "the key does not fit its lock");
         } else if (this.isOpenable() && this.isOpen()) {
-            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE, "it is open");
+            return new ActionResult(Outcome.NOT_POSSIBLE, "it is open");
         } else {
             this.setLocked(true);
-            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
+            return new ActionResult(Outcome.SUCCESS, 1);
         }
     }
 
     public ActionResult unlockItem(Entity key) {
         Arena arena = Arena.getInstance();
         if (!this.isLockable()) {
-            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
+            return new ActionResult(Outcome.NOT_APPLICABLE);
         } else if (!this.isLocked()) {
-            return new ActionResult(ActionResult.Outcome.ALREADY_DONE);
+            return new ActionResult(Outcome.ALREADY_DONE);
         } else if (!arena.getAssociations().isRelated("HAS_KEY", this, key)) {
-            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE, 
+            return new ActionResult(Outcome.NOT_POSSIBLE, 
                     "the key does not fit its lock");
         } else {
             this.setLocked(false);
-            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
+            return new ActionResult(Outcome.SUCCESS, 1);
         }
     }
     
     public ActionResult switchItem(boolean on) {
         if (!this.isSwitchable()) {
-            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
+            return new ActionResult(Outcome.NOT_APPLICABLE);
         } 
         if (this.isOn() == on) {
-            return new ActionResult(ActionResult.Outcome.ALREADY_DONE,
+            return new ActionResult(Outcome.ALREADY_DONE,
                     on ? "switched on" : "switched off");
         } else {
             this.setOn(on);
-            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
+            return new ActionResult(Outcome.SUCCESS, 1);
         }
     }
     
+    public ActionResult clearWith(Item tool) {
+        if (properties.lookup("blocked") == null) {
+            return new ActionResult(Outcome.NOT_APPLICABLE);
+        } else if (!isBlocked()) {
+            return new ActionResult(Outcome.ALREADY_DONE);
+        } else {
+            setBlocked(false);
+            return new ActionResult(Outcome.SUCCESS, 2);
+        }
+    }
+
     protected boolean doTrigger(Triggered action, Entity other) {
         Verb verb = action.getVerb();
         Item item = lookupItem(action.getTarget());
@@ -312,14 +322,4 @@ public class Item extends Entity {
         }
     }
 
-    public ActionResult clearWith(Item tool) {
-        if (properties.lookup("blocked") == null) {
-            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
-        } else if (!isBlocked()) {
-            return new ActionResult(ActionResult.Outcome.ALREADY_DONE);
-        } else {
-            setBlocked(false);
-            return new ActionResult(ActionResult.Outcome.SUCCESS);
-        }
-    }
 }

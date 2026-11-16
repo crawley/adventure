@@ -1,11 +1,10 @@
 package adventure.actions;
 
-import adventure.Entity;
 import adventure.Item;
 import adventure.Person;
 import adventure.actions.Trigger.Event;
 
-public class MoveAction extends Verb {
+public class MoveAction extends ActionBase {
     
     public MoveAction() {
         super("move", "moved", "moved");
@@ -13,23 +12,26 @@ public class MoveAction extends Verb {
 
     @Override
     public int perform(Person actor, String[] args) {
-        return performOnItem(actor, args, Context.ITEMS_ON_FLOOR, Context.ITEMS_ON_WALLS);
+        ActionResult res;
+        Item item = null;
+        try {
+            String[] words = parseOne(args);
+            item = resolveItem(actor, words[0], 
+                    Context.ITEMS_ON_FLOOR, Context.ITEMS_ON_WALLS);
+            res = item.moveItem();
+            if (res.isSuccess()) {
+                System.out.println("You " + getParticiple() + " " 
+                        + Grammar.definiteName(item));
+                item.trigger(Event.MOVED);
+            }
+        } catch (ActionException ex) {
+            res = ex.getActionResult();
+        }
+        return res.process(actor, item, this);
     }
 
     @Override
     public String describe() {
         return "Move an object";
-    }
-
-    @Override
-    public VerbResult apply(Person actor, Item item) {
-        return item.moveItem();
-    }
-
-    @Override
-    protected void onSuccess(Person actor, Entity item, Entity unused) {
-        System.out.println("You " + getParticiple() + " " 
-                + Grammar.definiteName(item));
-        item.trigger(Event.MOVED);
     }
 }
