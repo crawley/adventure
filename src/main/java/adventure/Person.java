@@ -22,16 +22,16 @@ public class Person extends Actor {
 		        base, triggers, properties);
 	}
 
-	public VerbResult wearItem(Item item) {
+	public ActionResult wearItem(Item item) {
 	    if (item.isWearable()) {
 	        if (itemsWorn.contains(item)) {
-	            return new VerbResult(Outcome.ALREADY_DONE, item);
+	            return new ActionResult(ActionResult.Outcome.ALREADY_DONE);
 	        } else {
 	            itemsWorn.add(item);
-	            return new VerbResult(3, item);
+	            return new ActionResult(ActionResult.Outcome.SUCCESS, 3);
 	        }
 	    } else {
-	        return new VerbResult(Outcome.NOT_APPLICABLE, item);
+	        return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
 	    }
 	}
 
