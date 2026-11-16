@@ -3,9 +3,10 @@ package adventure.actions;
 import adventure.Entity;
 import adventure.Item;
 import adventure.Person;
+import adventure.actions.ActionBase.Context;
 import adventure.actions.Trigger.Event;
 
-public class EatAction extends Verb {
+public class EatAction extends ActionBase {
     
     public EatAction() {
         super("eat", "eaten", "ate");
@@ -13,23 +14,26 @@ public class EatAction extends Verb {
 
 	@Override
 	public int perform(Person actor, String[] args) {
-		return performOnItem(actor, args, Context.ITEMS_HELD);
+        ActionResult res;
+        Item food = null;
+        try {
+            String[] words = parseOne(args);
+            food = resolveItem(actor, words[0], 
+                    Context.ITEMS_HELD);
+            res = actor.eatItem(food);
+            if (res.isSuccess()) {
+                System.out.println("You " + getParticiple() + " " 
+                        + Grammar.definiteName(food));
+                food.trigger(Event.CONSUMED);
+            }
+        } catch (ActionException ex) {
+            res = ex.getActionResult();
+        }
+        return res.process(actor, food, this);
 	}
 	
 	@Override
     public String describe() {
-        return "Eat an item";
-    }
-
-    @Override
-    protected VerbResult apply(Person actor, Item item) {
-        return actor.eatItem(item);
-    }
-    
-    @Override
-    protected void onSuccess(Person actor, Entity item, Entity unused) {
-        System.out.println("You " + getParticiple() + " " 
-                + Grammar.definiteName(item));
-        item.trigger(Event.CONSUMED);
+        return "Eat some food";
     }
 }

@@ -75,17 +75,17 @@ public class Person extends Actor {
         return itemsInHand.size() >= NOS_HANDS;
     }
 
-    public VerbResult eatItem(Item item) {
+    public ActionResult eatItem(Item item) {
         if (item.isEdible()) {
             if (item.isOpenable() && !item.isOpen()) {
-                return new VerbResult(Outcome.NOT_POSSIBLE, item,
+                return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE,
                         "the " + item.getAbbrev() 
                         + " needs to be opened first");
             }
             eat(item);
-            return new VerbResult(2, item);
+            return new ActionResult(ActionResult.Outcome.SUCCESS, 2);
         } else {
-            return new VerbResult(Outcome.NOT_APPLICABLE, item);
+            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
         }
     }
     
