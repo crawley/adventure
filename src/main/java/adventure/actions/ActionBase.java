@@ -72,31 +72,40 @@ public abstract class ActionBase implements Action {
         return participle;
     }
     
-    protected String[] parse1(String[] args) 
-            throws SyntaxException {
+    protected String[] parseOne(String[] args) 
+            throws ActionException {
         if (args.length == 0) {
-            throw new SyntaxException("What do you want to " + verb + "?");
+            throw new ActionException("What do you want to " + verb + "?");
         } else if (args.length == 1) {
             return args;
         } else {
-            throw new SyntaxException("Too many arguments for " + verb + ".");
+            throw new ActionException("Too many arguments for " + verb + ".");
         }
     }
-
-    protected String[] parse2(String[] args, String keyword) 
-            throws SyntaxException {
+    
+    protected String[] parseMulti(String[] args) 
+            throws ActionException {
         if (args.length == 0) {
-            throw new SyntaxException("What do you want to " + verb + "?");
+            throw new ActionException("What do you want to " + verb + "?");
+        } else {
+            return args;
+        } 
+    }
+
+    protected String[] parseTwo(String[] args, String keyword) 
+            throws ActionException {
+        if (args.length == 0) {
+            throw new ActionException("What do you want to " + verb + "?");
         } else if (args.length == 1) {
             if (args[0].equals(keyword)) {
-                throw new SyntaxException("What do you want to " + verb + "?");
+                throw new ActionException("What do you want to " + verb + "?");
             } else {
-                throw new SyntaxException("What do you want to " 
+                throw new ActionException("What do you want to " 
                         + verb + " the " + args[0] + " " + keyword + "?");
             }
         } else if (args.length == 2) {
             if (args[1].equals(keyword)) {
-                throw new SyntaxException("What do you want to " 
+                throw new ActionException("What do you want to " 
                         + verb + " the " + args[0] + " " + keyword + "?");
             } else {
                 return args;
@@ -104,38 +113,51 @@ public abstract class ActionBase implements Action {
         } else if (args.length == 3 && args[1].equals(keyword)) {
             return new String[] {args[0], args[2]};
         }
-        throw new SyntaxException("Too many arguments for " + verb + ".");
+        throw new ActionException("Too many arguments for " + verb + ".");
     }
     
-    protected Direction parseDirection(String word) throws SyntaxException {
+    protected Direction parseDirection(String word) throws ActionException {
         try {
             return Direction.valueOf(word);
         } catch (IllegalArgumentException ex) {
-            throw new SyntaxException(word + " is not a direction");
+            throw new ActionException(word + " is not a direction");
         }
     }
 
     protected Item resolveItem(Person actor, String word, Context ...contexts)
-            throws SyntaxException {
+            throws ActionException {
         List<Item> items = resolveItems(word, actor, contexts);
         return checkUnique(actor, items, word);
     }
     
     protected <T extends Entity> T checkUnique(Actor actor, 
             List<T> things, String word)
-            throws SyntaxException {
+            throws ActionException {
         if (things.isEmpty()) {
             if (actor.canSee()) {
-                throw new SyntaxException(
+                throw new ActionException(
                         new ActionResult(Outcome.NOT_FOUND, 0, null, word, null));
             } else {
-                throw new SyntaxException(new ActionResult(Outcome.CANNOT_SEE));
+                throw new ActionException(new ActionResult(Outcome.CANNOT_SEE));
             }
         } else if (things.size() > 1) {
-            throw new SyntaxException(
+            throw new ActionException(
                     new ActionResult(Outcome.NOT_UNIQUE, word, things));
         } else {
             return things.get(0);
+        }
+    }
+    
+    protected <T extends Entity> void checkNonempty(Actor actor, 
+            List<T> things, String word)
+            throws ActionException {
+        if (things.isEmpty()) {
+            if (actor.canSee()) {
+                throw new ActionException(
+                        new ActionResult(Outcome.NOT_FOUND, 0, null, word, null));
+            } else {
+                throw new ActionException(new ActionResult(Outcome.CANNOT_SEE));
+            }
         }
     }
 
@@ -173,6 +195,9 @@ public abstract class ActionBase implements Action {
 
     private static <T extends Entity> List<T> doResolve(
             String word, List<List<T>> lists) {
+//        for (List<T> l: lists) {
+//            System.out.println(l);
+//        }
         String[] parts = word.split("#", 2);
         List<T> filtered = lists.stream()
                 .flatMap((l) -> l.stream())

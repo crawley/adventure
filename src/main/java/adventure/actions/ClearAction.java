@@ -20,7 +20,7 @@ public class ClearAction extends ActionBase {
         ActionResult res;
         Entity target = null;
         try {
-            String[] words = parse2(args, "with");
+            String[] words = parseTwo(args, "with");
             Direction direction = parseDirection(words[0]);
             Exit exit = actor.getLocation().exit(direction);
             Item tool = resolveItem(actor, words[1], Context.ITEMS_HELD);
@@ -43,7 +43,7 @@ public class ClearAction extends ActionBase {
                     target.trigger(Event.CLEARED);
                 }
             }
-        } catch (SyntaxException ex) {
+        } catch (ActionException ex) {
             res = ex.getActionResult();
         }
         return res.process(actor, target, this);

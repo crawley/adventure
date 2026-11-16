@@ -15,7 +15,7 @@ public class CloseAction extends ActionBase {
         ActionResult res;
         Item portal = null;
         try {
-            String[] words = parse1(args);
+            String[] words = parseOne(args);
             portal = resolveItem(actor, words[0], 
                     Context.ITEMS_ON_FLOOR, Context.ITEMS_ON_WALLS, Context.PORTALS);
             res = portal.closeItem();
@@ -24,7 +24,7 @@ public class CloseAction extends ActionBase {
                         + Grammar.definiteName(portal));
                 portal.trigger(Event.CLOSED);
             }
-        } catch (SyntaxException ex) {
+        } catch (ActionException ex) {
             res = ex.getActionResult();
         }
         return res.process(actor, portal, this);

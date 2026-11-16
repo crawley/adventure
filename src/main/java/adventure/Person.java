@@ -2,6 +2,7 @@ package adventure;
 
 import java.util.List;
 
+import adventure.actions.ActionResult;
 import adventure.actions.Grammar;
 import adventure.actions.Trigger;
 import adventure.actions.Trigger.Event;
@@ -65,9 +66,9 @@ public class Person extends Actor {
         } 
     }
         
-    public VerbResult dropItem(Item item) {
+    public ActionResult dropItem(Item item) {
         getLocation().addItem(item);
-        return new VerbResult(1, item);
+        return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
     }
 
     public boolean handsFull() {

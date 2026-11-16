@@ -1,17 +1,17 @@
 package adventure.actions;
 
-public class SyntaxException extends Exception {
+public class ActionException extends Exception {
     
     private static final long serialVersionUID = -2658191415282235014L;
     
     private final ActionResult result;
 
-    public SyntaxException(String message) {
+    public ActionException(String message) {
         super(message);
         this.result = null;
     }
 
-    public SyntaxException(ActionResult result) {
+    public ActionException(ActionResult result) {
         super();
         this.result = result;
     }

@@ -121,6 +121,10 @@ public abstract class Entity {
     public String getLabel() {
         return label;
     }
+    
+    public String toString() {
+        return getLabel();
+    }
 
     /**
      * @return A name for the Entity (including 'a', 'the', 'my', etc)
