@@ -90,20 +90,25 @@ public abstract class Actor extends Entity {
     
     @Override
     protected boolean doTrigger(Triggered action, Entity other) {
+        Actor player = Arena.getInstance().getPlayer();
         switch (action.getVerb()) {
         case THINK:
-            if (this.getLabel().equals("self") && action.trigger()) {
+            if (this == player && action.trigger()) {
+                // Can't read the thoughts of another actor ...
                 System.out.println("You think: " + action.getMessage());
             }
             break;
         case SAY:
-            for (Entity actor: location.actors()) {
-                if (actor != this && action.trigger()) {
-                    String name = Grammar.definiteName(this);
-                    System.out.println(
-                            Grammar.capitalize(name)
-                            + " says: " + action.getMessage());
-                }
+            if (this == player && action.trigger()) {
+                // Talking to yourself ...
+                System.out.println("You say: " + action.getMessage());
+            } else if (player.getLocation() == location && action.trigger()) {
+                // Can only hear things said in the location you are in.
+                // TODO ... what about hearing voices in *nearby* locations?
+                String name = Grammar.definiteName(this);
+                System.out.println(
+                        Grammar.capitalize(name)
+                        + " says: " + action.getMessage());
             }
             break;
         default:
