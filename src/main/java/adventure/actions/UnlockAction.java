@@ -1,11 +1,10 @@
 package adventure.actions;
 
-import adventure.Entity;
 import adventure.Item;
 import adventure.Person;
 import adventure.actions.Trigger.Event;
 
-public class UnlockAction extends Verb {
+public class UnlockAction extends ActionBase {
     
     public UnlockAction() {
         super("unlock", "unlocked", "unlocked");
@@ -13,25 +12,28 @@ public class UnlockAction extends Verb {
 
     @Override
     public int perform(Person actor, String[] args) {
-        return performOnItemWith(actor, args, false, "with", 
-                Context.ITEMS_ON_FLOOR, Context.ITEMS_ON_WALLS, Context.PORTALS);
-    }
-    
-    @Override
-    protected void onSuccess(Person actor, Entity item, Entity unused) {
-        System.out.println("You " + getParticiple() + " " 
-                + Grammar.definiteName(item));
-        item.trigger(Event.UNLOCKED);
-    }
-    
-    @Override
-    protected VerbResult applyWith(Person actor, Item lockable, Item key) {
-        return lockable.unlockItem(key);
+        ActionResult res;
+        Item object = null;
+        try {
+            String[] words = parseTwo(args, "with");
+            object = resolveItem(actor, words[0], 
+                    Context.ITEMS_ON_FLOOR, Context.ITEMS_ON_WALLS, 
+                    Context.PORTALS);
+            Item key = resolveItem(actor, words[1], Context.ITEMS_HELD);
+            res = object.unlockItem(key);
+            if (res.isSuccess()) {
+                System.out.println("You " + getParticiple() + " " 
+                        + Grammar.definiteName(object));
+                object.trigger(Event.UNLOCKED);
+            }
+        } catch (ActionException ex) {
+            res = ex.getActionResult();
+        }
+        return res.process(actor, object, this);
     }
     
     @Override
     public String describe() {
-        return "Unlock an object";
+        return "Unlock an object; e.g. a door or chest";
     }
-
 }

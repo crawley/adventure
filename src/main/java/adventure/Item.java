@@ -207,18 +207,18 @@ public class Item extends Entity {
         }
     }
 
-    public VerbResult unlockItem(Entity key) {
+    public ActionResult unlockItem(Entity key) {
         Arena arena = Arena.getInstance();
         if (!this.isLockable()) {
-            return new VerbResult(Outcome.NOT_APPLICABLE, this);
+            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
         } else if (!this.isLocked()) {
-            return new VerbResult(Outcome.ALREADY_DONE, this);
+            return new ActionResult(ActionResult.Outcome.ALREADY_DONE);
         } else if (!arena.getAssociations().isRelated("HAS_KEY", this, key)) {
-            return new VerbResult(Outcome.NOT_POSSIBLE, this,
+            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE, 
                     "the key does not fit its lock");
         } else {
             this.setLocked(false);
-            return new VerbResult(1, this);
+            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
         }
     }
     
