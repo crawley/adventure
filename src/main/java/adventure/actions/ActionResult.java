@@ -84,10 +84,13 @@ public class ActionResult {
             break;
         case ALREADY_DONE:
             System.out.println(
-                    Grammar.definiteName(target) + " is already " + action.getAdjective());
+                    Grammar.capitalize(Grammar.definiteName(target)) 
+                    + " is already " + 
+                    (message == null ? action.getAdjective() : message));
             break;
         case NOT_APPLICABLE:
-            System.out.println(Grammar.capitalize(Grammar.definiteName(target)) + 
+            System.out.println(
+                    Grammar.capitalize(Grammar.definiteName(target)) + 
                     " is not something that you can " + action.getVerb());
             break;
         case NOT_POSSIBLE:

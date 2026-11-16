@@ -222,16 +222,16 @@ public class Item extends Entity {
         }
     }
     
-    public VerbResult switchItem(String arg) {
+    public ActionResult switchItem(boolean on) {
         if (!this.isSwitchable()) {
-            return new VerbResult(Outcome.NOT_APPLICABLE, this);
+            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
         } 
-        boolean on = arg.equals("on");
         if (this.isOn() == on) {
-            return new VerbResult(Outcome.ALREADY_DONE, this);
+            return new ActionResult(ActionResult.Outcome.ALREADY_DONE,
+                    on ? "switched on" : "switched off");
         } else {
             this.setOn(on);
-            return new VerbResult(1, this);
+            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
         }
     }
     
