@@ -80,7 +80,7 @@ public class Item extends Entity {
     }
     
     public void setHidden(boolean hidden) {
-        Property prop = this.properties.lookup("hiidden");
+        Property prop = this.properties.lookup("hidden");
         if (prop != null) {
             ((BooleanProperty) prop).setValue(hidden);
         }
@@ -190,20 +190,20 @@ public class Item extends Entity {
         }
     }
 
-    public VerbResult lockItem(Entity key) {
+    public ActionResult lockItem(Entity key) {
         Arena arena = Arena.getInstance();
         if (!this.isLockable()) {
-            return new VerbResult(Outcome.NOT_APPLICABLE, this);
+            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
         } else if (this.isLocked()) {
-            return new VerbResult(Outcome.ALREADY_DONE, this);
+            return new ActionResult(ActionResult.Outcome.ALREADY_DONE);
         } else if (!arena.getAssociations().isRelated("HAS_KEY", this, key)) {
-            return new VerbResult(Outcome.NOT_POSSIBLE, this,
+            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE,
                     "the key does not fit its lock");
         } else if (this.isOpenable() && this.isOpen()) {
-            return new VerbResult(Outcome.NOT_POSSIBLE, this, "it is open");
+            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE, "it is open");
         } else {
             this.setLocked(true);
-            return new VerbResult(1, this);
+            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
         }
     }
 
