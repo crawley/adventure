@@ -89,11 +89,11 @@ public class Person extends Actor {
         }
     }
     
-    public VerbResult pet(Actor target) {
-        if (target.getKind() != Kind.PET) {
-            return new VerbResult(Outcome.NOT_APPLICABLE, target);
+    public ActionResult pet(Actor creature) {
+        if (creature.getKind() != Kind.PET) {
+            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
         } else {
-            return new VerbResult(1, target);
+            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
         }
     }
 

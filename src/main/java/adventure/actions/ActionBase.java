@@ -150,7 +150,7 @@ public abstract class ActionBase implements Action {
     
     protected <T extends Entity> void checkNonempty(Actor actor, 
             List<T> things, String word)
-            throws ActionException {
+                    throws ActionException {
         if (things.isEmpty()) {
             if (actor.canSee()) {
                 throw new ActionException(
@@ -191,6 +191,16 @@ public abstract class ActionBase implements Action {
                 .map((item) -> ((Container) item).getContents())
                 .toList();
         return doResolve(word, lists);
+    }
+    
+    public static List<Actor> resolveActor(
+            Person actor, String word, Context ...contexts ) {
+        // TODO ... shouldn't ignore contexts.
+        // TODO ... should use doResolve to handle #n designators
+        return actor.getLocation().actors().stream()
+                .filter((a) -> (a.getAbbrev().equals(word)
+                        || a.getName().equals(word)))
+                .toList();
     }
 
     private static <T extends Entity> List<T> doResolve(

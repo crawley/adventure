@@ -1,9 +1,7 @@
 package adventure.actions;
 
-import adventure.Entity;
 import adventure.Item;
 import adventure.Person;
-import adventure.actions.ActionBase.Context;
 import adventure.actions.Trigger.Event;
 
 public class EatAction extends ActionBase {

@@ -1,11 +1,12 @@
 package adventure.actions;
 
+import java.util.List;
+
 import adventure.Actor;
-import adventure.Entity;
 import adventure.Person;
 import adventure.actions.Trigger.Event;
 
-public class PetAction extends Verb {
+public class PetAction extends ActionBase {
     
     public PetAction() {
         super("pet", "petted", "petted");
@@ -13,23 +14,27 @@ public class PetAction extends Verb {
 
     @Override
     public int perform(Person actor, String[] args) {
-        return performOnActor(actor, args);
+        ActionResult res;
+        List<Actor> creatures;
+        Actor creature = null;
+        try {
+            String[] words = parseOne(args);
+            creatures = resolveActor(actor, words[0], Context.ACTORS_HERE);
+            creature = checkUnique(actor, creatures, words[0]);
+            res = actor.pet(creature);
+            if (res.isSuccess()) {
+                System.out.println("You " + getParticiple() + " " 
+                        + Grammar.definiteName(creature));
+                creature.trigger(Event.PETTED);
+            }
+        } catch (ActionException ex) {
+            res = ex.getActionResult();
+        }
+        return res.process(actor, creature, this);
     }
-    
-    @Override
-    protected void onSuccess(Person actor, Entity creature, Entity unused) {
-        System.out.println("You " + getParticiple() + " " 
-                + Grammar.definiteName(creature));
-        creature.trigger(Event.PETTED);
-    }
-    
-    @Override
-    protected VerbResult applyActor(Person actor, Actor target) {
-        return actor.pet(target);
-    }
-    
+        
     @Override
     public String describe() {
-        return "Open an object";
+        return "Pet a creature";
     }
 }
