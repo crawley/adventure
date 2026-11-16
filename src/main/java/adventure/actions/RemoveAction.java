@@ -1,11 +1,10 @@
 package adventure.actions;
 
-import adventure.Entity;
 import adventure.Item;
 import adventure.Person;
 import adventure.actions.Trigger.Event;
 
-public class RemoveAction extends Verb {
+public class RemoveAction extends ActionBase {
     
     public RemoveAction() {
         super("remove", "removed", "removed");
@@ -13,23 +12,26 @@ public class RemoveAction extends Verb {
 
     @Override
     public int perform(Person actor, String[] args) {
-        return performOnItem(actor, args, Context.ITEMS_WORN);
+        ActionResult res;
+        Item clothing = null;
+        try {
+            String[] words = parseOne(args);
+            clothing = resolveItem(actor, words[0], 
+                    Context.ITEMS_WORN);
+            res = actor.unwearItem(clothing);
+            if (res.isSuccess()) {
+                System.out.println("You " + getParticiple() + " " 
+                        + Grammar.definiteName(clothing));
+                clothing.trigger(Event.UNWORN, actor);
+            }
+        } catch (ActionException ex) {
+            res = ex.getActionResult();
+        }
+        return res.process(actor, clothing, this);
     }
 
     @Override
     public String describe() {
-        return "Remove an item that you are wearing";
-    }
-
-    @Override
-    protected VerbResult apply(Person actor, Item item) {
-        return actor.unwearItem(item);
-    }
-    
-    @Override
-    protected void onSuccess(Person actor, Entity item, Entity unused) {
-        System.out.println("You " + getParticiple() + " " 
-                + Grammar.definiteName(item));
-        item.trigger(Event.UNWORN, actor);
+        return "Remove (take off) an item of clothing, armor and so on";
     }
 }

@@ -35,7 +35,7 @@ public class Person extends Actor {
 	    }
 	}
 
-    public VerbResult unwearItem(Item item) {
+    public ActionResult unwearItem(Item item) {
         if (itemsInHand.size() >= NOS_HANDS) {
             getLocation().addItem(item);
             item.trigger(Event.DROPPED);
@@ -43,7 +43,7 @@ public class Person extends Actor {
             itemsInHand.add(item);
             item.trigger(Event.TAKEN);
         }
-        return new VerbResult(2, item); 
+        return new ActionResult(ActionResult.Outcome.SUCCESS, 2); 
     }
 
     public List<Item> getItemsWorn() {
