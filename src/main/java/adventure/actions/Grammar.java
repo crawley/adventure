@@ -29,7 +29,7 @@ public class Grammar {
     public static String indefiniteName(Entity entity) {
         String name = (entity.getName() == null) ?
                 entity.getAbbrev() : entity.getName();
-        return definiteForm(name);
+        return indefiniteForm(name);
     }
 
     /**

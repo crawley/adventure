@@ -153,33 +153,29 @@ public class Item extends Entity {
             return new VerbResult(Outcome.NOT_APPLICABLE, this);
         }
     }
-
-    public VerbResult openItem() {
-        if (!this.isOpenable()) {
-            return new VerbResult(Outcome.NOT_APPLICABLE, this);
-        } else if (this.isOpen()) {
-            return new VerbResult(Outcome.ALREADY_DONE, this);
-        } else if (this.isLockable() && this.isLocked()) {
-            return new VerbResult(Outcome.NOT_POSSIBLE, this, "it is locked");
-        } else {
-            this.setOpen(true);
-            return new VerbResult(1, this);
-        }
-    }
     
-    public VerbResult openItemWith(Item opener) {
+    public ActionResult openItemWith(Item opener) {
         Arena arena = Arena.getInstance();
         if (!this.isOpenable()) {
-            return new VerbResult(Outcome.NOT_APPLICABLE, this);
+            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
         } else if (this.isOpen()) {
-            return new VerbResult(Outcome.ALREADY_DONE, this);
-        } else if (!arena.getAssociations().isRelated("HAS_OPENER", this, opener)) {
-            return new VerbResult(Outcome.NOT_POSSIBLE, this,
-                    Grammar.definiteName(opener) + " cannot open a "
-                    + Grammar.indefiniteName(this));
+            return new ActionResult(ActionResult.Outcome.ALREADY_DONE);
+        } else if (this.isLockable() && this.isLocked()) {
+            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE, 
+                    "it is locked");
+        } else if (opener == null
+                && arena.getAssociations().isRelated(
+                        "HAS_OPENER", this, null)) {
+            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE,
+                    "you need a tool to open it");
+        } else if (opener != null 
+                && !arena.getAssociations().isRelated(
+                        "HAS_OPENER", this, opener)) {
+            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE,
+                    "you cannot open it with " + Grammar.indefiniteName(opener));
         } else {
             this.setOpen(true);
-            return new VerbResult(1, this);
+            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
         }
     }
     

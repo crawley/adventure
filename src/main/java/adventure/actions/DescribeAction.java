@@ -49,7 +49,8 @@ public class DescribeAction extends ActionBase {
 	    }
 	    if (item.hasStateFlags()) {
 	        if (item.isOpenable()) {
-	            System.out.print("  It is currently " + 
+	            // TODO ... describing a 'can' as 'closed' is naff.
+	            System.out.print("  It is " + 
 	                    (item.isOpen() ? "open" : "closed"));
 	            if (!item.isOpen() && item.isLockable()) {
 	                System.out.print(" and " +
