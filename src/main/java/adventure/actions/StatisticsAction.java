@@ -17,6 +17,7 @@ public class StatisticsAction implements Action {
 
 	@Override
 	public int perform(Person actor, String[] args) {
+	    // TODO - Use ActionBase parse and resolve
 	    Entity target;
 	    if (args.length == 0) {
 	        target = actor;

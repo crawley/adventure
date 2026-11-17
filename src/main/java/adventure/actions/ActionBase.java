@@ -185,10 +185,10 @@ public abstract class ActionBase implements Action {
     }
 
     public static List<Item> resolveItemsInContainers(
-            String word, Person actor, List<Entity> list) {
+            String word, Person actor, List<? extends Entity> list) {
         List<List<Item>> lists = list.stream()
-                .filter((item) -> item instanceof Container)
-                .map((item) -> ((Container) item).getContents())
+                .filter((e) -> e instanceof Container)
+                .map((e) -> ((Container) e).getContents())
                 .toList();
         return doResolve(word, lists);
     }

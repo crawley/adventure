@@ -122,6 +122,18 @@ public class Person extends Actor {
         }
     }
 
+    public ActionResult takeItemFromContainer(Item item) {
+        if (this.handsFull()) {
+            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE,
+                    "your hands are full");
+        } if (!item.isTakeable()) {
+            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
+        } else {
+            this.getItemsInHand().add(item);
+            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
+        }
+    }
+
     public void showLocationAndActors() {
         Location here = getLocation();
         if (!canSee()) {
