@@ -1,11 +1,12 @@
 package adventure.actions;
 
+import java.util.List;
+
 import adventure.Actor;
-import adventure.Entity;
 import adventure.Item;
 import adventure.Person;
 
-public class FeedAction extends Verb {
+public class FeedAction extends ActionBase {
     
     public FeedAction() {
         super("feed", "fed", "fed");
@@ -13,21 +14,27 @@ public class FeedAction extends Verb {
 
     @Override
     public int perform(Person actor, String[] args) {
-        return performOnActorWith(actor, args, "with", Context.ITEMS_HELD);
+        ActionResult res;
+        Actor creature = null;
+        try {
+            String[] words = parseTwo(args, "to");
+            List<Actor> creatures = resolveActor(actor, words[1], 
+                    Context.ACTORS_HERE);
+            creature = checkUnique(actor, creatures, words[1]);
+            List<Item> items = resolveItems(words[0], actor, 
+                    Context.ITEMS_HELD);
+            Item food = checkUnique(actor, items, words[0]);
+            res = actor.feed(creature, food);
+            if (res.isSuccess()) {
+                System.out.println("You " + getParticiple() + " " 
+                        + Grammar.definiteName(creature));
+            }
+        } catch (ActionException ex) {
+            res = ex.getActionResult();
+        }
+        return res.process(actor, creature, this);
     }
     
-    @Override
-    protected void onSuccess(Person actor, Entity creature, Entity food) {
-        System.out.println("You " + getParticiple() + " " 
-                + Grammar.definiteName(creature));
-    }
-    
-    @Override
-    protected VerbResult applyActorWith(Person actor, Actor target, Item food) {
-        return actor.feed(target, food);
-    }
-    
-    @Override
     public String describe() {
         return "Feed a creature";
     }

@@ -3,11 +3,10 @@ package adventure;
 import java.util.List;
 
 import adventure.actions.ActionResult;
+import adventure.actions.ActionResult.Outcome;
 import adventure.actions.Grammar;
 import adventure.actions.Trigger;
 import adventure.actions.Trigger.Event;
-import adventure.actions.VerbResult;
-import adventure.actions.VerbResult.Outcome;
 
 public class Person extends Actor {
     
@@ -25,13 +24,13 @@ public class Person extends Actor {
 	public ActionResult wearItem(Item item) {
 	    if (item.isWearable()) {
 	        if (itemsWorn.contains(item)) {
-	            return new ActionResult(ActionResult.Outcome.ALREADY_DONE);
+	            return new ActionResult(Outcome.ALREADY_DONE);
 	        } else {
 	            itemsWorn.add(item);
-	            return new ActionResult(ActionResult.Outcome.SUCCESS, 3);
+	            return new ActionResult(Outcome.SUCCESS, 3);
 	        }
 	    } else {
-	        return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
+	        return new ActionResult(Outcome.NOT_APPLICABLE);
 	    }
 	}
 
@@ -43,7 +42,7 @@ public class Person extends Actor {
             itemsInHand.add(item);
             item.trigger(Event.TAKEN);
         }
-        return new ActionResult(ActionResult.Outcome.SUCCESS, 2); 
+        return new ActionResult(Outcome.SUCCESS, 2); 
     }
 
     public List<Item> getItemsWorn() {
@@ -56,19 +55,19 @@ public class Person extends Actor {
 
     public ActionResult holdItem(Item item) {
         if (!item.isTakeable()) {
-            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
+            return new ActionResult(Outcome.NOT_APPLICABLE);
         } else if (itemsInHand.size() >= NOS_HANDS) {
-            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE,
+            return new ActionResult(Outcome.NOT_POSSIBLE,
                     "your hands are full");
         } else {
             itemsInHand.add(item);
-            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
+            return new ActionResult(Outcome.SUCCESS, 1);
         } 
     }
         
     public ActionResult dropItem(Item item) {
         getLocation().addItem(item);
-        return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
+        return new ActionResult(Outcome.SUCCESS, 1);
     }
 
     public boolean handsFull() {
@@ -78,59 +77,60 @@ public class Person extends Actor {
     public ActionResult eatItem(Item item) {
         if (item.isEdible()) {
             if (item.isOpenable() && !item.isOpen()) {
-                return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE,
+                return new ActionResult(Outcome.NOT_POSSIBLE,
                         "the " + item.getAbbrev() 
                         + " needs to be opened first");
             }
             eat(item);
-            return new ActionResult(ActionResult.Outcome.SUCCESS, 2);
+            return new ActionResult(Outcome.SUCCESS, 2);
         } else {
-            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
+            return new ActionResult(Outcome.NOT_APPLICABLE);
         }
     }
     
     public ActionResult pet(Actor creature) {
         if (creature.getKind() != Kind.PET) {
-            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
+            return new ActionResult(Outcome.NOT_APPLICABLE);
         } else {
-            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
+            return new ActionResult(Outcome.SUCCESS, 1);
         }
     }
 
-    public VerbResult feed(Actor target, Item food) {
+    public ActionResult feed(Actor creature, Item food) {
         if (food.isEdible()) {
             if (food.isOpenable() && !food.isOpen()) {
-                return new VerbResult(Outcome.NOT_POSSIBLE, food,
+                return new ActionResult(Outcome.NOT_POSSIBLE,
                         "the " + food.getAbbrev() 
                         + " needs to be opened first");
             } else {
                 getLocation().addItem(food);
-                if (target.eat(food)) {
-                    target.trigger(Event.ATE, food);
+                if (creature.eat(food)) {
+                    creature.trigger(Event.ATE, food);
                     food.trigger(Event.CONSUMED);
-                    return new VerbResult(1, target, food);
+                    return new ActionResult(Outcome.SUCCESS, 1);
                 } else {
-                    target.trigger(Event.REFUSED);
-                    return new VerbResult(Outcome.NOT_POSSIBLE, target,
-                            Grammar.definiteName(target) + " refused "
-                            + Grammar.definiteName(target));
+                    creature.trigger(Event.REFUSED);
+                    return new ActionResult(Outcome.NOT_POSSIBLE,
+                            Grammar.definiteName(creature) 
+                            + " refused to eat "
+                            + Grammar.definiteName(food));
                 }
             }
         } else {
-            return new VerbResult(Outcome.NOT_APPLICABLE, food,
+            return new ActionResult(Outcome.NOT_APPLICABLE,
                     "is not edible");
         }
     }
 
     public ActionResult takeItemFromContainer(Item item) {
         if (this.handsFull()) {
-            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE,
+            return new ActionResult(Outcome.NOT_POSSIBLE,
                     "your hands are full");
         } if (!item.isTakeable()) {
-            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
+            return new ActionResult(Outcome.NOT_APPLICABLE);
         } else {
             this.getItemsInHand().add(item);
-            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
+            return new ActionResult(Outcome.SUCCESS, 1);
         }
     }
 

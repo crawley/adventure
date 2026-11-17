@@ -48,5 +48,4 @@ public class GetAction extends ActionBase {
     public String describe() {
         return "Get an item from a container";
     }
-
 }

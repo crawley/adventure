@@ -847,6 +847,10 @@ associations:
     entity1: spam
     entity2: canopener
     
+  - relation: HAS_OPENER
+    entity1: spinach
+    entity2: canopener
+      
   - relation: LIKES
     entity1: cat
     entity2: catfood
