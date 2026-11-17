@@ -54,15 +54,15 @@ public class Person extends Actor {
         return itemsInHand;
     }
 
-    public VerbResult holdItem(Item item) {
+    public ActionResult holdItem(Item item) {
         if (!item.isTakeable()) {
-            return new VerbResult(Outcome.NOT_APPLICABLE, item);
+            return new ActionResult(ActionResult.Outcome.NOT_APPLICABLE);
         } else if (itemsInHand.size() >= NOS_HANDS) {
-            return new VerbResult(Outcome.NOT_POSSIBLE, item,
+            return new ActionResult(ActionResult.Outcome.NOT_POSSIBLE,
                     "your hands are full");
         } else {
             itemsInHand.add(item);
-            return new VerbResult(1, item);
+            return new ActionResult(ActionResult.Outcome.SUCCESS, 1);
         } 
     }
         
