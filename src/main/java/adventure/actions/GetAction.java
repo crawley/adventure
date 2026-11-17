@@ -28,9 +28,9 @@ public class GetAction extends ActionBase {
                         + " is not a container");
             }
             List<Item> items = resolveItemsInContainers(words[0], actor, 
-                    List.of(container));
+                    List.of((Container) container));
             item = checkUnique(actor, items, words[0]);
-            res = actor.takeItemFromContainer(item);
+            res = actor.takeItemFromContainer(item, (Container) container);
             if (res.isSuccess()) {
                 System.out.println("You " + getParticiple() + " " 
                         + Grammar.definiteName(item) + " from " 

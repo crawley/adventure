@@ -122,7 +122,7 @@ public class Person extends Actor {
         }
     }
 
-    public ActionResult takeItemFromContainer(Item item) {
+    public ActionResult takeItemFromContainer(Item item, Container container) {
         if (this.handsFull()) {
             return new ActionResult(Outcome.NOT_POSSIBLE,
                     "your hands are full");
@@ -130,6 +130,15 @@ public class Person extends Actor {
             return new ActionResult(Outcome.NOT_APPLICABLE);
         } else {
             this.getItemsInHand().add(item);
+            return new ActionResult(Outcome.SUCCESS, 1);
+        }
+    }
+    
+    public ActionResult putItemIntoContainer(Item item, Container container) {
+        if (!item.isTakeable()) {
+            return new ActionResult(Outcome.NOT_APPLICABLE);
+        } else {
+            container.addItem(item);
             return new ActionResult(Outcome.SUCCESS, 1);
         }
     }
@@ -151,5 +160,4 @@ public class Person extends Actor {
             }
         }
     }
-
 }

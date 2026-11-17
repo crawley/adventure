@@ -1,13 +1,13 @@
 package adventure.actions;
 
+import java.util.List;
+
 import adventure.Container;
-import adventure.Entity;
 import adventure.Item;
 import adventure.Person;
 import adventure.actions.Trigger.Event;
-import adventure.actions.VerbResult.Outcome;
 
-public class PutAction extends Verb {
+public class PutAction extends ActionBase {
     
     public PutAction() {
         super("put", null, "put");
@@ -15,27 +15,31 @@ public class PutAction extends Verb {
 
     @Override
     public int perform(Person actor, String[] args) {
-        return performOnItemWith(actor, args, false, "into", Context.ITEMS_HELD);
-    }
-    
-    @Override
-    protected void onSuccess(Person actor, Entity item, Entity item2) {
-        System.out.println("You " + getParticiple() + " " 
-                + Grammar.definiteName(item) + " into " + " " 
-                + Grammar.definiteName(item2));
-        item.trigger(Event.ADDED);
-    }
-    
-    @Override
-    protected VerbResult applyWith(Person actor, Item item, Item container) {
-        if (container instanceof Container) {
-            ((Container) container).addItem(item);
-            actor.getItemsInHand().remove(item);
-            return new VerbResult(1, item, container);
-        } else {
-            return new VerbResult(Outcome.NOT_POSSIBLE, container,
-                    "is not a container");
+        ActionResult res;
+        Item item = null;
+        try {
+            String[] words = parseTwo(args, "into");
+            List<Item> containers = resolveItems(words[1], actor, 
+                    Context.ITEMS_ON_FLOOR, Context.ITEMS_ON_WALLS, 
+                    Context.ITEMS_HELD, Context.ITEMS_WORN);
+            Item container = checkUnique(actor, containers, words[1]);
+            if (!(container instanceof Container)) {
+                throw new ActionException(Grammar.definiteName(container)
+                        + " is not a container");
+            }
+            item = resolveItem(actor, words[0], 
+                    Context.ITEMS_HELD);
+            res = actor.putItemIntoContainer(item, (Container) container);
+            if (res.isSuccess()) {
+                System.out.println("You " + getParticiple() + " " 
+                        + Grammar.definiteName(item) + " into " 
+                        + Grammar.definiteName(container));
+                item.trigger(Event.ADDED);
+            }
+        } catch (ActionException ex) {
+            res = ex.getActionResult();
         }
+        return res.process(actor, item, this);
     }
     
     @Override
