@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import adventure.Triggered.Verb;
 import adventure.actions.ActionResult;
 import adventure.actions.ActionResult.Outcome;
 
@@ -152,8 +153,8 @@ public class Location extends Entity {
     }
 
     @Override
-    protected boolean doTrigger(Triggered action, Entity target) {
-        throw new UnsupportedOperationException("No location triggers");
+    protected boolean doTrigger(Triggered action, Entity other) {
+        return super.doTrigger(action, other);
     }
 
     public ActionResult clearWith(Item tool) {

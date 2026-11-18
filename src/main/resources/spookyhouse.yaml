@@ -70,8 +70,18 @@ locations:
     type: AREA1
     name: a briar patch
     description: |
-      a tangled mass of brambles up against the north side of the house.
+      a tangled mass of briars up against the north side of the house.
       You will need a machette to clear it.
+    triggers: 
+      - events: CLEARED
+        actions:
+          - verb: MESSAGE
+            message: Swinging your machette, you clear away through the briars.
+          - verb: SET_DESCRIPTION
+            arg: |
+              a tangled mass of briars up against the north side of the house.
+              A small area has been cleared next to the back door.
+
     properties:
       - name: blocked
         type: boolean
