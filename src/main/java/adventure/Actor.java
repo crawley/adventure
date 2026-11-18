@@ -3,8 +3,6 @@ package adventure;
 import java.util.List;
 
 import adventure.actions.Grammar;
-import adventure.actions.Trigger;
-import adventure.actions.Triggered;
 
 public abstract class Actor extends Entity {
     

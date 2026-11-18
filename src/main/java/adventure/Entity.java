@@ -5,9 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import adventure.actions.Trigger;
-import adventure.actions.Triggered;
-import adventure.actions.Triggered.Verb;
+import adventure.Triggered.Verb;
 
 public abstract class Entity {
     

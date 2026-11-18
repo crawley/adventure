@@ -2,8 +2,6 @@ package adventure;
 
 import java.util.List;
 
-import adventure.actions.Trigger;
-
 public class Container extends Item {
     
     private final EntityList<Item> contents;

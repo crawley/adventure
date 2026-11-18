@@ -1,4 +1,4 @@
-package adventure.actions;
+package adventure;
 
 import java.util.List;
 

@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import adventure.actions.Trigger;
-
 public class Template {
     
     public enum Kind {

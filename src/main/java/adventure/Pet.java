@@ -2,8 +2,6 @@ package adventure;
 
 import java.util.List;
 
-import adventure.actions.Trigger;
-
 public class Pet extends Actor {
     
 	public Pet(Kind kind, String label, String name, String abbrev,

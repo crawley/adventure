@@ -16,10 +16,8 @@ import adventure.Entity.FlagDescriptor;
 import adventure.Exit.ExitType;
 import adventure.Location.LocationType;
 import adventure.Template.Kind;
-import adventure.actions.Trigger;
-import adventure.actions.Trigger.Event;
-import adventure.actions.Triggered;
-import adventure.actions.Triggered.Verb;
+import adventure.Trigger.Event;
+import adventure.Triggered.Verb;
 
 public class Arena {
 	

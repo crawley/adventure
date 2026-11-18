@@ -10,7 +10,6 @@ import java.util.Scanner;
 
 import adventure.actions.Action;
 import adventure.actions.Actions;
-import adventure.actions.Trigger;
 
 public class Standalone implements Runnable {
 	

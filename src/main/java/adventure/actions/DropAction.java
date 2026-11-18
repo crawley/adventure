@@ -4,7 +4,7 @@ import java.util.List;
 
 import adventure.Item;
 import adventure.Person;
-import adventure.actions.Trigger.Event;
+import adventure.Trigger.Event;
 
 public class DropAction extends ActionBase {
     

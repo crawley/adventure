@@ -2,7 +2,7 @@ package adventure.actions;
 
 import adventure.Item;
 import adventure.Person;
-import adventure.actions.Trigger.Event;
+import adventure.Trigger.Event;
 
 public class CloseAction extends ActionBase {
    

@@ -4,12 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import adventure.Triggered.Verb;
 import adventure.actions.ActionResult;
 import adventure.actions.ActionResult.Outcome;
 import adventure.actions.Grammar;
-import adventure.actions.Trigger;
-import adventure.actions.Triggered;
-import adventure.actions.Triggered.Verb;
 
 public class Item extends Entity {
     

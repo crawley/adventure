@@ -6,8 +6,8 @@ import adventure.Exit;
 import adventure.Item;
 import adventure.Location;
 import adventure.Person;
+import adventure.Trigger.Event;
 import adventure.actions.ActionResult.Outcome;
-import adventure.actions.Trigger.Event;
 
 public class ClearAction extends ActionBase {
     

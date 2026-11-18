@@ -2,11 +2,10 @@ package adventure;
 
 import java.util.List;
 
+import adventure.Trigger.Event;
 import adventure.actions.ActionResult;
 import adventure.actions.ActionResult.Outcome;
 import adventure.actions.Grammar;
-import adventure.actions.Trigger;
-import adventure.actions.Trigger.Event;
 
 public class Person extends Actor {
     

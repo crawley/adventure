@@ -11,7 +11,6 @@ import java.util.Map;
 
 import adventure.actions.ActionResult;
 import adventure.actions.ActionResult.Outcome;
-import adventure.actions.Triggered;
 
 public class Location extends Entity {
     

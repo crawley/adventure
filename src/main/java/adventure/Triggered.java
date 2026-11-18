@@ -1,4 +1,4 @@
-package adventure.actions;
+package adventure;
 
 public class Triggered {
     
