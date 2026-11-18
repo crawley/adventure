@@ -38,9 +38,9 @@ public class ClearAction extends ActionBase {
                     target = loc;
                 }
                 if (res.isSuccess()) {
+                    target.trigger(Event.CLEARED);
                     System.out.println("You " + getParticiple() + " " 
                             + Grammar.definiteName(target));
-                    target.trigger(Event.CLEARED);
                 }
             }
         } catch (ActionException ex) {

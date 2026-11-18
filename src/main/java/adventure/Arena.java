@@ -169,10 +169,14 @@ public class Arena {
 	            throw new ArenaException(
 	                    "location '" + label + "' already exists");
 	        }
-	        LocationType kind = 
-	                LocationType.valueOf(getString(locData, "type"));
-	        Location location = 
-	                new Location(kind, label, name, abbrev, description, flags);
+            LocationType kind = 
+                    LocationType.valueOf(getString(locData, "type"));
+            Template base = parseBaseReference(locData);
+            List<Trigger> triggers = parseTriggers(locData);
+            PropertySet properties = parseProperties(locData);
+            Location location = 
+                    new Location(kind, label, name, abbrev, description, flags, 
+                            base, triggers, properties);
 	        
 	        List<Map<String, Object>> wallData = 
 	                (List<Map<String, Object>>) locData.get("walls");

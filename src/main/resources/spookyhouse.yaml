@@ -70,8 +70,8 @@ locations:
     type: AREA1
     name: a briar patch
     description: |
-      there is a tangled mass of brambles up against the north side of the building.
-      You will need a machette or cutlass to force your way through.
+      a tangled mass of brambles up against the north side of the house.
+      You will need a machette to clear it.
     properties:
       - name: blocked
         type: boolean
@@ -357,8 +357,18 @@ exits:
     backwards: e
     portal:
       label: briarpath1
-      name: a path blocked with briars
+      name: a path behind the house
+      description: |
+        a path next to the house that is blocked with briars.
+        You will need a machette to clear your way.
       abbrev: briars
+      triggers: 
+        - events: CLEARED
+          actions:
+            - verb: MESSAGE
+              message: Swinging your machette, you clear a way through the briars.
+            - verb: SET_DESCRIPTION
+              arg: a path through the briars on the north side of the house.
       properties:
         - name: blocked
           type: boolean
@@ -371,8 +381,18 @@ exits:
     backwards: w
     portal:
       label: briarpath2
-      name: a path blocked with briars
+      name: a path behind the house
+      description: |
+        a path next to house that is blocked with briars.
+        You will need a machette to clear your way.
       abbrev: briars
+      triggers: 
+        - events: CLEARED
+          actions:
+            - verb: MESSAGE
+              message: Swinging your machette, you clear away through the briars.
+            - verb: SET_DESCRIPTION
+              arg: a path through the briars on the north side of the house
       properties:
         - name: blocked
           type: boolean
