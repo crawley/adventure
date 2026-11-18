@@ -20,12 +20,12 @@ public class GoAction implements Action {
 	    for (Exit exit: actor.getLocation().getExits()) {
 	        if (exit.matchesDirection(direction)) {
 	            Item portal = exit.getPortal();
-	            if (portal != null && (!portal.isOpen() || portal.isBlocked())) {
+	            if (portal != null && (portal.isClosed() || portal.isBlocked())) {
 	                if (!actor.canSee()) {
 	                    System.out.println("You bump into something.");
 	                } else {
 	                    System.out.print("You cannot go " + direction.getName() + ": ");
-	                    if (portal.isOpenable()) {
+	                    if (portal.isClosed()) {
 	                        System.out.println("the " + portal.getAbbrev() + " is closed");
 	                    } else {
 	                        System.out.println("your way is blocked");
@@ -34,8 +34,8 @@ public class GoAction implements Action {
 	            } else {
 	                Location loc = exit.getTo();
 	                if (loc.isBlocked()) {
-	                    System.out.print("You cannot enter " + Grammar.definiteName(loc) 
-	                    + ": access to that area is blocked.");
+	                    System.out.print("You cannot enter " + Grammar.definiteName(loc)
+	                            + ": access to that area is blocked.");
 	                } else {
 	                    actor.setLocation(loc);
 	                    if (loc.isDark() && !actor.hasWorkingLight()) {

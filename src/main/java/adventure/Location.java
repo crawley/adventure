@@ -17,7 +17,8 @@ public class Location extends Entity {
     
     public enum LocationType {
         ROOM("in"), PASSAGEWAY("in"), PLATFORM("on"), STAIRS("on"),
-        PATH("on"), AREA1("in"), AREA2("on");
+        PATH("on"), FRONT("in front of"), BEHIND("behind"),
+        AREA1("in"), AREA2("on");
         
         private final String preposition;
         
@@ -170,6 +171,7 @@ public class Location extends Entity {
         return vistas.stream()
                 .filter((v) -> v instanceof Exit)
                 .map((v) -> (Exit) v)
+                .filter((e) -> e.matchesDirection(direction))
                 .findFirst()
                 .orElse(null);
     }

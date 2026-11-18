@@ -76,12 +76,20 @@ locations:
       - name: blocked
         type: boolean
         initial: Y
-    
+        
   - label: gardenshed
+    type: FRONT
+    name: a shed
+    description: |
+      in front of a dilapidated wooden shed.
+    
+  - label: inshed
     type: ROOM
     name: the garden shed
-    description:
-      the shed contains gardening equipment and supplies.
+    description: |
+      the inside of the garden shed is dimly lit. 
+      The shed contains gardening equipment and supplies covered with cobwebs.
+      Tools are hanging on the walls.
 
   - label: hallway
     type: PASSAGEWAY
@@ -335,6 +343,12 @@ exits:
     type: PATH
     forwards: n
     backwards: s
+    
+  - from: gardenshed
+    to: inshed
+    type: DOORWAY
+    forwards: n i
+    backwards: s o
     
   - from: housecorner-ne
     to: briarpatch
@@ -805,22 +819,22 @@ items:
   - label: machette
     name: a rusty machette
     flags: MOVEABLE TAKEABLE WIELDABLE
-    location: gardenshed
+    location: inshed
     
   - label: whetstone
     name: a whetstone for sharpening tools
     flags: MOVEABLE TAKEABLE
-    location: gardenshed
+    location: inshed
     
   - label: sprayer
     name: a hand operated garden sprayer
     flags: MOVEABLE TAKEABLE
-    location: gardenshed
+    location: inshed
     
   - label: facemask
     name: a mask that protects the mouth, nose and eyes
     flags: MOVEABLE TAKEABLE WEARABLE
-    location: gardenshed
+    location: inshed
 
 associations:
   - relation: HAS_KEY

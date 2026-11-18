@@ -122,6 +122,11 @@ public class Item extends Entity {
         return prop != null && prop.isTrue();
     }
     
+    public boolean isClosed() {
+        Property prop = this.properties.lookup("open");
+        return prop != null && !prop.isTrue();
+    }
+    
     public void setOpen(boolean open) {
         Property prop = this.properties.lookup("open");
         if (prop != null) {
